@@ -124,18 +124,18 @@ pnpm milvus storybook
 
 ## 화면 구성
 
-[문서 사이트](https://milvus-wina.github.io/milvus-design-system/)는 이 저장소의 Storybook입니다. 고객 프로젝트에서 `pnpm milvus storybook`으로 띄우는 Storybook도 런북만 빼고 같은 메뉴를 씁니다.
+[문서 사이트](https://milvus-wina.github.io/milvus-design-system/)는 이 저장소의 Storybook입니다. 고객 프로젝트에서 `pnpm milvus storybook`으로 띄우는 Storybook도 같은 메뉴를 쓰지만, 런북은 문서 사이트에만, 반영 검사는 고객 프로젝트에만 있습니다.
 
-| 메뉴                            | 내용                                                                                                                                            |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| 시작하기                        | 브랜드를 바꾸는 순서와 컴포넌트를 찾는 법                                                                                                       |
-| 시작하기 / 브랜드 명세          | 브랜드 색, 로고, 피드백 색(성공·경고·오류·정보), 디자인 명세를 적고 저장합니다. 저장은 고객 프로젝트에서만 되고 문서 사이트에서는 막혀 있습니다 |
-| 시작하기 / Salesforce 이용 약관 | "원본과 hook" 스토리가 보여 주는 Salesforce 원본 파일의 이용 약관 전문                                                                          |
-| 시작하기 / 반영 검사            | 버튼을 누르면 스토리마다 기본 브랜드와 센티널 브랜드의 계산된 스타일을 비교해, 명세 항목별로 반영·빈틈·고정을 판정합니다                        |
-| 런북                            | 준비부터 배포 뒤 마무리까지 따라 하기. 문서 사이트에만 있습니다                                                                                 |
-| Foundations                     | 브랜드 스타일 (util.css), 컬러, 타이포그래피                                                                                                    |
-| 컴포넌트 / 기본                 | Salesforce 기본 컴포넌트(`lightning-*`) 73개, 예제 249개. 컴포넌트마다 "원본과 hook" 스토리가 하나씩 더 있습니다                                |
-| 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Button, Calendar, MultiSelect, Notification                                                                                 |
+| 메뉴                            | 내용                                                                                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 시작하기                        | 브랜드를 바꾸는 순서와 컴포넌트를 찾는 법                                                                                                            |
+| 시작하기 / 브랜드 명세          | 브랜드 색, 로고, 피드백 색(성공·경고·오류·정보), 디자인 명세를 적고 저장합니다. 저장은 고객 프로젝트에서만 되고 문서 사이트에서는 막혀 있습니다      |
+| 시작하기 / Salesforce 이용 약관 | "원본과 hook" 스토리가 보여 주는 Salesforce 원본 파일의 이용 약관 전문                                                                               |
+| 시작하기 / 반영 검사            | 버튼을 누르면 스토리마다 기본 브랜드와 센티널 브랜드의 계산된 스타일을 비교해, 명세 항목별로 반영·빈틈·고정을 판정합니다. 고객 프로젝트에만 있습니다 |
+| 런북                            | 준비부터 배포 뒤 마무리까지 따라 하기. 문서 사이트에만 있습니다                                                                                      |
+| Foundations                     | 브랜드 스타일 (util.css), 컬러, 타이포그래피                                                                                                         |
+| 컴포넌트 / 기본                 | Salesforce 기본 컴포넌트(`lightning-*`) 73개, 예제 249개. 컴포넌트마다 "원본과 hook" 스토리가 하나씩 더 있습니다                                     |
+| 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Button, Calendar, MultiSelect, Notification                                                                                      |
 
 툴바의 **브랜드** 메뉴(붓 아이콘)에서 화면에 입힐 브랜드를 고릅니다. 문서 사이트에서는 `Milvus_DesignSystem`과 "샘플 브랜드 (org 아님)"(`brands/Sample_Forest`)를, 고객 프로젝트에서는 내 브랜드와 "SLDS 기본"을 고릅니다.
 
@@ -263,7 +263,7 @@ milvus-design-system/
 
 ## 더 보기
 
-- [문서 사이트](https://milvus-wina.github.io/milvus-design-system/): 컴포넌트 카탈로그, 브랜드 명세, 반영 검사
+- [문서 사이트](https://milvus-wina.github.io/milvus-design-system/): 컴포넌트 카탈로그, 브랜드 명세
 - [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북--docs): 준비, 설치, init, 브랜드 반영, 배포, 새 버전으로 올리기, 문제 해결
 - [`templates/claude/rules/milvus/design.md`](templates/claude/rules/milvus/design.md): 고객 프로젝트에 들어가는 디자인 규칙
 - [`templates/claude/skills/milvus-brand/SKILL.md`](templates/claude/skills/milvus-brand/SKILL.md): 브랜드 반영 skill

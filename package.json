@@ -39,7 +39,8 @@
     "lib/sentinel.ts",
     "lib/reflect.ts",
     "cli/context.ts",
-    "brands/Milvus_DesignSystem/logo.png"
+    "brands/Milvus_DesignSystem/logo.png",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "repository": {
     "type": "git",

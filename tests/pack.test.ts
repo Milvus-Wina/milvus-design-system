@@ -41,6 +41,8 @@ test("pack 결과에 tsconfig.lwc.base.json·lwc-platform.d.ts와 force-app 아�
   assert.ok(!entries.includes("package/lwc-platform.d.ts"));
   assert.deepEqual(entries.filter((e) => e.startsWith("package/force-app/") && e.endsWith(".ts")), []);
   assert.ok(entries.includes("package/force-app/main/default/lwc/milvusBrandLoader/milvusBrandLoader.js"), entries.join("\n"));
+  // 이용 조건과 Salesforce 약관 원문은 패키지에 꼭 들어가야 한다(약관이 사본에 포함하라고 요구한다)
+  for (const f of ["LICENSE", "THIRD_PARTY_NOTICES.md", "brands/Milvus_DesignSystem/logo.png"]) assert.ok(entries.includes(`package/${f}`), f);
   assert.ok(entries.includes("package/templates/docs/milvus/patterns/modal.md"), entries.join("\n"));
   assert.ok(entries.includes("package/templates/claude/rules/milvus/design.md"), entries.join("\n"));
 });

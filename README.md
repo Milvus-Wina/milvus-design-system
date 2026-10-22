@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brands/Milvus_DesignSystem/logo.jpg" alt="MILVUS" width="300">
+  <img src="brands/Milvus_DesignSystem/logo.png" alt="MILVUS" width="300">
 </p>
 
 <h1 align="center">밀버스 디자인 시스템</h1>

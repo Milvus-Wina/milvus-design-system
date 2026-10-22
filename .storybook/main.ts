@@ -12,7 +12,8 @@ const options: PluginOptions = projectDir ? { mode: "project", repoDir, projectD
 
 const config: StorybookConfig = {
   framework: { name: "@storybook/web-components-vite", options: {} },
-  stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|ts)"],
+  // 반영 검사는 고객 프로젝트에서 돌리는 도구라 문서 사이트(저장소 모드)에는 넣지 않는다
+  stories: ["../stories/**/*.mdx", projectDir ? "../stories/**/*.stories.@(js|ts)" : "../stories/**/!(ReflectCheck).stories.@(js|ts)"],
   addons: ["@storybook/addon-docs", "@storybook/addon-a11y"],
   // 스토리는 LWC 번들을 @milvus/lwc로 읽는다. 저장소는 pnpm build:lwc가 만든 dist/lwc, 프로젝트는 milvus storybook이 만든 .milvus/lwc다
   viteFinal: (vite) =>

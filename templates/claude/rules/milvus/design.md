@@ -117,7 +117,7 @@
 ## 8. 업데이트와 문제 해결
 
 - **패키지 업데이트:** `pnpm add -D @milvus-wina/milvus-design-system@<버전>` 뒤 `pnpm milvus update`. 고친 밀버스 관리 파일이 있으면 아무것도 바꾸지 않고 차이를 보여 준다. 패키지 원본으로 되돌리려면 `pnpm milvus update --force`
-- **이전 패키지 `@a40418a/milvus-design-system`에서 옮기기:** 프로젝트 `.npmrc`의 `@a40418a:registry` 줄을 `@milvus-wina:registry=https://npm.pkg.github.com`으로 바꾸고 `pnpm remove @a40418a/milvus-design-system` → `pnpm add -D @milvus-wina/milvus-design-system` → `pnpm milvus update`. 0.2.x 배치(루트의 `milvus-*.md`)도 이때 `.claude/rules/milvus/`·`docs/milvus/`로 옮겨진다
+- **이전 패키지 `@a40418a/milvus-design-system`에서 옮기기:** 프로젝트 `.npmrc`의 `@a40418a:registry` 줄을 `@milvus-wina:registry=https://npm.pkg.github.com`으로 바꾸고(pnpm 11이면 `pnpm-workspace.yaml`의 `'@a40418a/*'`도 `'@milvus-wina/*'`로) `pnpm remove @a40418a/milvus-design-system` → `pnpm add -D @milvus-wina/milvus-design-system` → `pnpm milvus update`. 0.2.x 배치(루트의 `milvus-*.md`)도 이때 `.claude/rules/milvus/`·`docs/milvus/`로 옮겨진다
 - **`storybook`이 버전이 다르다고 멈춤:** 패키지만 올리고 `update`를 하지 않아 새 밀버스 컴포넌트(`c/milvus…`)가 프로젝트에 없다. `pnpm milvus update`를 먼저 실행한다
 - **`check`가 sha256 차이를 말함:** 밀버스 관리 파일이 바뀌었다. `pnpm milvus update --force`로 되돌린다
 - **설치가 인증 오류(401·403)로 실패:** `NODE_AUTH_TOKEN`이 비었거나 만료되었거나 `read:packages` 권한이 없다. 프로젝트 `.npmrc`의 레지스트리 줄과 `~/.npmrc`의 토큰 줄(2절)을 확인한다

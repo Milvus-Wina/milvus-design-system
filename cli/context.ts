@@ -12,7 +12,7 @@ const CONFIG = "milvus.config.json";
 /**
  * 이 패키지의 루트와 버전. 저장소(cli/*.ts)와 패키지(dist/cli/*.js) 모두 가장 가까운 package.json이 이 패키지의 것이다.
  * node:module의 findPackageJSON은 Windows에서 `\\?\C:\…` 접두사가 붙은 경로를 돌려주고, realpathSync가 이를 처리하지 못해
- * (EISDIR lstat 'C:', 2026-10-20 Windows·Node 24.21 실측, #46) 이 파일 위치에서 위로 올라가며 직접 찾는다
+ * (EISDIR lstat 'C:', 2026-10-20 Windows·Node 24.21 실측) 이 파일 위치에서 위로 올라가며 직접 찾는다
  */
 export function packageInfo(): { root: string; version: string } {
   for (let dir = dirname(fileURLToPath(import.meta.url)); ; dir = dirname(dir)) {
@@ -84,12 +84,12 @@ export function sfSpawn(args: string[], platform: NodeJS.Platform = process.plat
   if (platform !== "win32") return { command: "sf", args, shell: false };
   const bad = args.find((a) => /["%\r\n]/.test(a));
   if (bad !== undefined) throw new Error(`Windows에서는 큰따옴표·%·줄바꿈이 든 값을 sf에 넘길 수 없습니다: ${bad}`);
-  // 셸을 쓸 때 인자 배열을 넘기면 Node 24가 DEP0190으로 경고한다(인자를 이스케이프하지 않고 이어 붙이기 때문). 인용한 명령 한 줄로 넘긴다(#49)
+  // 셸을 쓸 때 인자 배열을 넘기면 Node 24가 DEP0190으로 경고한다(인자를 이스케이프하지 않고 이어 붙이기 때문). 인용한 명령 한 줄로 넘긴다
   return { command: ["sf", ...args.map((a) => (/^[\w@.:/\\=-]+$/.test(a) ? a : `"${a}"`))].join(" "), args: [], shell: true };
 }
 
 /**
- * 임시 폴더를 지운다. 실패해도 넘어간다: Windows는 다른 프로세스가 쥔 폴더를 지우지 못해 EPERM을 내고(#49),
+ * 임시 폴더를 지운다. 실패해도 넘어간다: Windows는 다른 프로세스가 쥔 폴더를 지우지 못해 EPERM을 내고,
  * 쓰고 난 임시 폴더를 못 지운 것은 명령의 실패가 아니다(OS 임시 폴더라 나중에 정리된다)
  */
 export function removeTemp(dir: string): void {

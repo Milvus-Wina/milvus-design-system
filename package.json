@@ -1,7 +1,16 @@
 {
   "name": "@milvus-wina/milvus-design-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "license": "SEE LICENSE IN LICENSE",
   "description": "밀버스 디자인 시스템 (SFDX + LWC + Storybook)",
+  "keywords": [
+    "salesforce",
+    "lwc",
+    "slds",
+    "design-system",
+    "storybook",
+    "lightning"
+  ],
   "type": "module",
   "bin": {
     "milvus": "dist/cli/index.js"
@@ -30,11 +39,16 @@
     "lib/sentinel.ts",
     "lib/reflect.ts",
     "cli/context.ts",
-    "brands/Milvus_DesignSystem/logo.jpg"
+    "brands/Milvus_DesignSystem/logo.jpg",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Milvus-Wina/milvus-design-system.git"
+  },
+  "homepage": "https://milvus-wina.github.io/milvus-design-system/",
+  "bugs": {
+    "url": "https://github.com/Milvus-Wina/milvus-design-system/issues"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -82,6 +96,7 @@
     "vite": "^7.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "9.39.5",
     "@lwc/eslint-plugin-lwc": "^3.1.0",
     "@prettier/plugin-xml": "^3.4.1",
     "@salesforce/eslint-config-lwc": "^4.0.0",
@@ -92,6 +107,7 @@
     "eslint": "^9.29.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.14.0",
+    "globals": "14.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.5.3",
@@ -101,10 +117,10 @@
     "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
       "prettier --write"
     ],
-    "**/{aura,lwc}/**/*.js": [
+    "force-app/**/{aura,lwc}/**/*.js": [
       "eslint"
     ],
-    "**/lwc/**": [
+    "force-app/**/lwc/**": [
       "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
     ]
   },

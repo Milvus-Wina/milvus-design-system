@@ -96,7 +96,7 @@ test("on-surface-3과 surface-2 쌍이 4.5 미만이면 거부", () => {
   assert.deepEqual(rulesOf("--slds-g-color-on-surface-3: light-dark(#03234d, #d8e6fe); --slds-g-color-surface-2: light-dark(#f3f3f3, #181818);"), []);
 });
 
-test("LBC 전용 g 이름 --slds-g-color-border-base-1은 허용", () => {
+test("기본 컴포넌트만 읽는 g 이름 5개(LBC_ONLY_G)는 허용", () => {
   assert.equal(LBC_ONLY_G.length, 5);
   for (const name of LBC_ONLY_G) assert.deepEqual(rulesOf(`${name}: light-dark(#dddddd, #444444);`), [], name);
 });
@@ -114,7 +114,7 @@ test("색 s hook은 화이트리스트 6개만, 값이 중립 g hook만 참조�
   assert.deepEqual(rulesOf("--slds-s-button-color-border: var(--slds-g-color-border-2);"), ["color-s-hook"]);
 });
 
-test("모달 배경막은 s hook이 native용 g를 참조하고 g에 light-dark 값을 두는 쌍만 허용 (판정 R32)", () => {
+test("모달 배경막은 s hook이 native용 g를 참조하고 g에 light-dark 값을 두는 쌍만 허용", () => {
   const g = "--slds-g-color-neutral-10-opacity-50: light-dark(color-mix(in oklab, #2e2e2e, transparent 40%), color-mix(in oklab, #f3f3f3, transparent 20%));";
   const s = (value: string) => `--slds-s-backdrop-color-background: ${value};`;
   assert.deepEqual(rulesOf(g + s("var(--slds-g-color-neutral-10-opacity-50)")), []);
@@ -133,7 +133,7 @@ test("--slds-s-label-spacing은 기본 컴포넌트가 읽으므로 허용, 아�
   assert.deepEqual(rulesOf("--slds-s-label-spacingg: 0.25rem;"), ["unread"]);
 });
 
-test("--slds-g-color-border-info-1은 거부(없는 이름)", () => {
+test("읽는 곳이 없는 피드백 이름(border-info-1, info-1, border-warning-1)은 거부", () => {
   assert.deepEqual(rulesOf("--slds-g-color-border-info-1: #0176d3;"), ["unread"]);
   // 정의는 있지만 읽는 곳이 없는 피드백 이름(설계 5.3)
   assert.deepEqual(rulesOf("--slds-g-color-info-1: #0176d3;"), ["unread"]);
@@ -204,7 +204,7 @@ test("2026-10-14 브리지에서 뺀 변수는 milvus-var 메시지에 그 이�
   for (const name of ["--milvus-control-height", "--milvus-path-end-radius", "--milvus-icon-color-all", "--milvus-icon-standard-account"]) {
     const [m] = messages(`${name}: 1px;`);
     assert.match(m, /^milvus-var /, name);
-    assert.ok(m.includes("2026-10-14 브리지에서 뺐다(Salesforce 고정, 설계 5.6)"), m);
+    assert.ok(m.includes("2026-10-14 브리지에서 뺐다(Salesforce 고정)"), m);
   }
   assert.doesNotMatch(messages("--milvus-button-font-wieght: 700;")[0], /2026-10-14/);
 });
@@ -270,7 +270,7 @@ test("loadRuleContext: milvusVars는 lwc/milvus*의 .css·.js에서 모은다 (d
     write("dist/hooks-index.json", JSON.stringify({ readSHooks: ["--slds-s-a"], readGHooks: ["--slds-g-b"] }));
     write("force-app/main/default/lwc/milvusFoo/milvusFoo.css", ".x { width: var(\n  --milvus-foo-width, 1px); }");
     write("force-app/main/default/lwc/milvusFoo/milvusFoo.js", 'getComputedStyle(h).getPropertyValue("--milvus-foo-on"); /* "--milvus-commented" */');
-    // 밀버스 LWC는 .js다(10/9 D1). .ts는 org에 배포되지 않으므로 읽지 않는다
+    // 밀버스 LWC는 .js다. .ts는 org에 배포되지 않으므로 읽지 않는다
     write("force-app/main/default/lwc/milvusFoo/stale.ts", '"--milvus-ts-only"');
     write("force-app/main/default/lwc/milvusFoo/__tests__/milvusFoo.test.js", '"--milvus-test-only"');
     write("force-app/main/default/lwc/other/other.css", ".x { width: var(--milvus-other); }");

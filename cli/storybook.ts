@@ -1,5 +1,5 @@
 // milvus storybook (설계 4.2, 프로젝트 모드). 고객 프로젝트의 LWC와 SLDS 카탈로그를 <root>/.milvus/lwc로 빌드한 뒤,
-// 패키지 안의 .storybook 설정으로 Storybook을 띄운다(build면 정적 빌드). 설정은 MILVUS_PROJECT_DIR로 프로젝트 모드가 된다(Task 17).
+// 패키지 안의 .storybook 설정으로 Storybook을 띄운다(build면 정적 빌드). 설정은 MILVUS_PROJECT_DIR로 프로젝트 모드가 된다.
 // 실행은 셸 없이 node로 storybook bin을 직접 부른다(공백·한글 경로 안전, Windows DEP0190 회피)
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
@@ -23,7 +23,7 @@ function storybookBin(): string {
 
 /**
  * 실행 계획. 파일은 쓰지 않는다(읽기만). build는 정적 빌드 출력 폴더(root 기준)이고 없으면 dev 서버다.
- * env는 process.env에 더할 값이다. -c에는 패키지 설정 폴더의 realpath를 넘긴다(Task 3. pnpm 심볼릭 링크 안에서도 같은 폴더).
+ * env는 process.env에 더할 값이다. -c에는 패키지 설정 폴더의 realpath를 넘긴다(pnpm 심볼릭 링크 안에서도 같은 폴더).
  * dev 서버는 localhost에만 연다. 인자가 없으면 Storybook이 모든 인터페이스에 열어 같은 네트워크의 다른 PC가 /@fs/로 고객 소스를 읽는다
  */
 export function planStorybook(o: { root: string; pkgRoot: string; build?: string }): {

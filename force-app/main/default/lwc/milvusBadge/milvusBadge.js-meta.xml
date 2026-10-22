@@ -3,5 +3,6 @@
     <apiVersion>67.0</apiVersion>
     <isExposed>false</isExposed>
     <masterLabel>Milvus Badge</masterLabel>
-    <description>의미색(성공·경고·위험·정보) 뱃지. 다른 LWC 안에서 쓰는 부품이라 앱 빌더에 노출하지 않는다</description>
+    <description
+  >의미색(성공·경고·오류·정보) 뱃지. 다른 LWC 안에서 쓰는 부품이라 앱 빌더에 노출하지 않는다</description>
 </LightningComponentBundle>

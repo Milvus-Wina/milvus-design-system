@@ -32,7 +32,7 @@ description: 밀버스 디자인 시스템의 브랜드 요청(docs/milvus/brand
    - 활성 테마는 org 전체 사용자 화면에 적용되고, 테마 색은 새로고침 뒤에 보인다
    - 배포가 끝나면 사람이 org에서 할 일 두 가지(`.claude/rules/milvus/design.md` 3절)를 알린다: VF 설정 켜기, App Manager에서 `milvusBrandLoader` 붙이기
 
-## 2. 반영 순서 (설계 5.1)
+## 2. 반영 순서
 
 앞 단계로 되는 요구를 뒤 단계로 풀지 않는다.
 
@@ -44,16 +44,16 @@ description: 밀버스 디자인 시스템의 브랜드 요청(docs/milvus/brand
 | 4 | 브리지 변수 `--milvus-*` | `milvusBrand.css` | hook이 없는 항목. 패키지의 `milvusBridge.css`가 읽는다. native 전환 시 잃는다 |
 | 5 | 클래스 규칙 | `milvusOverride.css` | 마지막 수단. 공식 권고 밖 |
 
-- **override를 쓸 때** 사용자에게 알린다: "Salesforce 공식 권고 밖이다. 기본 컴포넌트가 native shadow로 바뀌거나 Salesforce가 마크업·클래스를 바꾸면 깨질 수 있다." 이유와 실험은 Learn 09 "override와 공식 권고"(https://github.com/a40418a/learndoshare/blob/main/learndoshare_1/Learn/09-override와%20공식%20권고.html)를 안내한다
+- **override를 쓸 때** 사용자에게 알린다: "Salesforce 공식 권고 밖이다. 기본 컴포넌트가 native shadow로 바뀌거나 Salesforce가 마크업·클래스를 바꾸면 깨질 수 있다."
   - `.slds-*` 클래스 선택자만 쓴다. hex 색, `!important`, 브랜드 색 hook은 check가 경고한다. `@font-face`, `@import`는 막는다
 - **모양만 바꾸려고 밀버스 컴포넌트(`lwc/milvus*`)를 새로 만들지 않는다.** 밀버스 컴포넌트는 SLDS에 기능이 없을 때만 만든다
 - 밀버스 관리 파일(`lwc/milvus*`, `milvusBridge.css`, `milvusVf.css`, `milvusHead`, `.claude/rules/milvus/design.md`, 이 skill)은 고치지 않는다
-- **Salesforce 고정(설계 9.4)** 은 요청이 와도 바꿀 수 없다고 답하고 목록을 보여 준다. override로도 우회하지 않는다. 예: 토스트 표시 시간, z-index, 아이콘 모양, 스피너, LEX 전역 헤더(org 테마가 원본), LEX 컨트롤 높이, Path 양 끝 반경, 컨트롤·정렬 아이콘 크기, 폼 요소 자간, 선택지 라벨 굵기, 비활성 커서·링크 밑줄, 팝오버 꼬리 그림자, 개체 아이콘 배경색. 글꼴도 바꾸지 않는다. 목록 전체:
+- **Salesforce 고정**은 요청이 와도 바꿀 수 없다고 답하고 목록을 보여 준다. override로도 우회하지 않는다. 예: 토스트 표시 시간, z-index, 아이콘 모양, 스피너, LEX 전역 헤더(org 테마가 원본), LEX 컨트롤 높이, Path 양 끝 반경, 컨트롤·정렬 아이콘 크기, 폼 요소 자간, 선택지 라벨 굵기, 비활성 커서·링크 밑줄, 팝오버 꼬리 그림자, 개체 아이콘 배경색. 글꼴도 바꾸지 않는다. 목록 전체:
   ```bash
   node --input-type=module -e 'import { FIXED_ITEMS } from "@milvus-wina/milvus-design-system/dist/lib/fixed-list.js"; for (const i of FIXED_ITEMS) console.log(i.mode === "both" ? "지금도 native에서도" : "native 전환 뒤", "-", i.label)'
   ```
 
-## 3. util.css 규칙 (설계 5.2, `check --style`이 검사)
+## 3. util.css 규칙 (`check --style`이 검사)
 
 `milvusBrand.css`에는 `:root` 블록 하나만 둔다. 클래스 규칙, `@font-face`, `@import`는 쓰지 않는다.
 
@@ -70,7 +70,7 @@ description: 밀버스 디자인 시스템의 브랜드 요청(docs/milvus/brand
   - 일반 속성은 `letter-spacing` 하나
 - **금지:** 브랜드 색 계열 `--slds-g-color-accent*`, `--slds-g-color-on-accent*`, `--slds-g-color-border-accent*`, `--slds-g-color-brand-base*`, `--slds-r-color-brand*`(색의 원본은 org 테마), 그 밖의 색 hook, `--slds-c-*`·`--sds-c-*`, 글꼴 `--slds-g-font-family*`, 읽는 곳이 없는 이름(오타)
 
-## 4. 항목별로 쓰는 곳 (설계 9.3, SPEC_ITEMS)
+## 4. 항목별로 쓰는 곳 (SPEC_ITEMS)
 
 "브리지"는 hook이 없어 `--milvus-*` 변수로 잇는 것이고 native 전환 때 잃는다. 항목 하나의 전체 이름 목록은 다음 명령으로 본다(`<id>`는 표의 괄호).
 
@@ -103,7 +103,7 @@ node --input-type=module -e 'import { SPEC_ITEMS } from "@milvus-wina/milvus-des
 | 테두리 두께 (`border-width`) | `--slds-g-sizing-border-1`(1px), `--slds-g-sizing-border-2`(2px), native 버튼 `--slds-s-button-sizing-border`, 선택 상자·라디오 `--slds-s-input-sizing-border`, 브리지 `--milvus-input-border-width`(입력창) | |
 | 아바타·개체 아이콘 모양 (`avatar-icon-shape`) | `--slds-s-avatar-radius-border`, `--slds-s-icon-radius-border` | |
 | 탭·페이지 헤더 모양 (`tab-header-shape`) | `--slds-s-navigation-sizing-border-active`, `--slds-s-navigation-sizing-border-hover`, `--slds-s-navigation-radius-border`, `--slds-s-pageheader-radius-border`, `--slds-s-pageheader-sizing-border` | native tabBar는 고정 |
-| 컨트롤 높이 (`control-height`) | 없음. LEX 컨트롤 높이(텍스트 버튼·입력 1.875rem)는 Salesforce 고정 | 요청이 오면 바꿀 수 없다고 답한다. 목록·헤더 툴바가 32px 아이콘 버튼과 텍스트 버튼을 섞어 두어 높이를 바꾸면 어긋난다(2026-10-14 리허설). 대안: 밀버스 컴포넌트 안에서만 쓰는 높이는 이 고정과 상관없다(그 컴포넌트의 `--milvus-*`). 버튼 안쪽 여백 `--slds-s-button-spacing-block`은 텍스트 버튼만 높여 같은 줄의 아이콘 버튼·입력과 어긋날 수 있어 신중히 쓴다. `--slds-s-input-sizing-height`는 native용이다 |
+| 컨트롤 높이 (`control-height`) | 없음. LEX 컨트롤 높이(텍스트 버튼·입력 1.875rem)는 Salesforce 고정 | 요청이 오면 바꿀 수 없다고 답한다. 목록·헤더 툴바가 32px 아이콘 버튼과 텍스트 버튼을 섞어 두어 높이를 바꾸면 어긋난다(2026-10-14 org에서 확인). 대안: 밀버스 컴포넌트 안에서만 쓰는 높이는 이 고정과 상관없다(그 컴포넌트의 `--milvus-*`). 버튼 안쪽 여백 `--slds-s-button-spacing-block`은 텍스트 버튼만 높여 같은 줄의 아이콘 버튼·입력과 어긋날 수 있어 신중히 쓴다. `--slds-s-input-sizing-height`는 native용이다 |
 | 탭·헤더 높이 (`tab-header-height`) | `--slds-s-navigation-sizing-height`, `--slds-s-navigation-font-lineheight`, `--slds-s-header-sizing-height` | |
 | 아이콘 크기 (`icon-size`) | `--slds-s-icon-sizing`, `--slds-s-icon-spacing` | 버튼·입력창 안 아이콘(0.875rem)과 표 정렬 아이콘(0.75rem)은 Salesforce 고정. 요청이 오면 바꿀 수 없다고 답한다 |
 | 줄 간격 (`line-height`) | `--slds-g-font-line-height-base`(본문 1.5), `--slds-g-font-line-height-2`, `--slds-g-font-line-height-1` | 컨트롤 안 줄 간격은 고정 |
@@ -124,7 +124,7 @@ node --input-type=module -e 'import { SPEC_ITEMS } from "@milvus-wina/milvus-des
 
 ## 5. 색 계산
 
-- **브랜드 색 (설계 5.4).** `BRAND_COLOR`에 `#RRGGBB`로 넣는다. Salesforce는 입력한 색 대신 접근성 색(50단계: 색상각 유지, 명도 L* 49)을 버튼에 쓰고 링크는 40단계를 쓴다. 50단계의 흰 글자 대비는 어느 색이든 4.62~4.68:1이라 막지 않고 설명한다. 표에 입력 색, 실제 버튼 색(50), 링크 색(40)과 흰색 대비를 함께 보여 준다. "접근성 색 무시" 설정은 없다
+- **브랜드 색.** `BRAND_COLOR`에 `#RRGGBB`로 넣는다. Salesforce는 입력한 색 대신 접근성 색(50단계: 색상각 유지, 명도 L* 49)을 버튼에 쓰고 링크는 40단계를 쓴다. 50단계의 흰 글자 대비는 어느 색이든 4.62~4.68:1이라 막지 않고 설명한다. 표에 입력 색, 실제 버튼 색(50), 링크 색(40)과 흰색 대비를 함께 보여 준다. "접근성 색 무시" 설정은 없다
   ```bash
   node --input-type=module -e 'import { brandPalette } from "@milvus-wina/milvus-design-system/dist/lib/palette.js"; import { contrastRatio } from "@milvus-wina/milvus-design-system/dist/lib/contrast.js"; const c = process.argv[1], p = brandPalette(c); for (const [k, v] of [["입력", c], ["버튼(50)", p[50]], ["링크(40)", p[40]]]) console.log(k, v, "흰색 대비 " + contrastRatio(v, "#ffffff").toFixed(2) + ":1")' '#2E7D32'
   ```
@@ -141,7 +141,7 @@ node --input-type=module -e 'import { SPEC_ITEMS } from "@milvus-wina/milvus-des
   node --input-type=module -e 'import { createRequire } from "node:module"; import { readFileSync, realpathSync } from "node:fs"; import { dirname, join } from "node:path"; const pkg = realpathSync("node_modules/@milvus-wina/milvus-design-system"); const slds = dirname(createRequire(join(pkg, "package.json")).resolve("@salesforce-ux/design-system-2/package.json")); const css = readFileSync(join(slds, "dist/css/bundled/slds2.cosmos.css"), "utf8"); for (const n of process.argv.slice(1)) console.log(n, css.match(new RegExp(n + "\\s*:([^;]+);"))?.[1] ?? "(정의 없음)")' -- --slds-g-color-surface-2 --slds-g-color-success-1
   ```
 
-### 피드백 색 (설계 5.3)
+### 피드백 색
 
 입력한 글자색과 배경색을 그대로 넣는다. 다크 값은 기본값을 옮겨 `light-dark(입력 색, 기본 다크 값)`로 쓴다.
 
@@ -170,13 +170,13 @@ node --input-type=module -e 'import { SPEC_ITEMS } from "@milvus-wina/milvus-des
 
 로고를 같은 이름(`<이름>Logo`)으로 다시 바꾼 뒤에는 배포 후 org 화면에서 로고가 실제로 바뀌었는지 확인해 달라고 안내한다. 같은 이름의 자산을 다시 배포할 때 버전이 어떻게 되는지는 아직 확인하지 않았다.
 
-## 7. 입력 형식 5종 (설계 6.4)
+## 7. 입력 형식 5종
 
 - **자연어:** 아래 프리셋으로 바꾼다. 값은 SLDS 2 기본값 기준의 제안이며 표에서 승인받는다
 
   | 표현 | 쓰는 이름 | 제안 |
   | --- | --- | --- |
-  | 각진 / 기본 / 둥근 | `--slds-g-radius-border-1`~`-4`, `--slds-g-radius-border-pill`, 버튼·입력·카드 `--slds-s-button-radius-border`, `--slds-s-input-radius-border`, `--slds-s-container-radius-border` | 기본 0.25·0.5·0.75·1.25rem, pill 15rem. 각진은 절반 이하(0·0.125·0.25·0.5rem), 둥근은 1.5배. 버튼·입력·카드의 컴포넌트 hook 셋도 함께 정한다. 기본이 버튼 `var(--slds-g-radius-border-pill)`, 입력 `var(--slds-g-radius-border-2)`, 카드 `var(--slds-g-radius-border-4)`라 global 1~4만 바꾸면 버튼은 알약 그대로다(2026-10-14 리허설). 각진이면 버튼도 `var(--slds-g-radius-border-2)`처럼 global 단계를 가리키게 한다 |
+  | 각진 / 기본 / 둥근 | `--slds-g-radius-border-1`~`-4`, `--slds-g-radius-border-pill`, 버튼·입력·카드 `--slds-s-button-radius-border`, `--slds-s-input-radius-border`, `--slds-s-container-radius-border` | 기본 0.25·0.5·0.75·1.25rem, pill 15rem. 각진은 절반 이하(0·0.125·0.25·0.5rem), 둥근은 1.5배. 버튼·입력·카드의 컴포넌트 hook 셋도 함께 정한다. 기본이 버튼 `var(--slds-g-radius-border-pill)`, 입력 `var(--slds-g-radius-border-2)`, 카드 `var(--slds-g-radius-border-4)`라 global 1~4만 바꾸면 버튼은 알약 그대로다(2026-10-14 org에서 확인). 각진이면 버튼도 `var(--slds-g-radius-border-2)`처럼 global 단계를 가리키게 한다 |
   | 기본 / 촘촘 | `--slds-s-button-spacing-inline`(기본 1rem), `--slds-s-button-spacing-block`, `--slds-s-input-spacing`(기본 0.5rem), `--slds-s-label-spacing-gap`(기본 0.25rem) | 촘촘은 4분의 3 정도로 줄인다. 컨트롤 높이는 고정이다(4장 컨트롤 높이 행) |
   | 보통 / 굵게 (제목·라벨) | `--slds-s-container-heading-font-weight`, `--slds-s-pageheader-title-font-weight`, `--slds-s-label-font-weight` | 보통 400, 굵게 700 |
   | 그림자 없이 / 기본 / 깊게 | `--slds-g-shadow-1`~`-4`와 방향형, 카드는 `--slds-s-container-shadow`(기본 none) | 없이는 `none`. 이때도 `--slds-g-shadow-5`·`-6`은 기본값을 적는다 |

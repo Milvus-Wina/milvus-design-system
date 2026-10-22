@@ -64,7 +64,6 @@ test("센티널 값은 모두 서로 다르다", () => {
   assert.equal(decls.get("--milvus-motion-duration-fast"), "0.777s");
 });
 
-
 test("센티널을 넣지 못한 hook은 목록으로 나온다", () => {
   // 센티널 없음은 정확히 이 7개다. 이름으로 종류를 못 정하는 hook이 늘면 여기서 드러난다
   assert.deepEqual(plan.missing.map((m) => m.name).sort(), ["--milvus-button-custom", ...COLOR_S_WHITELIST].sort());

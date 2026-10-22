@@ -104,7 +104,7 @@ test("SPEC_ITEMS의 모든 bridgeVars가 생성된 CSS에서 읽힌다", () => {
   const read = new Set([...bridgeCss.matchAll(/var\((--milvus-[\w-]+)/g)].map((m) => m[1]));
   assert.deepEqual([...wanted].filter((v) => !read.has(v)), []);
 
-  // 리뷰·사용자 결정으로 더한 대상(2026-10-12): 선택자·맥락·속성마다 이 변수를 읽는다
+  // 2026-10-12 결정으로 더한 대상: 선택자·맥락·속성마다 이 변수를 읽는다
   const byRule = declsByRule(bridgeCss);
   const reads = (key: string, prop: string, varName: string) => (byRule.get(key) ?? []).some((d) => d.prop === prop && d.value.includes(`var(${varName},`));
   const MODAL = (size: string) => `@media (min-width: 48em) | .slds-modal_${size} .slds-modal__container, .slds-modal--${size} .slds-modal__container`;
@@ -142,7 +142,7 @@ test("SPEC_ITEMS의 모든 bridgeVars가 생성된 CSS에서 읽힌다", () => {
   assert.deepEqual(mobileFull.filter((d) => /--milvus-/.test(d.value)), []);
 });
 
-test("생성된 --milvus-* 이름이 loadRuleContext의 milvusVars에 잡힌다", () => {
+test("커밋된 milvusBridge.css가 생성 결과와 같고, 생성된 --milvus-* 이름이 loadRuleContext의 milvusVars에 잡힌다", () => {
   // 저장소의 milvusBridge.css가 지금 생성 결과와 같아야 한다(pnpm bridge:generate를 잊지 않았는지)
   const committed = readFileSync(join(pkgRoot, "templates/force-app/main/default/staticresources/milvusBridge.css"), "utf8");
   assert.equal(committed, bridgeCss);

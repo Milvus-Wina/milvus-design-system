@@ -35,7 +35,7 @@ Salesforce LWC 디자인 시스템 패키지 `@milvus-wina/milvus-design-system`
 
 - 컴포넌트 CSS: `var(--slds-g-*, fallback)`, `var(--slds-s-*, fallback)`, `var(--milvus-*, fallback)` 읽기만. hex 색, `--slds-c-*`, hook 재정의, `.slds-*` 덮어쓰기 금지
 - `brands/<브랜드>/util.css` 규칙은 `lib/rules.ts`가 구현하고 `pnpm test:brands`가 검사한다
-- `brands/<브랜드>/theme.json`, `logo.*`는 직접 고치지 않는다(`pnpm sync:theme`이 만든다)
+- org 브랜드의 `brands/<브랜드>/theme.json`, `logo.*`는 직접 고치지 않는다(`SF_ORG=<별칭> pnpm sync:theme`이 만든다). 샘플 브랜드(`"source": "sample"`, `brands/Sample_Forest`)는 손으로 관리한다
 - 커스텀 변수 접두사는 `--milvus-`만 쓴다
 
 ## 검증 명령

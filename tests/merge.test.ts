@@ -60,8 +60,8 @@ test("같은 fragment를 두 번 병합해도 결과가 같다", () => {
 });
 
 test("appendLines는 이미 있는 .npmrc 줄을 다시 넣지 않는다", () => {
-  const lines = ["@milvus-wina:registry=https://npm.pkg.github.com", "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}"];
-  const npmrc = "auto-install-peers=true\n@milvus-wina:registry=https://npm.pkg.github.com"; // 끝 줄바꿈 없음
+  const lines = ["auto-install-peers=true", "strict-peer-dependencies=false"];
+  const npmrc = "@milvus-wina:registry=https://npm.pkg.github.com\nauto-install-peers=true"; // 끝 줄바꿈 없음
 
   const once = appendLines(npmrc, lines);
   assert.equal(once, `${npmrc}\n${lines[1]}\n`);
@@ -73,9 +73,9 @@ test("appendLines는 이미 있는 .npmrc 줄을 다시 넣지 않는다", () =>
 
 test("addKeyIfMissing은 없을 때만 더하고, 점 경로는 안쪽 객체에 더한다", () => {
   const project = { packageDirectories: [{ path: "force-app", default: true }] };
-  assert.deepEqual(addKeyIfMissing(project, "defaultLwcLanguage", "typescript"), { ...project, defaultLwcLanguage: "typescript" });
-  const js = { ...project, defaultLwcLanguage: "javascript" };
-  assert.equal(addKeyIfMissing(js, "defaultLwcLanguage", "typescript"), js);
+  assert.deepEqual(addKeyIfMissing(project, "sourceApiVersion", "67.0"), { ...project, sourceApiVersion: "67.0" });
+  const pinned = { ...project, sourceApiVersion: "66.0" };
+  assert.equal(addKeyIfMissing(pinned, "sourceApiVersion", "67.0"), pinned);
 
   const pkg = { name: "p", scripts: { test: "jest" } };
   assert.deepEqual(addKeyIfMissing(pkg, "scripts.storybook", "milvus storybook").scripts, { test: "jest", storybook: "milvus storybook" });

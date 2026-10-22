@@ -20,7 +20,7 @@ test("design.md는 200줄 이하이고 8개 절 제목이 있다", () => {
   assert.ok(section(design, 1).includes("milvus.config.json"));
 });
 
-test("design.md 3절에 배포 뒤 할 일 두 가지가 있다: VF 설정 이름 'Use SLDS 2 for pages that include <apex:slds>'과 App Manager의 milvusBrandLoader·'앱이 열릴 때 백그라운드로 로드'(10/9 D2·D3)", () => {
+test("design.md 3절에 배포 뒤 할 일 두 가지가 있다: VF 설정 이름 'Use SLDS 2 for pages that include <apex:slds>'과 App Manager의 milvusBrandLoader·'앱이 열릴 때 백그라운드로 로드'", () => {
   const s3 = section(design, 3);
   assert.ok(s3.includes("Use SLDS 2 for pages that include `<apex:slds>` when an SLDS 2 theme is active"));
   for (const w of ["App Manager", "milvusBrandLoader", "앱이 열릴 때 백그라운드로 로드"]) assert.ok(s3.includes(w), w);

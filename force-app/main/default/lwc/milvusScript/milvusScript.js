@@ -3,7 +3,7 @@ import milvusBridge from "@salesforce/resourceUrl/milvusBridge";
 import milvusBrand from "@salesforce/resourceUrl/milvusBrand";
 import milvusOverride from "@salesforce/resourceUrl/milvusOverride";
 
-// 문서 head에 넣는 순서. 뒤에 넣은 규칙이 이기므로 프로젝트 소유 override가 마지막이다(설계 5.1)
+// 문서 head에 넣는 순서. 뒤에 넣은 규칙이 이기므로 프로젝트 소유 override가 마지막이다
 const STYLES = [milvusBridge, milvusBrand, milvusOverride];
 
 /**
@@ -18,7 +18,10 @@ export async function loadBrand(component) {
       // eslint-disable-next-line no-await-in-loop
       await loadStyle(component, url);
     } catch (error) {
-      console.error(`[milvus] 브랜드 스타일을 불러오지 못했습니다: ${url}`, error);
+      console.error(
+        `[milvus] 브랜드 스타일을 불러오지 못했습니다: ${url}`,
+        error
+      );
     }
   }
 }

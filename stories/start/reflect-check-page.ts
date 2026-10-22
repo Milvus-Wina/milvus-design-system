@@ -396,11 +396,11 @@ function renderResult(t: Tally, out: HTMLElement) {
       table(["컴포넌트", ...items.map(label)], comps.map((c) => [c, ...items.map((i) => status(c, i))])),
     ),
     rowsBlock("빈틈", [...t.gaps.values()], false),
-    rowsBlock("고정 (설계 9.4 목록에 있는 빈틈)", [...t.fixed.values()], true),
+    rowsBlock("고정 (Salesforce 고정 목록에 있는 빈틈)", [...t.fixed.values()], true),
     el(
       "details",
       {},
-      el("summary", {}, `동적 검사로 맞출 수 없는 9.4 고정 항목 ${Object.keys(UNMATCHED_FIXED).length}개`),
+      el("summary", {}, `동적 검사로 맞출 수 없는 고정 항목 ${Object.keys(UNMATCHED_FIXED).length}개`),
       table(
         ["고정 항목", "이유"],
         Object.entries(UNMATCHED_FIXED).map(([id, why]) => [FIXED_ITEMS.find((f) => f.id === id)?.label ?? id, why]),
@@ -476,8 +476,8 @@ export function renderReflectCheck(): HTMLElement {
         "ul",
         { className: "slds-list_dotted" },
         ...[
-          "고정(설계 9.4)은 정적 검사(pnpm audit:brand)가 두 모드 고정으로 판정한 선언의 선택자가 요소에 맞고 속성이 같으면 고정으로 본다. 그 선언이 실제로 이겼는지(우선순위, @media)는 보지 않는다",
-          "정적 검사에 선언이 들어오지 않는 고정(폼 요소 자간, 개체 아이콘 바탕, 선택지 라벨 굵기)은 계산값으로 맞춘다. 맞출 수 없는 고정은 아래 '동적 검사로 맞출 수 없는 9.4 고정 항목'에 있다",
+          "고정은 정적 반영 검사가 두 모드 고정으로 판정한 선언의 선택자가 요소에 맞고 속성이 같으면 고정으로 본다. 그 선언이 실제로 이겼는지(우선순위, @media)는 보지 않는다",
+          "정적 검사에 선언이 들어오지 않는 고정(폼 요소 자간, 개체 아이콘 바탕, 선택지 라벨 굵기)은 계산값으로 맞춘다. 맞출 수 없는 고정은 아래 '동적 검사로 맞출 수 없는 고정 항목'에 있다",
           "hover·눌림(:active)은 재지 않는다. focus는 이 화면이 앞에 있어야 잰다",
           "간격·너비·높이는 레이아웃으로도 바뀌어, hook 지문이 맞을 때만 반영으로 센다. calc로 곱한 간격은 반영으로도 빈틈으로도 세지 않는다",
           "크기에 따라 그리는 요소 수가 달라지는 스토리(가상 스크롤, 넘침 탭)는 비교하지 않는다",

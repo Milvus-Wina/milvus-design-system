@@ -1,7 +1,7 @@
 // milvus update [--force] (설계 4.5, 10장). 설치된 패키지의 [관리] 파일을 프로젝트에 반영한다. 전부 반영하거나 아무것도 바꾸지 않는다.
 // - [소유](milvusBrand.css, milvusOverride.css, BrandingSet 등)는 건드리지 않는다. 사람과 skill이 고치는 파일이다.
 //   다만 없는 소유 파일은 init처럼 새로 놓는다. 새 버전이 더한 소유 파일(패턴 파일 등)을 관리 파일이 가리키기 때문이다
-// - 0.2.x 배치(루트의 milvus-*.md, CLAUDE.md의 @milvus-design.md)는 planMigration이 .claude/rules·docs/milvus로 옮긴다(#63)
+// - 0.2.x 배치(루트의 milvus-*.md, CLAUDE.md의 @milvus-design.md)는 planMigration이 .claude/rules·docs/milvus로 옮긴다
 // - [생성](milvusVf.css 등)도 건드리지 않는다. 패키지에 있는 것은 틀이고, 실제 내용은 check·deploy가 지금 BRAND_COLOR로 다시 만든다.
 //   틀로 덮어쓰면 브랜드 팔레트가 사라진다
 // - 새 패키지에 없는 관리 파일은 milvus.config.json의 managed에서만 빼고 파일은 지우지 않는다. 설계에 삭제 규칙이 없고,
@@ -15,7 +15,7 @@ import { applyOps, settingsOp } from "./init.ts";
 
 const USAGE = "사용법: pnpm milvus update [--force]";
 
-// 0.3.0(#63): 루트에 있던 밀버스 명세 파일의 새 위치. 옛 관리 파일 milvus-design.md는 .claude/rules/milvus/design.md가 대신하고,
+// 0.3.0부터 루트에 있던 밀버스 명세 파일의 새 위치. 옛 관리 파일 milvus-design.md는 .claude/rules/milvus/design.md가 대신하고,
 // Claude Code가 .claude/rules/를 스스로 읽으므로 CLAUDE.md의 import 줄도 지운다
 const OLD_DESIGN = "milvus-design.md";
 const OLD_IMPORT = "@milvus-design.md";
@@ -24,7 +24,7 @@ const MOVES = [
   { from: "milvus-brand-request.md", to: "docs/milvus/brand-request.md" },
 ];
 
-/** 0.2.x 배치를 옮길 계획(#63). 파일을 쓰지 않는다. 옛 milvus-design.md를 고쳤으면 designConflict다 */
+/** 0.2.x 배치를 옮길 계획. 파일을 쓰지 않는다. 옛 milvus-design.md를 고쳤으면 designConflict다 */
 export function planMigration(root: string, config: MilvusConfig): {
   moves: { from: string; to: string }[];
   kept: string[];

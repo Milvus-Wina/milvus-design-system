@@ -100,7 +100,7 @@ export async function buildLwc(o: Parameters<typeof lwcRollupOptions>[0]): Promi
 
 // @lwc/module-resolver의 dir 레코드에는 namespace 옵션이 없다.
 // SFDX 경로(lwc/<이름>/<이름>.js)를 c/<이름>으로 쓰려면 컴포넌트마다 alias를 등록해야 한다.
-// .ts는 찾지 않는다. org에 올라가는 것은 .js다(10/9 D1. 공식 문서도 LWC TypeScript를 배포 전에 .js로 변환하라고 한다)
+// .ts는 찾지 않는다. org에 올라가는 것은 .js다(설계 1장 D1. 공식 문서도 LWC TypeScript를 배포 전에 .js로 변환하라고 한다)
 export function sfdxLwcModules(projectRoot: string): LwcModule[] {
   const { packageDirectories } = JSON.parse(readFileSync(join(projectRoot, "sfdx-project.json"), "utf8")) as {
     packageDirectories: { path: string }[];

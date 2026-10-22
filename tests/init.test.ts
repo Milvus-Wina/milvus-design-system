@@ -15,10 +15,10 @@ const version = JSON.parse(readFileSync(join(pkgRoot, "package.json"), "utf8")).
 const FA = "force-app/main/default";
 const BRAND = ["--target-org", "dev", "--brand", "Acme"];
 const FROM = ["--target-org", "dev", "--from-org"];
-// 토큰 줄은 넣지 않는다(pnpm 11은 프로젝트 .npmrc의 ${…} 토큰을 무시, #46). 사용자 ~/.npmrc에 둔다
+// 토큰 줄은 넣지 않는다(pnpm 11은 프로젝트 .npmrc의 ${…} 토큰을 무시한다). 사용자 ~/.npmrc에 둔다
 const NPMRC = ["@milvus-wina:registry=https://npm.pkg.github.com"];
 
-// 임시 SFDX 프로젝트. 폴더 이름에 공백과 한글을 넣는다(리뷰 중점 5)
+// 임시 SFDX 프로젝트. 폴더 이름에 공백과 한글을 넣는다
 function makeProject(files: Record<string, string> = {}): string {
   const root = mkdtempSync(join(tmpdir(), "밀버스 init 테스트-"));
   const base: Record<string, string> = {
@@ -166,13 +166,13 @@ test("두 번 실행해도 파일 내용과 milvus.config.json이 같다", async
     // milvusVf.css는 틀이 아니라 init이 BrandingSet과 같은 기본색(#0176D3)의 팔레트로 바로 만든다. 두 번째 init은 건너뛴다
     assert.equal(read(root, `${FA}/staticresources/milvusVf.css`), buildMilvusVfCss("#0176D3"));
     assert.ok(second.stdout.includes(`${FA}/staticresources/milvusVf.css`) && /건너뛴 파일/.test(second.stdout));
-    // 배포 뒤 사람이 org에서 할 일(10/9 D2·D3)을 안내한다
+    // 배포 뒤 사람이 org에서 할 일을 안내한다
     assert.match(first.stdout, /milvusBrandLoader/);
     assert.match(first.stdout, /Visualforce Settings/);
   });
 });
 
-test("Claude 규칙은 .claude/rules/milvus/design.md에 두고 CLAUDE.md는 만들지도 고치지도 않는다. 루트에 milvus-*.md를 두지 않는다 (#63)", async () => {
+test("Claude 규칙은 .claude/rules/milvus/design.md에 두고 CLAUDE.md는 만들지도 고치지도 않는다. 루트에 milvus-*.md를 두지 않는다", async () => {
   await withProject({ "CLAUDE.md": "# 고객 규칙\n\n- 기존 줄" }, (root) => {
     applyOps(root, plan(root));
     assert.equal(read(root, "CLAUDE.md"), "# 고객 규칙\n\n- 기존 줄");
@@ -236,7 +236,7 @@ test("LightningExperience.settings는 만들지 않는다", async () => {
   });
 });
 
-test("sfdx-project.json은 바꾸지 않고(defaultLwcLanguage를 넣지 않는다, 10/9 D1), package.json에 storybook 스크립트를 없을 때만 추가한다", async () => {
+test("sfdx-project.json은 바꾸지 않고(defaultLwcLanguage를 넣지 않는다), package.json에 storybook 스크립트를 없을 때만 추가한다", async () => {
   await withProject({}, async (root) => {
     const sfdx = read(root, "sfdx-project.json");
     assert.equal((await init(root, BRAND)).code, 0);
@@ -279,7 +279,7 @@ test("milvusOverride.css를 설명 주석만 있는 상태로 만들고, 이미 
   });
 });
 
-test("--from-org는 활성 테마 이름을 브랜드로 쓰고, org 파일을 검증한 뒤 그대로 복사한다. 로고 자산 이름과 BRAND_IMAGE도 org 그대로다(R26)", async () => {
+test("--from-org는 활성 테마 이름을 브랜드로 쓰고, org 파일을 검증한 뒤 그대로 복사한다. 로고 자산 이름과 BRAND_IMAGE도 org 그대로다", async () => {
   await withProject({}, async (root) => {
     const sf = fakeSf(ORG);
     const r = await init(root, FROM, { sf });
@@ -301,7 +301,7 @@ test("--from-org는 활성 테마 이름을 브랜드로 쓰고, org 파일을 �
       sf.calls.map((c) => (c.args[0] === "org" ? c.args.slice(0, 3) : metadataOf(c.args))),
       [["org", "list", "limits"], ["Settings:LightningExperience"], ["LightningExperienceTheme:Acme_Org", "BrandingSet:LEXTHEMINGAcme_Org"], ["ContentAsset:acme_logo_1"]],
     );
-    // sf는 인자 배열로 프로젝트 밖에서 실행한다. 작업 폴더는 받은 파일을 담는 임시 폴더가 아니다(Windows는 작업 폴더로 잡힌 폴더를 못 지운다, #49).
+    // sf는 인자 배열로 프로젝트 밖에서 실행한다. 작업 폴더는 받은 파일을 담는 임시 폴더가 아니다(Windows는 작업 폴더로 잡힌 폴더를 못 지운다).
     // 조회 결과를 받은 임시 폴더는 끝나면 지운다
     for (const c of sf.calls) {
       assert.ok(relative(root, c.cwd).startsWith(".."), c.cwd);
@@ -368,7 +368,7 @@ test("milvus.config.json이 깨졌으면 init이 다시 쓴다", async () => {
 });
 
 // 아래는 모두 '1을 돌려주고 쓴 파일이 0개'
-test("Node 22.17", async () => {
+test("Node 22.18 미만과 23.0~23.5는 거부", async () => {
   await assertFails(BRAND, { nodeVersion: "22.17.0", message: /Node 22\.18 이상/ });
   await assertFails(BRAND, { nodeVersion: "23.5.0", message: /Node 22\.18 이상/ });
 });
@@ -420,7 +420,7 @@ test("--from-org인데 커스텀 테마가 없거나 조회 실패 (가짜 SfRun
 });
 
 test("--from-org인데 활성 테마가 SLDS 2가 아님", async () => {
-  const SLDS2 = /밀버스는 SLDS 2 테마를 기준으로 합니다\. SLDS 1 테마 지원은 #22에서 검토 중입니다/;
+  const SLDS2 = /밀버스는 SLDS 2 테마를 기준으로 합니다\. SLDS 1 테마는 지원하지 않습니다/;
   const withTheme = (text: string) => fakeSf({ ...ORG, "LightningExperienceTheme:Acme_Org": { "lightningExperienceThemes/Acme_Org.lightningExperienceTheme": text } });
   await assertFails(FROM, { sf: withTheme(ORG_THEME.replace("SLDS_v2", "SLDS_v1")), message: SLDS2 });
   await assertFails(FROM, { sf: withTheme(ORG_THEME.replace("    <designSystemVersion>SLDS_v2</designSystemVersion>\n", "")), message: SLDS2 });

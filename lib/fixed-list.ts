@@ -1,10 +1,11 @@
-// "Salesforce 고정" 목록 (설계 9.4, 2026-10-08 사용자 합의. 2026-10-12 남은 빈틈 묶음 ①~⑯, 2026-10-14 컨트롤 높이와 브리지 10종을 뺀 사용자 결정으로 더함). 모든 방법을 써도 바꿀 수 없어 명세 페이지와 발표에 "바꿀 수 없음"으로 적는다.
-// 새 항목을 넣으려면 사용자 합의가 필요하다(설계 9.6의 4)
+// "Salesforce 고정" 목록 (설계 9.4, 2026-10-08 사용자 합의. 2026-10-12 남은 빈틈 묶음 ①~⑯, 2026-10-14 컨트롤 높이와 브리지 10종을 뺀 사용자 결정으로 더함). 모든 방법을 써도 바꿀 수 없어 명세 페이지에 "바꿀 수 없음"으로 적는다.
+// 새 항목을 넣으려면 메인테이너 리뷰(PR)가 필요하다(설계 9.6의 4)
+// 주석의 ①~⑯은 2026-10-12 합의 목록의 묶음 번호다
 // 브라우저(Storybook 명세 페이지)에서도 import하므로 Node 모듈을 쓰지 않는다
 
 /**
  * - mode: both는 지금(synthetic)과 native 모두, native는 기본 컴포넌트가 native shadow로 바뀐 뒤에만 고정이다(native 판정에서만 맞춘다)
- * - match: 정적 반영 검사(Task 14)가 빈틈 선언을 이 항목으로 볼 조건. 주어진 조건을 모두 만족하면 맞는다. 여러 개면 그중 하나라도 맞으면 맞는다.
+ * - match: 정적 반영 검사(scripts/audit)가 빈틈 선언을 이 항목으로 볼 조건. 주어진 조건을 모두 만족하면 맞는다. 여러 개면 그중 하나라도 맞으면 맞는다.
  *   빈 배열이면 맞는 선언이 없다(검사에 들어오는 CSS 선언이 없는 고정을 목록에 보여 주기만 한다)
  *   - selector: `<컴포넌트 이름> <선택자>`에 맞춘다. 기본 컴포넌트의 native CSS 선택자에는 클래스가 없는 경우가 많다([part='input'])
  *   - property: 속성 이름이 같거나 그 longhand다(transition → transition-duration, background → background-color). 여러 개면 그중 하나
@@ -29,7 +30,7 @@ const OUT_OF_BAND =
 // 0.125rem(2px) 이하만 쓴 간격
 const FINE = /^(0|0?\.125rem|0?\.0625rem|[12]px)( (0|0?\.125rem|0?\.0625rem|[12]px))*$/;
 
-// 매처는 9.4 문장을 SLDS 2·기본 컴포넌트 CSS의 이름으로 옮긴 것이다(2026-10-12 Task 14가 실제 선언과 맞춰 좁힘).
+// 매처는 9.4 문장을 SLDS 2·기본 컴포넌트 CSS의 이름으로 옮긴 것이다(2026-10-12 실제 선언과 맞춰 좁혔다).
 // 넓게 잡으면 같은 선택자 아래 새 하드코딩이 빈틈으로 드러나지 않으므로, 9.4 문장이 가리키는 속성만 맞춘다
 export const FIXED_ITEMS: FixedItem[] = [
   // 두 모드 모두 고정
@@ -61,7 +62,7 @@ export const FIXED_ITEMS: FixedItem[] = [
   { id: "destructive-success-text", label: "파괴·성공 버튼의 흰 글자", mode: "both", match: { selector: /button(_|--)(destructive|success)/, property: "color" } },
   { id: "global-header", label: "LEX 전역 헤더(org 테마가 원본)", mode: "both", match: { selector: /\.slds-global-header/, property: "background" } },
 
-  // 2026-10-12 사용자 합의(남은 빈틈 묶음, m4-gap-decisions.md). 묶음 선언만 흡수하도록 선택자 + 속성(+ 값)으로 좁힌다
+  // 2026-10-12 사용자 합의(남은 빈틈 묶음). 묶음 선언만 흡수하도록 선택자 + 속성(+ 값)으로 좁힌다
   // ① 아이콘·알림 애니메이션(ellie·eq·trend·typing, 전역 액션, 알림 배지, 내비 탭 상태 깜빡임)과 kx 브레드크럼 calc()
   {
     id: "motion-out-of-band",
@@ -150,7 +151,7 @@ export const FIXED_ITEMS: FixedItem[] = [
   { id: "fade-gradient", label: "글자 자름 페이드·색 선택기 그라데이션", mode: "both", match: { selector: /\.slds-truncate::after|\.slds-color-picker__custom-range::before/, property: "background", value: /linear-gradient\(/ } },
 
   // 2026-10-14 사용자 합의: 컨트롤 높이 브리지를 뺐다. LEX 목록·헤더 툴바가 32px 아이콘 버튼과 텍스트 버튼을 섞어 두어
-  // 높이를 바꾸면 어긋난다(리허설 실측). 브리지가 잇던 SLDS 2 선택자 목록 전체와 그 값에만 맞춘다
+  // 높이를 바꾸면 어긋난다(2026-10-14 LEX 화면 실측). 브리지가 잇던 SLDS 2 선택자 목록 전체와 그 값에만 맞춘다
   {
     id: "lex-control-height",
     label: "LEX 컨트롤 높이(텍스트 버튼·입력 1.875rem)",

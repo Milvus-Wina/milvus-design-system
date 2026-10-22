@@ -44,7 +44,7 @@ export function readBranding(xml: string): { brandColor: string; brandImage?: st
 }
 
 /**
- * BRAND_IMAGE(/file-asset/<자산 이름>?v=…)의 자산 이름. --from-org 프로젝트는 org 값 그대로라 <브랜드>Logo로 가정하지 않는다(R26).
+ * BRAND_IMAGE(/file-asset/<자산 이름>?v=…)의 자산 이름. --from-org 프로젝트는 org 값 그대로라 <브랜드>Logo로 가정하지 않는다.
  * 이름은 경로와 sf 인자에 들어가므로 Salesforce API 이름 규칙(브랜드 이름과 같다)에 맞지 않으면 undefined
  */
 export function logoAsset(brandImage: string): string | undefined {
@@ -56,7 +56,7 @@ export function logoAsset(brandImage: string): string | undefined {
 export function writeBrandingSet(o: { name: string; brandColor: string; logo?: boolean }): string {
   assertName(o.name);
   assertColor(o.brandColor, "브랜드 색");
-  // ponytail: BRAND_COLOR(와 BRAND_IMAGE)만 넣는다. 10/8 프로브는 HEADER_BACKGROUND_COLOR(SLDS 1 전용)도 넣어 배포했다.
+  // ponytail: BRAND_COLOR(와 BRAND_IMAGE)만 넣는다. 2026-10-08 org 실측 때는 HEADER_BACKGROUND_COLOR(SLDS 1 전용)도 넣어 배포했다.
   //           이 두 속성만으로 배포되는지는 미확인이다. 배포가 거부되면 HEADER_BACKGROUND_COLOR #FFFFFF를 더한다
   const image = o.logo ? property("BRAND_IMAGE", `/file-asset/${o.name}Logo?v=1`) : "";
   return doc("BrandingSet", `${property("BRAND_COLOR", o.brandColor)}${image}    <masterLabel>${o.name}</masterLabel>\n`);
@@ -103,7 +103,7 @@ export function writeSettingsPackageXml(): string {
   return doc(
     "Package",
     "    <types>\n        <members>LightningExperience</members>\n        <name>Settings</name>\n    </types>\n" +
-      // Metadata API 버전은 저장소 sourceApiVersion, 10/8 org 프로브와 같다
+      // Metadata API 버전은 저장소 sourceApiVersion, 2026-10-08 org 실측과 같다
       "    <version>67.0</version>\n",
   );
 }

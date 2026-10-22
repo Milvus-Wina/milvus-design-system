@@ -90,7 +90,7 @@ export function runAudit(argv: string[], src: Sources, dir: string): { code: num
 
   const gaps = report.gaps.length
     ? [
-        `고정 목록에 없는 빈틈 ${report.gaps.length}개 (audit/report.json의 gaps. 브리지로 메우거나, 고칠 수 없으면 사용자 합의 뒤 lib/fixed-list.ts에 넣는다)`,
+        `고정 목록에 없는 빈틈 ${report.gaps.length}개 (audit/report.json의 gaps. 브리지로 메우거나, 고칠 수 없으면 PR에서 합의한 뒤 lib/fixed-list.ts에 넣는다)`,
         ...shown(report.gaps.map((g) => `  ${g.comp} [${g.item}] ${g.selector} { ${g.prop}: ${g.value} }`)),
       ]
     : [];

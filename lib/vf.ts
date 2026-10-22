@@ -1,5 +1,5 @@
-// VF용 브랜드 팔레트 CSS (설계 5.5, 10/9 D2)
-// Visualforce Settings의 SLDS 2 설정을 켠 `<apex:slds/>`는 SLDS 2이지만 org 테마의 브랜드 팔레트는 들어오지 않는다(org 프로브 3.8).
+// VF용 브랜드 팔레트 CSS (설계 5.5, 설계 1장 D2)
+// Visualforce Settings의 SLDS 2 설정을 켠 `<apex:slds/>`는 SLDS 2이지만 org 테마의 브랜드 팔레트는 들어오지 않는다(2026-10-09 org 실측).
 // 그래서 빠진 팔레트만 `:root{--slds-r-color-brand-<단계>}`로 넣는다. SLDS 2 CSS 사본은 받지도 만들지도 않는다.
 import { brandPalette } from "./palette.ts";
 

@@ -2,8 +2,8 @@
 // - --style: hook이 milvusBrand.css·milvusOverride.css·brandingSets/를 고칠 때마다 실행한다. util.css 규칙·대비(5.2, 5.3),
 //   milvusOverride.css(5.1), config 브랜드 BrandingSet의 BRAND_COLOR 형식만 보고, hook 이름은 설치된 패키지의 dist/hooks-index.json에서
 //   읽는다(lib/hooks-index.ts). 실패하면 2(Claude Code가 stderr를 Claude에게 보여 준다)
-// - 전체: deploy와 CI가 실행한다. --style 항목 + 밀버스 관리 파일 sha256(milvus.config.json). 실패하면 1.
-//   밀버스 LWC는 JS라 타입 검사는 하지 않는다(10/9 D1). config.vf면 milvusVf.css도 지금 BRAND_COLOR 팔레트로 다시 만든다(설계 3장 [생성])
+// - 전체: deploy가 실행한다(팀 CI에 넣어도 된다). --style 항목 + 밀버스 관리 파일 sha256(milvus.config.json). 실패하면 1.
+//   밀버스 LWC는 JS라 타입 검사는 하지 않는다(설계 1장 D1). config.vf면 milvusVf.css도 지금 BRAND_COLOR 팔레트로 다시 만든다(설계 3장 [생성])
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
@@ -40,7 +40,7 @@ function managedIssues(root: string): Issue[] {
   });
 }
 
-// milvus.config.json의 brand에 해당하는 brandingSets/LEXTHEMING<brand>.brandingSet-meta.xml 하나만 본다(판정 R27).
+// milvus.config.json의 brand에 해당하는 brandingSets/LEXTHEMING<brand>.brandingSet-meta.xml 하나만 본다.
 // 없거나 BRAND_COLOR가 없거나 #RRGGBB가 아니면 issue. 다른 BrandingSet(Experience Cloud 사이트 등)은 밀버스 것이 아니라 보지 않는다.
 // config가 없거나 깨졌으면 어느 파일인지 알 수 없어 건너뛴다(전체 check의 managedIssues가 config 문제로 실패시킨다)
 function brandingIssues(root: string): Issue[] {

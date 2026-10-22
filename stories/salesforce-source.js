@@ -14,7 +14,7 @@ const KINDS = ["g", "s", "c", "기본 컴포넌트 전용", "내부 전용", "�
 const KIND_NOTE = {
   g: "util.css에서 바꾸는 global hook",
   s: "util.css에서 바꾸는 컴포넌트 hook(--slds-s-*). 값이 없으면 이어지는 g hook을 쓴다",
-  c: "--slds-c-*·--sds-c-*. 밀버스는 쓰지 않는다(설계 5.2)",
+  c: "--slds-c-*·--sds-c-*. 밀버스는 쓰지 않는다",
   "기본 컴포넌트 전용": "기본 컴포넌트 CSS만 읽는 g 이름. native 전환 대비",
   "내부 전용": "SLDS·기본 컴포넌트 안에서만 정의해 쓰는 변수",
   "정의 없음":
@@ -507,7 +507,7 @@ export function sourceAndHooks(view, list, hookInfo, sharedInfo) {
     h(
       "p",
       {},
-      "판정은 정적 반영 검사(설계 9.6, audit/report.json과 같은 계산)를 카탈로그를 만들 때 다시 돌린 결과다. " +
+      "판정은 정적 반영 검사와 같은 계산을 카탈로그를 만들 때 다시 돌린 결과다. " +
         "지금은 org가 쓰는 synthetic 경로(SLDS 2 CSS), native는 기본 컴포넌트가 native shadow로 바뀐 뒤(*.slds.css)다."
     ),
     header(view, all),

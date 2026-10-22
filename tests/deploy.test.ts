@@ -17,7 +17,7 @@ const FAKE_TOKEN = "00D5g000000AbCdE!AQ4AQFakeSessionValue.abc";
 type Result = { code: number; stdout: string; stderr: string };
 const ok = (result: object = {}): Result => ({ code: 0, stdout: JSON.stringify({ status: 0, result }), stderr: "" });
 
-// 가짜 sf. retrieve는 --target-metadata-dir/unpackaged에 설정 파일을 쓴다(실제 sf와 같은 배치, Task 11 실측).
+// 가짜 sf. retrieve는 --target-metadata-dir/unpackaged에 설정 파일을 쓴다(실제 sf와 같은 배치).
 // deploy는 --metadata-dir가 있으면 활성화(2단계), 없으면 메타데이터 배포(1단계)다
 function fakeSf(o: { active?: string; retrieve?: Result; deploy?: Result; activate?: Result } = {}) {
   const calls: { args: string[]; cwd: string }[] = [];
@@ -60,8 +60,8 @@ const prop = (name: string, value: string) =>
   `    <brandingSetProperty>\n        <propertyName>${name}</propertyName>\n        <propertyValue>${value}</propertyValue>\n    </brandingSetProperty>\n`;
 
 /**
- * init(--brand Acme, 대상 org dev)으로 만든 임시 프로젝트. 폴더 이름에 공백과 한글을 넣는다(리뷰 중점 5).
- * 로고는 org에서 받은 것처럼 자산 이름이 <브랜드>Logo가 아니다(R26). 프로젝트 자체 컴포넌트·앱 메타데이터도 둔다
+ * init(--brand Acme, 대상 org dev)으로 만든 임시 프로젝트. 폴더 이름에 공백과 한글을 넣는다.
+ * 로고는 org에서 받은 것처럼 자산 이름이 <브랜드>Logo가 아니다. 프로젝트 자체 컴포넌트·앱 메타데이터도 둔다
  */
 async function withProject(o: { vf?: boolean; init?: boolean }, fn: (root: string) => Promise<void>) {
   const root = mkdtempSync(join(tmpdir(), "밀버스 deploy 테스트-"));
@@ -267,7 +267,7 @@ test("sourceDirs에 milvusBridge·milvusOverride·milvusBrandLoader와 contentas
       `${FA}/staticresources/milvusOverride.css`,
       `${FA}/brandingSets/LEXTHEMINGAcme.brandingSet-meta.xml`,
       `${FA}/lightningExperienceThemes/Acme.lightningExperienceTheme-meta.xml`,
-      // R26: 로고 자산 이름은 BRAND_IMAGE에서 읽는다(<브랜드>Logo가 아니다)
+      // 로고 자산 이름은 BRAND_IMAGE에서 읽는다(<브랜드>Logo가 아니다)
       `${FA}/contentassets/acme_logo_1.asset`,
       `${FA}/contentassets/acme_logo_1.asset-meta.xml`,
     ]) {
@@ -284,7 +284,7 @@ test("sourceDirs에 milvusBridge·milvusOverride·milvusBrandLoader와 contentas
     const [first, second] = sf.deploys().map((c) => c.args);
     assert.deepEqual(first.filter((_, i) => first[i - 1] === "--source-dir"), plan.sourceDirs);
     assert.deepEqual(second.slice(second.indexOf("--metadata-dir"), second.indexOf("--metadata-dir") + 2), ["--metadata-dir", SETTINGS]);
-    // 폴더 --metadata-dir는 sf가 zip/ 아래에 넣어 묶으므로 --single-package를 붙이지 않는다(리뷰 Important 1)
+    // 폴더 --metadata-dir는 sf가 zip/ 아래에 넣어 묶으므로 --single-package를 붙이지 않는다
     assert.ok(!second.includes("--single-package"), second.join(" "));
   });
 });
@@ -387,7 +387,7 @@ test("알 수 없는 옵션은 사용법과 1", async () => {
   });
 });
 
-test("활성 테마 조회는 sf를 받은 파일의 임시 폴더 밖에서 실행하고, 끝나면 그 임시 폴더를 지운다(#49)", async () => {
+test("활성 테마 조회는 sf를 받은 파일의 임시 폴더 밖에서 실행하고, 끝나면 그 임시 폴더를 지운다", async () => {
   await withProject({}, async (root) => {
     const sf = fakeSf({ active: "Old_Theme" });
     const plan = await planDeploy({ root, config: config(root) }, sf);

@@ -33,6 +33,15 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      # 태그(v1.2.3)와 package.json version이 다르면 발행하지 않는다
+      - name: 태그와 버전 확인
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "태그 $GITHUB_REF_NAME 와 package.json 버전 $version 이 다릅니다" >&2
+            exit 1
+          fi
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
 

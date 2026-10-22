@@ -10,8 +10,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { list, parse, type AtRule, type Declaration, type Rule } from "postcss";
 import { BRIDGE_TARGETS, bucketOf, isSmoothEasing, motionLonghand, readSlds2Css, selectorKey, type BridgeTarget } from "./targets.ts";
 
-const HEADER = `/* hook이 없는 항목을 --milvus-* 변수로 잇는 클래스 규칙(설계 5.6). 직접 고치지 않는다.
-   scripts/bridge/generate.ts가 SLDS 2 CSS에서 만든다(pnpm bridge:generate). 변수를 정하지 않으면 모든 값이 Salesforce 원래 값이다.
+const HEADER = `/* hook이 없는 항목을 --milvus-* 변수로 잇는 클래스 규칙. 직접 고치지 않는다.
+   밀버스 패키지가 SLDS 2 CSS에서 만들고 pnpm milvus update가 갱신한다. 변수를 정하지 않으면 모든 값이 Salesforce 원래 값이다.
    var()가 없는 선언은 원래 이기던 규칙이 계속 이기도록 원본을 그대로 다시 넣은 것이다 */
 `;
 

@@ -45,7 +45,7 @@ function snapshot(root: string): Record<string, string> {
 
 /**
  * init(--brand Acme, vf가 false면 --no-vf)으로 만든 프로젝트와 "새 버전" 패키지(이 저장소의 templates·LWC 사본)를 만들어 fn에 넘긴다.
- * 폴더 이름에 공백과 한글을 넣는다(리뷰 중점 5)
+ * 폴더 이름에 공백과 한글을 넣는다
  */
 async function withProject(fn: (root: string, pkg: string) => Promise<void>, o: { vf?: boolean } = {}) {
   const root = mkdtempSync(join(tmpdir(), "밀버스 update 테스트-"));
@@ -275,7 +275,7 @@ function toOldLayout(root: string, o: { design?: string } = {}) {
   writeFileSync(join(root, "milvus.config.json"), `${JSON.stringify(config, null, 2)}\n`);
 }
 
-test("0.2.x 배치를 옮긴다: 고치지 않은 루트 milvus-design.md는 지우고, 패턴·요청은 내용 그대로 docs/milvus로, CLAUDE.md의 import 줄은 지운다 (#63)", async () => {
+test("0.2.x 배치를 옮긴다: 고치지 않은 루트 milvus-design.md는 지우고, 패턴·요청은 내용 그대로 docs/milvus로, CLAUDE.md의 import 줄은 지운다", async () => {
   await withProject(async (root, pkg) => {
     toOldLayout(root);
     const r = await update(root, pkg);
@@ -292,7 +292,7 @@ test("0.2.x 배치를 옮긴다: 고치지 않은 루트 milvus-design.md는 지
   });
 });
 
-test("옛 위치의 milvus-design.md를 고쳤으면 아무것도 바꾸지 않고 1, --force면 지운다 (#63)", async () => {
+test("옛 위치의 milvus-design.md를 고쳤으면 아무것도 바꾸지 않고 1, --force면 지운다", async () => {
   await withProject(async (root, pkg) => {
     toOldLayout(root, { design: "# 밀버스 디자인 시스템 (0.2.4)\n- 로컬에서 더한 줄\n" });
     const before = snapshot(root);
@@ -308,7 +308,7 @@ test("옛 위치의 milvus-design.md를 고쳤으면 아무것도 바꾸지 않�
   });
 });
 
-test("새 위치에 이미 파일이 있으면 옛 파일을 옮기지 않고 그대로 두고 알린다 (#63)", async () => {
+test("새 위치에 이미 파일이 있으면 옛 파일을 옮기지 않고 그대로 두고 알린다", async () => {
   await withProject(async (root, pkg) => {
     write(root, "milvus-patterns.md", "# 옛 패턴\n");
     write(root, PATTERNS, "# 새 위치 패턴\n");

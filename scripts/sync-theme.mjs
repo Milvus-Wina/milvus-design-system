@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * org의 Themes and Branding을 읽어 brands/<테마>/ 를 만든다.
- *   theme.json  브랜드 색 + 브랜드 팔레트 17단계 (L1)
- *   logo.<ext>  브랜드 로고 (L2)
+ *   theme.json  브랜드 색 + 브랜드 팔레트 17단계
+ *   logo.<ext>  브랜드 로고
  *
- * 사용: pnpm sync:theme                       org의 커스텀 테마 전부
- *       pnpm sync:theme <브랜드명> [...]        지정한 테마만 (DeveloperName 또는 MasterLabel)
- *       SF_ORG=<별칭> pnpm sync:theme          다른 org (기본: learndoshare_1)
+ * 사용: SF_ORG=<별칭> pnpm sync:theme                  org의 커스텀 테마 전부
+ *       SF_ORG=<별칭> pnpm sync:theme <브랜드명> [...]   지정한 테마만 (DeveloperName 또는 MasterLabel)
+ *       SF_ORG=<별칭>을 앞에 붙여 대상 org를 정한다(필수)
  *
  * 액세스 토큰은 메모리에서만 쓰고 출력하거나 파일로 남기지 않는다.
  */
@@ -14,7 +14,11 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { brandPalette } from "../lib/palette.ts";
 
-const org = process.env.SF_ORG ?? "learndoshare_1";
+const org = process.env.SF_ORG;
+if (!org) {
+  console.error("대상 org를 정하세요: SF_ORG=<별칭> pnpm sync:theme");
+  process.exit(1);
+}
 const API = "v67.0";
 
 // sf --json 출력에는 가끔 제어 문자가 섞여 JSON.parse가 실패한다

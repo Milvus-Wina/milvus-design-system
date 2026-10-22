@@ -1,4 +1,4 @@
-// milvusCalendar의 날짜 계산(순수 함수). LWC·DOM에 기대지 않아 node:test에서 바로 import한다(tests/calendar-model.test.ts).
+// milvusCalendar의 날짜 계산(순수 함수). LWC·DOM에 기대지 않아 node:test에서 바로 import한다.
 // 시간대 변환은 하지 않는다. 문자열을 로컬 날짜로 그대로 읽는다. new Date("YYYY-MM-DD")는 UTC 자정으로 읽어 하루 밀릴 수 있다
 
 const DATE_TIME = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?$/;
@@ -26,9 +26,18 @@ export function parseDateTime(text) {
   if (!match) return null;
   const [, y, m, d, hh, mm] = match;
   const date = new Date(+y, +m - 1, +d);
-  if (date.getFullYear() !== +y || date.getMonth() !== +m - 1 || date.getDate() !== +d) return null;
+  if (
+    date.getFullYear() !== +y ||
+    date.getMonth() !== +m - 1 ||
+    date.getDate() !== +d
+  )
+    return null;
   if (hh !== undefined && (+hh > 23 || +mm > 59)) return null;
-  return { date, key: `${y}-${m}-${d}`, time: hh === undefined ? null : `${hh}:${mm}` };
+  return {
+    date,
+    key: `${y}-${m}-${d}`,
+    time: hh === undefined ? null : `${hh}:${mm}`
+  };
 }
 
 // 생성자가 넘친 날짜를 다음 달로 넘겨 준다. 자정 기준이라 서머타임 전환일에도 날짜는 그대로다
@@ -37,8 +46,16 @@ export const addDays = (date, n) =>
 
 /** n달 뒤 같은 날. 그 달에 없는 날(1월 31일 → 2월)은 말일로 맞춘다 */
 export function addMonths(date, n) {
-  const last = new Date(date.getFullYear(), date.getMonth() + n + 1, 0).getDate();
-  return new Date(date.getFullYear(), date.getMonth() + n, Math.min(date.getDate(), last));
+  const last = new Date(
+    date.getFullYear(),
+    date.getMonth() + n + 1,
+    0
+  ).getDate();
+  return new Date(
+    date.getFullYear(),
+    date.getMonth() + n,
+    Math.min(date.getDate(), last)
+  );
 }
 
 /** date가 든 주의 첫날. firstDayOfWeek: 0(일)~6(토) */
@@ -62,8 +79,13 @@ export function visibleDays(view, date, firstDayOfWeek) {
   const first =
     view === "week"
       ? startOfWeek(date, firstDayOfWeek)
-      : startOfWeek(new Date(date.getFullYear(), date.getMonth(), 1), firstDayOfWeek);
-  return Array.from({ length: view === "week" ? 7 : 42 }, (_, i) => addDays(first, i));
+      : startOfWeek(
+          new Date(date.getFullYear(), date.getMonth(), 1),
+          firstDayOfWeek
+        );
+  return Array.from({ length: view === "week" ? 7 : 42 }, (_, i) =>
+    addDays(first, i)
+  );
 }
 
 /** 키보드 키에 따른 다음 날짜. 처리하지 않는 키면 null. 이전·다음 버튼은 PageUp·PageDown과 같다 */
@@ -93,26 +115,39 @@ export function moveDate(date, key, view, firstDayOfWeek) {
 // end가 start보다 앞인지. 날짜가 같고 둘 다 시각이 있을 때만 시각을 비교한다("HH:mm"은 문자열 비교로 순서가 맞다)
 const endsBeforeStart = (start, end) =>
   end.key < start.key ||
-  (end.key === start.key && start.time !== null && end.time !== null && end.time < start.time);
+  (end.key === start.key &&
+    start.time !== null &&
+    end.time !== null &&
+    end.time < start.time);
 
 /**
  * events 입력을 검증한다. 형식이 틀린 항목은 빼고 warn으로 알린다.
  * 반환: [{ id, title, start, end, variant(VARIANTS 중 하나 | null), order(입력 순서) }]
  */
-export function normalizeEvents(events, warn = (...args) => console.warn(...args)) {
+export function normalizeEvents(
+  events,
+  warn = (...args) => console.warn(...args)
+) {
   if (!Array.isArray(events)) return [];
   const list = [];
   events.forEach((event, order) => {
     const start = parseDateTime(event?.start);
-    const end = event?.end == null || event.end === "" ? start : parseDateTime(event.end);
+    const end =
+      event?.end == null || event.end === "" ? start : parseDateTime(event.end);
     let problem = null;
     if (event?.id == null || event.id === "") problem = "id가 없습니다";
-    else if (event.title == null || event.title === "") problem = "title이 없습니다";
-    else if (!start) problem = "start가 YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm 형식이 아닙니다";
-    else if (!end) problem = "end가 YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm 형식이 아닙니다";
+    else if (event.title == null || event.title === "")
+      problem = "title이 없습니다";
+    else if (!start)
+      problem = "start가 YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm 형식이 아닙니다";
+    else if (!end)
+      problem = "end가 YYYY-MM-DD 또는 YYYY-MM-DDTHH:mm 형식이 아닙니다";
     else if (endsBeforeStart(start, end)) problem = "end가 start보다 앞입니다";
     if (problem) {
-      warn(`[milvus] milvusCalendar: events[${order}]를 뺍니다. ${problem}`, event);
+      warn(
+        `[milvus] milvusCalendar: events[${order}]를 뺍니다. ${problem}`,
+        event
+      );
       return;
     }
     list.push({
@@ -139,7 +174,11 @@ export function eventsByDay(list, first, last) {
   for (const event of list) {
     if (event.end.key < firstKey || event.start.key > lastKey) continue;
     const until = event.end.key < lastKey ? event.end.key : lastKey;
-    for (let day = event.start.key < firstKey ? first : event.start.date; toKey(day) <= until; day = addDays(day, 1)) {
+    for (
+      let day = event.start.key < firstKey ? first : event.start.date;
+      toKey(day) <= until;
+      day = addDays(day, 1)
+    ) {
       const key = toKey(day);
       if (!map.has(key)) map.set(key, []);
       map.get(key).push({
@@ -152,7 +191,9 @@ export function eventsByDay(list, first, last) {
     }
   }
   for (const items of map.values()) {
-    items.sort((a, b) => (a.time ?? "").localeCompare(b.time ?? "") || a.order - b.order);
+    items.sort(
+      (a, b) => (a.time ?? "").localeCompare(b.time ?? "") || a.order - b.order
+    );
   }
   return map;
 }

@@ -23,7 +23,7 @@ after(async () => {
   temps.forEach((d) => rmSync(d, { recursive: true, force: true }));
 });
 
-// 경로에 공백과 한글을 넣는다(리뷰 중점 5). 로고는 --from-org처럼 자산 이름이 <브랜드>Logo가 아니다(R26)
+// 경로에 공백과 한글을 넣는다. 로고는 --from-org처럼 자산 이름이 <브랜드>Logo가 아니다
 function project(o: { util?: string; brandingSet?: boolean; logo?: boolean } = {}): string {
   const dir = mkdtempSync(join(tmpdir(), "milvus sb 프로젝트-"));
   temps.push(dir);
@@ -170,7 +170,7 @@ test("프로젝트 모드 가상 모듈은 원본 파일이 바뀌면 다시 읽
   }
 });
 
-// 반영 검사(Task 26)의 센티널 브랜드. 프로젝트 모드는 프로젝트 milvusBridge.css가 읽는 --milvus-* 변수만 넣는다
+// 반영 검사의 센티널 브랜드. 프로젝트 모드는 프로젝트 milvusBridge.css가 읽는 --milvus-* 변수만 넣는다
 test("virtual:milvus-sentinel을 Vite가 해석하고, 프로젝트 milvusBridge.css가 바뀌면 다시 만든다", async () => {
   const dir = project();
   const { vite, close } = await serve({ mode: "project", repoDir: repo, projectDir: dir });

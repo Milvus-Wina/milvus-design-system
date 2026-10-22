@@ -1,5 +1,5 @@
 // 브랜드 명세 항목. 원본은 설계 6.1(기본 10개)과 9.3(전 컴포넌트 분석으로 더한 항목)이다.
-// 명세 페이지(Task 19)가 항목마다 설명·지금 값·입력창을 그리고, skill(Task 20)과 반영 검사(Task 14, 26)가 hook·브리지 변수를 읽는다.
+// 명세 페이지가 항목마다 설명·지금 값·입력창을 그리고, skill과 정적·동적 반영 검사가 hook·브리지 변수를 읽는다.
 // hook 이름은 SLDS 2 CSS나 기본 컴포넌트 CSS가 var()로 읽는 이름만 쓴다(tests/spec-items.test.ts가 확인)
 // 브라우저(Storybook)에서도 import하므로 Node 모듈을 쓰지 않는다
 import { BRIDGE_VARS as B } from "./bridge-vars.ts";
@@ -160,7 +160,7 @@ const items: Omit<SpecItem, "nativeLoss">[] = [
     examples: ["milvusButton은 커스텀 모드로"],
     hooks: [],
     bridgeVars: [],
-    limits: "모양만 바꾸려고 밀버스 컴포넌트를 새로 만들지 않는다(설계 5.1)",
+    limits: "모양만 바꾸려고 밀버스 컴포넌트를 새로 만들지 않는다",
     input: "none",
   },
   {
@@ -172,7 +172,7 @@ const items: Omit<SpecItem, "nativeLoss">[] = [
     examples: [],
     hooks: [],
     bridgeVars: [],
-    limits: "글꼴은 바꾸지 않는다(설계 1장)",
+    limits: "글꼴은 바꾸지 않는다",
     input: "none",
   },
   {
@@ -374,7 +374,7 @@ const items: Omit<SpecItem, "nativeLoss">[] = [
     hooks: [s("button-spacing-block"), s("input-sizing-height")],
     bridgeVars: [],
     limits:
-      "LEX 텍스트 컨트롤 높이(1.875rem)는 Salesforce 고정이다. 목록·헤더 툴바가 32px 아이콘 버튼과 섞여 있어 브리지로 바꾸면 어긋난다(2026-10-14 리허설). --slds-s-button-spacing-block은 버튼 안쪽 여백이고, --slds-s-input-sizing-height는 native용이다",
+      "LEX 텍스트 컨트롤 높이(1.875rem)는 Salesforce 고정이다. 목록·헤더 툴바가 32px 아이콘 버튼과 섞여 있어 브리지로 바꾸면 어긋난다(2026-10-14 실측). --slds-s-button-spacing-block은 버튼 안쪽 여백이고, --slds-s-input-sizing-height는 native용이다",
     input: "none",
   },
   {
@@ -553,7 +553,7 @@ const items: Omit<SpecItem, "nativeLoss">[] = [
     id: "fixed",
     group: "표시만",
     label: "Salesforce 고정",
-    description: "바꿀 수 없는 항목이다. 설계 9.4 목록(FIXED_ITEMS)을 보여 준다",
+    description: "바꿀 수 없는 항목이다. Salesforce 고정 목록을 보여 준다",
     examples: ["토스트를 10초 동안"],
     hooks: [],
     bridgeVars: [],

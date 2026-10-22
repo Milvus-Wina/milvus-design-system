@@ -4,7 +4,7 @@
     <isExposed>true</isExposed>
     <masterLabel>Milvus Brand Loader</masterLabel>
     <description
-  >앱 유틸리티 바에 두고 "앱이 열릴 때 백그라운드로 로드"를 켜면 그 앱의 모든 페이지에 브랜드 CSS를 넣는다 (화면 없음)</description>
+  >앱 유틸리티 바에 두고 "앱이 열릴 때 백그라운드로 로드"를 켜면 그 앱의 모든 페이지에 브랜드 CSS를 넣는다 (패널은 비어 있음)</description>
     <targets>
         <target>lightning__UtilityBar</target>
     </targets>

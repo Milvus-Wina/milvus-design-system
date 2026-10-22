@@ -130,7 +130,7 @@ test("저장소 모드는 brands/의 Milvus_DesignSystem, Sample_Forest", async 
   assert.ok(bridge.length > 0);
   for (const b of brands) assert.equal(b.bridgeCss, bridge);
   assert.equal(brands[1].utilCss, readFileSync(join(repo, "brands/Sample_Forest/util.css"), "utf8"));
-  assert.match(brands[0].logoUrl!, /^data:image\/jpeg;base64,/);
+  assert.match(brands[0].logoUrl!, /^data:image\/png;base64,/);
   assert.equal(brands[1].logoUrl, undefined);
   assert.deepEqual(brands.map((b) => b.brandColor), ["#0176D3", "#2E7D5B"]);
 

@@ -19,9 +19,9 @@ export type Report = {
 };
 
 export const RANK: Status[] = ["n/a", "reached", "bridge", "fixed", "gap"];
-// control-height 항목에 넣는 컨트롤(명세 9.3): 버튼, 입력, 선택, 버튼형 라디오·체크박스. 기본 컴포넌트 native CSS는 part 속성으로 고른다
+// control-height 항목에 넣는 컨트롤(설계 9.3): 버튼, 입력, 선택, 버튼형 라디오·체크박스. 기본 컴포넌트 native CSS는 part 속성으로 고른다
 const CONTROLS = /\.slds-(button|input|input_faux|select|radio_button|checkbox_button)(?![\w-])|\[part~?=['"]?(button|input)['"]?\]/;
-// 음수·0·퍼센트·1px·env()는 배치용 값이라 밀도에서 뺀다 (연구 cov2.cjs의 relevant와 같은 취지)
+// 음수·0·퍼센트·1px·env()는 배치용 값이라 밀도에서 뺀다
 const GEOMETRY = /^(-|0(px|rem|em)?$)|\*\s*-1|%|^1px$|env\(/;
 // CSS 곡선 값(easing function)
 const EASING = /\b(ease(-in|-out|-in-out)?|linear|step-start|step-end)\b|\b(cubic-bezier|steps)\(/;
@@ -118,7 +118,7 @@ function ruleItem(d: Decl, sameRule: Decl[]): string | null {
 }
 
 // 기본 컴포넌트의 *.lbc.synthetic.css는 synthetic일 때만 쓰인다
-// 반경 자리에서 간격·두께 hook을 읽으면(native 모달·필·탭 등) 모서리 설정이 닿지 않는다(연구 post.cjs의 fam). hook이 아닌 것처럼 판정한다
+// 반경 자리에서 간격·두께 hook을 읽으면(native 모달·필·탭 등) 모서리 설정이 닿지 않는다. hook이 아닌 것처럼 판정한다
 const offFamily = (d: Decl) =>
   d.cat === "radius" && /var\(\s*--slds-[gs]-/.test(d.value) && !/--slds-g-radius-border|--slds-s-[\w-]*radius/.test(d.value);
 

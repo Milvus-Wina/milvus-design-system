@@ -11,15 +11,18 @@ on:
 permissions:
   contents: read
 
+# PR은 새 커밋이 오면 이전 실행을 취소한다. main은 진행 중인 Pages 배포를 끊지 않는다
 concurrency:
   group: storybook-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       # pnpm 버전은 package.json의 packageManager를 따른다
       - uses: pnpm/action-setup@v6
@@ -38,12 +41,12 @@ jobs:
       - run: pnpm build-storybook
 
       - uses: actions/upload-pages-artifact@v5
-        if: github.event_name != 'pull_request'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         with:
           path: storybook-static
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:

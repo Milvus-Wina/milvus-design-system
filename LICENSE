@@ -1,0 +1,67 @@
+밀버스 디자인 시스템 이용 조건
+
+Copyright (c) 2026 밀버스(Milvus). All rights reserved.
+
+이 저장소와 패키지 @milvus-wina/milvus-design-system(이하 "소프트웨어")는
+밀버스 내부 프로젝트용입니다. 저장소가 공개되어 있어도 오픈 소스 라이선스를
+부여하지 않습니다.
+
+1. 이용할 수 있는 사람과 범위
+   밀버스 임직원과 밀버스가 수행하는 프로젝트에 참여하는 사람은 그 프로젝트를
+   위해 소프트웨어를 설치, 사용, 수정할 수 있습니다.
+
+2. 고객 프로젝트에 들어간 파일
+   밀버스가 수행한 프로젝트에 포함되어 고객에게 전달된 파일(pnpm milvus init이
+   프로젝트에 놓은 파일, 그 프로젝트에서 고친 파일, Salesforce org에 배포된
+   메타데이터)은 그 고객이 해당 프로젝트와 Salesforce org를 운영하고 유지보수하는
+   데 계속 쓸 수 있습니다.
+
+3. 허락 없이 할 수 없는 일
+   위 1·2의 범위를 벗어나 소프트웨어를 사용, 복제, 배포, 판매, 재라이선스하려면
+   밀버스의 서면 허락을 받아야 합니다.
+
+4. 제3자 구성 요소
+   소프트웨어에 포함되거나 함께 쓰는 Salesforce 등 제3자의 구성 요소는 각자의
+   라이선스와 이용 약관을 따릅니다. 목록과 원문은 THIRD_PARTY_NOTICES.md에
+   있습니다. 이 조건은 그 라이선스와 약관을 바꾸거나 제한하지 않습니다.
+
+5. 보증과 책임
+   소프트웨어는 "있는 그대로" 제공됩니다. 밀버스는 상품성, 특정 목적 적합성,
+   권리 비침해를 포함해 명시적이든 묵시적이든 어떤 보증도 하지 않습니다.
+   법이 허용하는 범위에서 밀버스는 소프트웨어의 사용이나 사용할 수 없음으로
+   생긴 손해에 책임지지 않습니다.
+
+6. 문의
+   위 범위 밖에서 쓰려면 저장소 관리자(https://github.com/Milvus-Wina)에게
+   문의하세요.
+
+---
+
+Milvus Design System Terms of Use
+
+Copyright (c) 2026 Milvus. All rights reserved.
+
+This repository and the package @milvus-wina/milvus-design-system (the
+"Software") are for Milvus internal projects only. Public visibility of the
+repository does not grant an open source license.
+
+1. Milvus employees and people working on projects carried out by Milvus may
+   install, use, and modify the Software for those projects.
+2. Files delivered to a customer as part of a project carried out by Milvus
+   (files placed by `pnpm milvus init`, files modified in that project, and
+   metadata deployed to a Salesforce org) may continue to be used by that
+   customer to operate and maintain that project and Salesforce org.
+3. Any other use, copying, distribution, sale, or sublicensing requires prior
+   written permission from Milvus.
+4. Third-party components, including Salesforce components, are governed by
+   their own licenses and terms, listed in THIRD_PARTY_NOTICES.md. These terms
+   do not modify or limit those licenses and terms.
+5. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. TO THE EXTENT
+   PERMITTED BY LAW, MILVUS SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM
+   THE USE OF OR INABILITY TO USE THE SOFTWARE.
+6. For any use outside these terms, contact the repository maintainer
+   (https://github.com/Milvus-Wina).
+
+If the Korean and English versions differ, the Korean version prevails.

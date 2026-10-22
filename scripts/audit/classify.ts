@@ -1,5 +1,5 @@
 // SLDS 2 CSS와 기본 컴포넌트(lightning-base-components) CSS의 선언을 "항목(cat) × 값 종류(kind)"로 나눈다 (설계 9.6의 1).
-// 분류 기준은 docs/research/2026-10-08/extract.cjs다. 다른 점:
+// 분류 기준은 2026-10-08 조사 때 쓴 추출 스크립트와 같다. 다른 점:
 // - var()를 custom property 정의와 :where(html)의 hook 정의까지 따라가 판정한다. g·s hook에 닿으면 g·s,
 //   기본값까지 풀어 키워드만 남으면(정의 없는 c hook 등) keyword다. 그래서 private 변수(--_slds-*)를 거쳐 g hook에 닿는 값은 빈틈이 아니다
 // - @keyframes 안 선언은 속성과 상관없이 kind keyframes(cat motion)다
@@ -37,7 +37,7 @@ const CAT: [string, RegExp][] = [
   ["zIndex", /^z-index$/],
   ["cursor", /^cursor$/],
 ];
-// extract.cjs의 키워드. postcss는 !important를 값에서 떼므로 "... !important" 변형은 필요 없다
+// 조사 스크립트와 같은 키워드다. postcss는 !important를 값에서 떼므로 "... !important" 변형은 필요 없다
 const KEYWORD = /^(inherit|initial|unset|none|0|auto|transparent|currentcolor|100%|50%|0%|normal|-1|1|bold)$/i;
 const VAR_NAME = /var\(\s*(--[\w-]+)/g;
 
@@ -72,7 +72,7 @@ function kindOf(value: string, defs: Defs): Kind {
   const resolved = value + chain(value, defs);
   if (/var\(\s*--slds-g-/.test(resolved)) return "g";
   if (/var\(\s*--slds-s-/.test(resolved)) return "s";
-  // 지시서 표와 달리 c·otherVar보다 먼저 본다(R29 승인): 변수 이름을 지우고 남은 기본값·정의가 키워드뿐이면(정의 없으면 unset) keyword. 실측 거짓 빈틈 약 230개를 막는다
+  // c·otherVar보다 먼저 본다: 변수 이름을 지우고 남은 기본값·정의가 키워드뿐이면(정의 없으면 unset) keyword. 실측 거짓 빈틈 약 230개를 막는다
   if (resolved.replace(VAR_NAME, " ").split(/[\s,()]+/).every((t) => !t || KEYWORD.test(t))) return "keyword";
   if (/var\(\s*--(slds|sds)-c-/.test(value)) return "c";
   if (/var\(\s*--slds-r-/.test(value)) return "r";

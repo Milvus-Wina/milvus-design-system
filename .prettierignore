@@ -9,3 +9,8 @@
 .vscode
 
 coverage/
+pnpm-lock.yaml
+dist/
+storybook-static/
+stories/slds-catalog/
+templates/

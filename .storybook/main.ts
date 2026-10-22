@@ -1,5 +1,5 @@
 // 두 모드(설계 4.2). MILVUS_PROJECT_DIR가 있으면 프로젝트 모드다(milvus storybook이 넘긴다). 없으면 저장소 모드다.
-// 패키지에는 이 폴더를 원본 .ts로 넣는다(Task 3). Storybook 로더가 node_modules 안의 .ts도 변환한다
+// 패키지에는 이 폴더를 원본 .ts로 넣는다. Storybook 로더가 node_modules 안의 .ts도 변환한다
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { StorybookConfig } from "@storybook/web-components-vite";

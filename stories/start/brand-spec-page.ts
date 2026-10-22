@@ -1,6 +1,6 @@
 // 브랜드 명세 페이지(설계 6.1, 9.3). 입력은 브랜드 색·로고·피드백 색·디자인 명세 네 가지이고(2026-10-20 사용자 피드백),
 // 나머지 SPEC_ITEMS는 접은 "바꿀 수 있는 것"(이름·예시)과 "바꿀 수 없는 것"(이름)으로만 그린다. 사용자 화면에는 할 일만 쓰고
-// 한계·native·설계 참조는 보이지 않는다(#65). 그 내용은 SPEC_ITEMS에 그대로 있어 milvus-brand skill이 쓴다. 저장하면 프로젝트의 docs/milvus/brand-request.md를 쓴다.
+// 한계·native·설계 참조는 보이지 않는다. 그 내용은 SPEC_ITEMS에 그대로 있어 milvus-brand skill이 쓴다. 저장하면 프로젝트의 docs/milvus/brand-request.md를 쓴다.
 // 요청 파일은 lib/storybook-plugin.ts의 /__milvus/brand-request(GET { text, writable }, POST { text })로 읽고 쓴다. 정적 빌드와 저장소 모드에서는 입력을 끈다
 // 사용자 입력과 파일 내용은 textContent·value로만 넣는다(innerHTML을 쓰지 않는다)
 import { brands, mode } from "../../.storybook/brand.ts";

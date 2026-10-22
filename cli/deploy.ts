@@ -1,7 +1,7 @@
 // milvus deploy (설계 4.4). 순서: 대상 org → 전체 check → org의 지금 활성 테마 조회(sf 없음·로그인 만료면 멈춤) → 계획 출력 →
 // (--yes 또는 TTY에서 y) 1단계 밀버스 메타데이터 배포 → 성공했을 때만 2단계 활성 테마 변경.
-// sf는 SfRunner로만, 셸 없이 인자 배열로 부른다. sf 기본 org는 쓰지 않는다. 앱 메타데이터(flexipages, applications)는 배포하지 않는다(10/9 D3).
-// LWC는 JS라 변환 단계가 없다(10/9 D4)
+// sf는 SfRunner로만, 셸 없이 인자 배열로 부른다. sf 기본 org는 쓰지 않는다. 앱 메타데이터(flexipages, applications)는 배포하지 않는다(설계 1장 D3).
+// LWC는 JS라 변환 단계가 없다(설계 1장 D4)
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -89,7 +89,7 @@ export async function planDeploy(o: { root: string; config: MilvusConfig; target
   const brandingSet = `${FA}/brandingSets/LEXTHEMING${brand}.brandingSet-meta.xml`;
   const themes = filesNamed(o.root, "lightningExperienceThemes", brand);
   if (!themes.length) throw new Error(`테마 메타데이터가 없습니다: ${FA}/lightningExperienceThemes/${brand}.lightningExperienceTheme-meta.xml. pnpm milvus init을 다시 실행하세요`);
-  // R26: 로고 자산 이름은 BRAND_IMAGE(/file-asset/<자산 이름>?v=…)에서 읽는다. <브랜드>Logo로 가정하지 않는다
+  // 로고 자산 이름은 BRAND_IMAGE(/file-asset/<자산 이름>?v=…)에서 읽는다. <브랜드>Logo로 가정하지 않는다
   const { brandImage } = readBranding(readFileSync(join(o.root, brandingSet), "utf8"));
   const logo = brandImage ? logoAsset(brandImage) : undefined;
 

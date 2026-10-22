@@ -83,7 +83,7 @@ export const LBC_ONLY_G = [
   "--slds-g-color-neutral-100-opacity-50",
 ];
 
-// 모달 배경막: 지금 org가 읽는 s hook과 native가 읽는 g. 반투명 값은 g에 light-dark()로 두고 s는 g를 참조한다(설계 9.3, 판정 R32)
+// 모달 배경막: 지금 org가 읽는 s hook과 native가 읽는 g. 반투명 값은 g에 light-dark()로 두고 s는 g를 참조한다(설계 9.3)
 const BACKDROP_S = "--slds-s-backdrop-color-background";
 const BACKDROP_G = "--slds-g-color-neutral-10-opacity-50";
 
@@ -152,7 +152,7 @@ export function declProblem(name: string, value: string, ctx: RuleContext): [str
   if (name.startsWith("--milvus-")) {
     if (!ctx.milvusVars.has(name)) {
       return removedBridgeVar(name)
-        ? ["milvus-var", `${name}: 이 변수를 읽는 밀버스 컴포넌트나 milvusBridge.css가 없다. 2026-10-14 브리지에서 뺐다(Salesforce 고정, 설계 5.6). 이 줄을 지운다`]
+        ? ["milvus-var", `${name}: 이 변수를 읽는 밀버스 컴포넌트나 milvusBridge.css가 없다. 2026-10-14 브리지에서 뺐다(Salesforce 고정). 이 줄을 지운다`]
         : ["milvus-var", `${name}: 이 변수를 읽는 밀버스 컴포넌트나 milvusBridge.css가 없다(오타이거나 효과가 없다)`];
     }
     // 브리지는 시간을 max(var(…), 0.01ms)로 감싼다. 단위 없는 숫자는 max()를 무효로 만들어 0.01ms 하한이 무너진다(설계 5.6)
@@ -187,7 +187,7 @@ export function declProblem(name: string, value: string, ctx: RuleContext): [str
       return ["color-s-hook", `${name}: 색 s hook은 브랜드 색에 이어진 것이 많다. 쓸 수 있는 것은 ${COLOR_S_WHITELIST.join(", ")}뿐이다`];
     }
     const ref = /^var\(\s*(--slds-g-color-[\w-]+)\s*\)$/.exec(value.trim())?.[1];
-    // 배경막은 반투명이라 native용 g와 한 쌍으로만 쓴다(설계 9.3, 판정 R32). 불투명한 중립 hook은 페이지를 가린다
+    // 배경막은 반투명이라 native용 g와 한 쌍으로만 쓴다(설계 9.3). 불투명한 중립 hook은 페이지를 가린다
     if (name === BACKDROP_S) {
       return ref === BACKDROP_G
         ? undefined
@@ -203,7 +203,7 @@ export function declProblem(name: string, value: string, ctx: RuleContext): [str
       ? undefined
       : ["neutral-light-dark", `${name}: 중립 색은 light-dark(라이트, 다크)로 쓴다. 일반 값으로 쓰면 다크 모드 값이 사라진다`];
   }
-  return ["color-g", `${name}: 중립 색과 피드백 색(설계 5.3) 밖의 색 hook은 브랜드 색에 이어진 것이 많아 쓰지 않는다`];
+  return ["color-g", `${name}: 중립 색과 피드백 색 밖의 색 hook은 브랜드 색에 이어진 것이 많아 쓰지 않는다`];
 }
 
 // light-dark(a, b)의 a. 괄호 안의 쉼표는 건너뛴다

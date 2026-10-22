@@ -42,10 +42,6 @@ $RECYCLE.BIN/
 # Local environment variables
 .env
 
-# Python Salesforce Functions
-**/__pycache__/
-**/.venv/
-**/venv/
 
 # LWC / Storybook build output
 dist/
@@ -56,8 +52,13 @@ storybook-static/
 package-lock.json
 yarn.lock
 
-# 개인 개발 서버 설정 (로컬 경로 포함)
+# 개인 설정 (로컬 경로 포함)
 .claude/launch.json
+.claude/settings.local.json
+.vscode/settings.json
+
+# pnpm pack 결과
+*.tgz
 
 # 자동 생성 (scripts/generate-slds-catalog.ts)
 stories/slds-catalog/

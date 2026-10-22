@@ -65,12 +65,12 @@ function dataUrl(file: string, fileName: string): string | undefined {
   return type && existsSync(file) ? `data:${type};base64,${readFileSync(file).toString("base64")}` : undefined;
 }
 
-/** 저장소 Storybook의 다중 브랜드 데모(brands/, 설계 2장). 팔레트는 pnpm sync:theme이 theme.json에 저장한 값이다 */
+/** 저장소 Storybook의 다중 브랜드 데모(brands/, 설계 2장). 팔레트는 theme.json의 값이다(org 브랜드는 pnpm sync:theme이 만들고, 샘플 브랜드는 손으로 둔다) */
 export function brandsFromRepo(repoDir: string): BrandData[] {
   const res = join(repoDir, "templates", RES);
   const bridgeCss = read(join(res, "milvusBridge.css"));
   const overrideCss = read(join(res, "milvusOverride.css"));
-  // ponytail: 브랜드마다 bridgeCss(약 358KB) 사본이 가상 모듈에 들어간다(저장소 2개 → 약 700KB). 브랜드가 늘면 공유 문자열로 뺀다
+  // ponytail: 브랜드마다 bridgeCss(약 110KB) 사본이 가상 모듈에 들어간다(저장소 2개 → 약 220KB). 브랜드가 늘면 공유 문자열로 뺀다
   // theme.json이 있는 폴더만 브랜드다(.DS_Store 같은 파일은 건너뛴다)
   return readdirSync(join(repoDir, "brands"))
     .filter((dir) => existsSync(join(repoDir, "brands", dir, "theme.json")))
@@ -189,7 +189,7 @@ async function readBody(req: IncomingMessage): Promise<string | undefined> {
   return size > MAX_BODY ? undefined : Buffer.concat(chunks).toString("utf8");
 }
 
-// 본문의 경로·파일 이름은 보지 않는다. 쓰는 곳은 프로젝트의 docs/milvus/brand-request.md 하나다(설계 6.1, #63)
+// 본문의 경로·파일 이름은 보지 않는다. 쓰는 곳은 프로젝트의 docs/milvus/brand-request.md 하나다(설계 6.1)
 async function brandRequest(o: PluginOptions, req: IncomingMessage, res: ServerResponse): Promise<void> {
   const send = (status: number, body: unknown) => {
     res.statusCode = status;

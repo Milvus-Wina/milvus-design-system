@@ -1,4 +1,4 @@
-// 10/9 결정 D1: 밀버스 LWC는 JS다(org가 .ts LWC를 타입 검사해 배포를 거부했다). D3: 앱 전체 브랜드용 milvusBrandLoader
+// 밀버스 LWC는 JS다(org가 .ts LWC를 타입 검사해 배포를 거부했다). 앱 전체 브랜드는 milvusBrandLoader가 맡는다
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
@@ -30,7 +30,7 @@ test("milvusBrandLoader: targets는 lightning__UtilityBar 하나, isExposed true
   assert.equal(loader("milvusBrandLoader.html").trim(), "<template></template>");
 });
 
-// 밀버스 컴포넌트는 다른 LWC 안에서 쓰는 부품이라 앱 빌더 목록에 나오지 않는다(2026-10-14 리허설에서 사용자 지적)
+// 밀버스 컴포넌트는 다른 LWC 안에서 쓰는 부품이라 앱 빌더 목록에 나오지 않는다(2026-10-14 결정)
 test("milvusBrandLoader 밖의 밀버스 번들은 isExposed false이고 targets가 없다", () => {
   const exposed = bundles
     .filter((b) => b !== "milvusBrandLoader")

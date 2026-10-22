@@ -142,7 +142,7 @@ test("이미지 어둡게 처리 고정은 rgb·그라데이션 막에만 맞는
   assert.deepEqual(gaps.map((g) => `${g.prop}: ${g.value}`), ["background-color: #123456"]);
 });
 
-// 남은 빈틈 판정 규칙 (2026-10-12 사용자 결정, m4-gap-decisions.md "규칙" 열). 고정 목록 없이 돌려 규칙만 본다.
+// 남은 빈틈 판정 규칙 (2026-10-12 결정). 번호는 lib/fixed-list.ts 주석의 ①~⑯와 같다. 고정 목록 없이 돌려 규칙만 본다.
 // 각 CSS에는 빠져야 하는 선언과 비슷하지만 남아야 하는 선언이 같이 있다. 남는 것만 "선택자 속성 항목"으로 적는다
 const NOT_BRAND: [string, string, string[]][] = [
   [

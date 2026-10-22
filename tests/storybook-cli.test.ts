@@ -10,7 +10,7 @@ import { buildLwc, lightningBaseComponentsDir } from "../lib/lwc-build.ts";
 import { planStorybook, runStorybook } from "../cli/storybook.ts";
 
 const repo = fileURLToPath(new URL("..", import.meta.url));
-// 폴더 이름에 공백과 한글을 넣는다(리뷰 중점 5). 결과물은 임시 폴더에만 쓴다
+// 폴더 이름에 공백과 한글을 넣는다. 결과물은 임시 폴더에만 쓴다
 const tmp = mkdtempSync(join(tmpdir(), "밀버스 storybook 테스트-"));
 after(() => rmSync(tmp, { recursive: true, force: true }));
 
@@ -29,7 +29,7 @@ function makePkg(o: { light?: boolean; broken?: boolean } = {}): string {
   writeFileSync(join(pkg, "stories/lwc-entry.js"), entry);
   // 진입 파일이 상대 경로로 import하는 스토리 전용 예시 컴포넌트(패키지에는 stories 폴더째 들어간다)
   if (!o.light && !o.broken) cpSync(join(repo, "stories/lwc"), join(pkg, "stories/lwc"), { recursive: true });
-  writeFileSync(join(pkg, "stories/slds-catalog/entry.js"), o.light ? "export {};\n" : 'export { default as accordionBasic } from "accordion/basic";\n');
+  writeFileSync(join(pkg, "stories/slds-catalog/entry.js"), o.light || o.broken ? "export {};\n" : 'export { default as accordionBasic } from "accordion/basic";\n');
   writeFileSync(join(pkg, "stories/slds-catalog/examples.json"), JSON.stringify([{ name: "accordion/basic", rel: "accordion/__examples__/basic/basic.js" }]));
   // @lwc/module-resolver가 진입 파일에서 위로 package.json을 찾는다
   writeFileSync(join(pkg, "package.json"), JSON.stringify({ name: "fake-milvus-pkg", version: "0.0.1", type: "module" }));

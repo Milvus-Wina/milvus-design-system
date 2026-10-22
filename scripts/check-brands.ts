@@ -17,4 +17,4 @@ if (issues.length) {
   console.error(issues.map((i) => `${i.file}  ${i.message}${i.fix ? ` → 제안: ${i.fix}` : ""}`).join("\n"));
   process.exit(1);
 }
-console.log("✓ brands 검사: util.css가 설계 5.2·5.3 규칙(:root의 허용된 hook, 읽는 곳이 있는 이름, 대비 4.5:1)을 지킴");
+console.log("✓ brands 검사: util.css가 브랜드 규칙(:root의 허용된 hook, 읽는 곳이 있는 이름, 대비 4.5:1)을 지킴");

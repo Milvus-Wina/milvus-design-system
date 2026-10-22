@@ -2,9 +2,18 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <Meta title="런북" />
 
+{/* 캡처는 stories/runbook/images/<이름>.png로 넣는다. 파일이 없는 자리는 아무것도 그리지 않는다(목록: images/README.md) */}
+export const SHOTS = import.meta.glob("./images/*.png", { eager: true, query: "?url", import: "default" });
+export const Shot = ({ name, alt }) => {
+  const src = SHOTS[`./images/${name}.png`];
+  return src ? (
+    <img src={src} alt={alt} style={{ display: "block", maxWidth: "100%", margin: "12px 0", border: "1px solid #dddbda", borderRadius: "4px" }} />
+  ) : null;
+};
+
 # 런북: 밀버스 디자인 시스템 적용하기
 
-Salesforce 프로젝트에 밀버스 디자인 시스템을 설치하고, 브랜드를 바꾸고, org에 배포하는 순서입니다. 위에서부터 차례로 따라 하세요. 기준 버전은 **1.0.0**입니다. Windows는 Git Bash 기준입니다.
+Salesforce 프로젝트에 밀버스 디자인 시스템을 설치하고, 브랜드를 바꾸고, org에 배포하는 순서입니다. 위에서부터 차례로 따라 하세요. 기준 버전은 **1.0.1**입니다. Windows는 Git Bash 기준입니다.
 
 <table>
   <thead>
@@ -26,13 +35,19 @@ Salesforce 프로젝트에 밀버스 디자인 시스템을 설치하고, 브랜
 
 ### 1-1. 프로그램 설치
 
-- **Node** 22.18 이상: [nodejs.org](https://nodejs.org/)
+- **Node** 22.18 이상(23.x는 23.6 이상): [nodejs.org](https://nodejs.org/)
 - **pnpm**: [pnpm 설치 안내](https://pnpm.io/installation). `npm`·`npx`·`yarn`은 쓰지 마세요
 - **Salesforce CLI**: [Salesforce CLI](https://developer.salesforce.com/tools/salesforcecli)
 
 ```bash
 node -v
+```
+
+```bash
 pnpm -v
+```
+
+```bash
 sf --version
 ```
 
@@ -44,22 +59,33 @@ sf --version
 2. 권한은 **`read:packages`** 하나만 고르세요. 만료일도 정하세요
 3. 토큰 값은 파일·채팅·문서에 붙여 넣지 마세요. 아래처럼 환경 변수에만 두세요
 
+<Shot name="01-github-token" alt="GitHub 토큰 만들기: read:packages만 체크" />
+
 ### 1-3. 토큰을 환경 변수 `NODE_AUTH_TOKEN`에 넣기
 
 **macOS** (키체인에 넣어 두고 터미널이 열릴 때 꺼내 씁니다)
 
+토큰을 키체인에 넣으세요. 실행하면 토큰을 입력하라고 나옵니다.
+
 ```bash
 security add-generic-password -a "$USER" -s milvus-npm-token -w
+```
+
+터미널이 열릴 때 꺼내 쓰도록 설정하세요.
+
+```bash
 echo 'export NODE_AUTH_TOKEN="$(security find-generic-password -a "$USER" -s milvus-npm-token -w)"' >> ~/.zshrc
 ```
 
-첫 줄을 실행하면 토큰을 입력하라고 나옵니다. 그다음 새 터미널을 여세요.
+그다음 새 터미널을 여세요.
 
 **Windows**
 
 1. 시작 메뉴에서 **"계정의 환경 변수 편집"** 을 여세요
 2. 사용자 변수 → **새로 만들기** → 이름 `NODE_AUTH_TOKEN`, 값에 토큰을 붙여 넣으세요
 3. Git Bash·VS Code·Claude 앱을 모두 닫고 다시 여세요
+
+<Shot name="02-windows-env" alt="Windows 사용자 변수에 NODE_AUTH_TOKEN 추가" />
 
 ### 1-4. `~/.npmrc`에 토큰 줄 넣기
 
@@ -75,8 +101,15 @@ printenv NODE_AUTH_TOKEN > /dev/null && echo ok
 
 ### 1-5. org 로그인
 
+브라우저가 열리면 로그인하세요.
+
 ```bash
 sf org login web --alias my-org
+```
+
+별칭이 보이는지 확인하세요.
+
+```bash
 sf org list
 ```
 
@@ -102,8 +135,15 @@ printf "minimumReleaseAgeExclude:\n  - '@milvus-wina/*'\nallowBuilds:\n  esbuild
 
 ```bash
 pnpm add -D @milvus-wina/milvus-design-system
+```
+
+버전이 나오면 설치된 것입니다.
+
+```bash
 pnpm milvus --version
 ```
+
+<Shot name="03-install" alt="pnpm milvus --version 결과" />
 
 ## 3. init (프로젝트마다 한 번)
 
@@ -125,6 +165,8 @@ pnpm milvus init --target-org my-org --brand Demo
 
 끝나면 만든 파일과 다음 할 일이 나옵니다. 만든 파일은 모두 커밋하세요(`.milvus/` 폴더만 빼고).
 
+<Shot name="04-init" alt="pnpm milvus init 결과: 만든 파일과 다음 단계" />
+
 ## 4. 브랜드 요청 적기
 
 ```bash
@@ -134,6 +176,9 @@ pnpm milvus storybook
 1. 브라우저에서 **시작하기 / 브랜드 명세**를 여세요
 2. 바꾸고 싶은 칸만 적으세요. 빈 칸은 그대로 둡니다
 3. **저장**을 누르세요. `docs/milvus/brand-request.md`가 생깁니다
+
+<Shot name="05-spec-page" alt="브랜드 명세 페이지: 할 일 세 줄과 입력 네 칸" />
+<Shot name="06-spec-saved" alt="저장한 뒤 마지막 저장 시각 표시" />
 
 <table>
   <thead>
@@ -168,6 +213,9 @@ pnpm milvus storybook
 ```
 
 1. Claude가 **브랜드 명세 표**를 먼저 보여 줍니다. 아직 파일은 고치지 않습니다
+
+<Shot name="07-claude-table" alt="Claude가 보여 주는 브랜드 명세 표" />
+
 2. 표를 확인하세요. **추정**이라고 적힌 값은 Claude가 정한 값입니다. 원하는 값이 있으면 말하세요
 3. 맞으면 "승인"이라고 하세요. Claude가 파일을 고치고 규칙을 스스로 검사합니다
 4. Storybook 화면이 바뀝니다. 더 고치려면 "카드 그림자는 기본으로 되돌려줘"처럼 이어서 말하세요
@@ -181,14 +229,20 @@ pnpm milvus check
 ```
 
 - `milvus check 통과`가 나와야 합니다
+
+<Shot name="08-check" alt="pnpm milvus check 통과" />
+
 - Storybook 위 툴바 🖌 메뉴에서 브랜드를 바꿔 가며 같은 화면을 비교하세요
+
+<Shot name="09-storybook-brand" alt="툴바에서 브랜드를 바꾼 Storybook 화면" />
+
 - **시작하기 / 반영 검사**에서 [반영 검사 시작]을 누르면 모든 컴포넌트에 닿는지 볼 수 있습니다(몇 분, 화면을 앞에 두세요)
 
 ## 7. 배포
 
 > **배포하면 org 전체 사용자 화면이 바뀝니다.** 팀 공용 org나 고객 org에서는 담당자와 먼저 확인하세요.
 
-먼저 계획을 보세요. 이 명령은 아무것도 바꾸지 않습니다.
+먼저 계획을 보세요. 계획을 보여 준 뒤 "이 계획대로 배포할까요? (y/N)"를 묻습니다. 계획만 볼 때는 Enter(N)를 누르세요. y를 누르면 바로 배포됩니다.
 
 ```bash
 pnpm milvus deploy
@@ -196,9 +250,13 @@ pnpm milvus deploy
 
 대상 org, 바뀌는 테마, 올릴 파일 목록을 확인했으면 실행하세요.
 
+<Shot name="10-deploy-plan" alt="pnpm milvus deploy 계획 출력" />
+
 ```bash
 pnpm milvus deploy --yes
 ```
+
+<Shot name="11-deploy-done" alt="배포를 마쳤습니다 출력" />
 
 - 파일 하나라도 실패하면 전부 되돌리고 테마도 바꾸지 않습니다
 - 끝나면 브라우저를 새로고침하세요
@@ -214,15 +272,25 @@ pnpm milvus deploy --yes
 
 안 하면 밀버스 컴포넌트가 있는 페이지에만 브랜드가 걸리고, 다른 화면에는 테마 색만 들어갑니다.
 
+<Shot name="12-app-manager" alt="App Manager 유틸리티 항목: Milvus Brand Loader와 백그라운드 로드 체크" />
+
 **Visualforce를 쓰면**
 
 Setup → User Interface → **Visualforce Settings**에서 "Use SLDS 2 for pages that include `<apex:slds>` when an SLDS 2 theme is active"를 켜세요. VF 페이지에는 `<c:milvusHead/>`를 한 줄 넣으세요.
+
+<Shot name="13-vf-settings" alt="Visualforce Settings의 SLDS 2 설정" />
+
+배포가 끝나면 org 화면에 브랜드가 걸린 것을 확인하세요.
+
+<Shot name="14-lex-after" alt="배포 뒤 Lightning Experience 화면" />
 
 ## 9. 컴포넌트 쓰기
 
 1. Storybook **컴포넌트 / 기본**에서 먼저 찾으세요. Salesforce 기본 컴포넌트(`lightning-*`)입니다
 2. 없으면 **컴포넌트 / 밀버스 추가**를 쓰세요
 3. 예제 아래 **Show code**를 눌러 코드를 복사하세요
+
+<Shot name="15-show-code" alt="예제 아래 Show code를 펼친 화면" />
 
 <table>
   <thead>
@@ -257,16 +325,30 @@ export default class OrderSummary extends LightningElement {
 
 ## 10. 새 버전으로 올리기
 
+최신 버전을 설치하세요.
+
 ```bash
-pnpm add -D @milvus-wina/milvus-design-system@1.0.0
+pnpm add -D @milvus-wina/milvus-design-system@latest
+```
+
+밀버스 파일을 새 버전으로 바꾸세요.
+
+```bash
 pnpm milvus update
+```
+
+<Shot name="16-update" alt="pnpm milvus update 결과" />
+
+규칙을 확인하세요.
+
+```bash
 pnpm milvus check
 ```
 
 - 올린 사람이 결과를 커밋하세요. 팀원은 받은 뒤 `pnpm install`만 하면 됩니다
 - `update`가 멈추면 밀버스 파일을 직접 고친 것입니다. 고친 내용을 따로 옮겨 둔 뒤 `pnpm milvus update --force`로 되돌리세요
 - 바뀐 파일이 있으면 7단계처럼 배포하세요
-- 이전 패키지(`@a40418a/milvus-design-system`)를 쓰던 프로젝트는 `.npmrc`의 `@a40418a:registry` 줄을 `@milvus-wina:registry=https://npm.pkg.github.com`으로 바꾸고, `pnpm remove @a40418a/milvus-design-system` 뒤 위 명령을 실행하세요
+- 이전 패키지(`@a40418a/milvus-design-system`)를 쓰던 프로젝트는 `.npmrc`의 `@a40418a:registry` 줄을 `@milvus-wina:registry=https://npm.pkg.github.com`으로 바꾸고, `pnpm remove @a40418a/milvus-design-system` 뒤 위 명령을 실행하세요. pnpm 11이면 `pnpm-workspace.yaml`의 `'@a40418a/*'`도 `'@milvus-wina/*'`로 바꾸세요(2단계 명령으로 파일을 다시 만들어도 됩니다)
 
 ## 11. 팀원이 합류할 때
 
@@ -277,6 +359,9 @@ pnpm milvus check
 
 ```bash
 pnpm install
+```
+
+```bash
 pnpm milvus --version
 ```
 

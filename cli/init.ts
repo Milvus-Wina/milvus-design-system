@@ -25,7 +25,7 @@ const FA = "force-app/main/default";
 const DEFAULT_BRAND_COLOR = "#0176D3";
 const VF_CSS = `${FA}/staticresources/milvusVf.css`;
 // 프로젝트 .npmrc에는 레지스트리 줄만 넣는다. 토큰 줄(//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN})은 사용자 ~/.npmrc에 둔다.
-// pnpm 11.5.3·10.34.2부터 프로젝트 .npmrc의 ${…} 토큰은 경고와 함께 무시된다(#46). init은 설치 뒤에 돌므로 인증은 이미 동작한다
+// pnpm 11.5.3·10.34.2부터 프로젝트 .npmrc의 ${…} 토큰은 경고와 함께 무시된다. init은 설치 뒤에 돌므로 인증은 이미 동작한다
 const NPMRC = ["@milvus-wina:registry=https://npm.pkg.github.com"];
 const USAGE = "사용법: pnpm milvus init --target-org <별칭> (--brand <이름> | --from-org) [--no-vf]";
 
@@ -60,7 +60,7 @@ export function planInit(o: {
     settingsOp(o.pkgRoot),
     { kind: "add-key", dest: "package.json", key: "scripts.storybook", value: "milvus storybook" },
     { kind: "append-lines", dest: ".gitignore", lines: [".milvus/"] },
-    // 밀버스 LWC는 JS라 tsconfig 줄은 넣지 않는다(10/9 D1)
+    // 밀버스 LWC는 JS라 tsconfig 줄은 넣지 않는다(설계 1장 D1)
     { kind: "append-lines", dest: ".forceignore", lines: ["**/__tests__/**"] },
     { kind: "append-lines", dest: ".npmrc", lines: NPMRC },
     {
@@ -78,7 +78,7 @@ export function planInit(o: {
   }
   const orgLogo = o.orgBrand?.logo;
   if (orgLogo) {
-    // R26: org 로고는 자산 이름과 메타를 그대로 둔다. BRAND_IMAGE가 같은 자산을 가리키므로 배포해도 org에 자산이 하나 더 생기지 않는다
+    // org 로고는 자산 이름과 메타를 그대로 둔다. BRAND_IMAGE가 같은 자산을 가리키므로 배포해도 org에 자산이 하나 더 생기지 않는다
     ops.push(
       { kind: "copy", dest: `${FA}/contentassets/${orgLogo.asset}.asset`, src: orgLogo.file },
       { kind: "create", dest: `${FA}/contentassets/${orgLogo.asset}.asset-meta.xml`, content: orgLogo.meta },
@@ -151,7 +151,7 @@ function sfMessage(r: { stdout: string; stderr: string }): string {
 
 /**
  * --from-org: 활성 테마 이름을 읽고, 그 테마·BrandingSet·로고만 임시 폴더(tmp)로 받아 검증한다(설계 4.1의 4).
- * 프로젝트에는 쓰지 않는다. 받은 파일은 바꾸지 않는다(R26: 로고 자산 이름과 BRAND_IMAGE도 org 그대로). 로고 내용은 tmp에 파일로 둔다
+ * 프로젝트에는 쓰지 않는다. 받은 파일은 바꾸지 않는다(로고 자산 이름과 BRAND_IMAGE도 org 그대로). 로고 내용은 tmp에 파일로 둔다
  */
 async function fetchOrgBrand(
   sf: SfRunner,
@@ -183,9 +183,9 @@ async function fetchOrgBrand(
   if (!theme.includes(`<defaultBrandingSet>LEXTHEMING${name}</defaultBrandingSet>`)) {
     throw new Error(`테마 ${name}의 defaultBrandingSet이 LEXTHEMING${name}이 아닙니다. --brand <이름>으로 실행하세요`);
   }
-  // 10/9 결정: SLDS 2 org 기준(설계 1장). SLDS 1 테마는 범위 밖이라 받지 않는다
+  // SLDS 2 org가 기준이다(설계 1장). SLDS 1 테마는 범위 밖이라 받지 않는다
   if (!theme.includes("<designSystemVersion>SLDS_v2</designSystemVersion>")) {
-    throw new Error(`밀버스는 SLDS 2 테마를 기준으로 합니다. SLDS 1 테마 지원은 #22에서 검토 중입니다(활성 테마: ${name})`);
+    throw new Error(`밀버스는 SLDS 2 테마를 기준으로 합니다. SLDS 1 테마는 지원하지 않습니다(활성 테마: ${name})`);
   }
   const { brandImage } = readBranding(brandingSet); // BRAND_COLOR가 없거나 #rrggbb가 아니면 던진다
   if (!brandImage) return { name, orgBrand: { brandingSet, theme } };
@@ -248,7 +248,7 @@ export async function runInit(argv: string[], deps: { sf?: SfRunner; nodeVersion
     }
 
     // 조회 결과는 프로젝트 밖 임시 폴더에 받아 검증 전에는 프로젝트에 쓰지 않는다. sf의 작업 폴더는 그 임시 폴더가 아니라 OS 임시 폴더다:
-    // Windows는 작업 폴더로 잡힌 폴더를 지우지 못한다(EPERM, #49)
+    // Windows는 작업 폴더로 잡힌 폴더를 지우지 못한다(EPERM)
     tmp = mkdtempSync(join(tmpdir(), "milvus-init-"));
     const login = await sf(["org", "list", "limits", "--target-org", targetOrg, "--json"], tmpdir());
     if (login.code === 127) throw new Error("sf CLI를 찾지 못했습니다. Salesforce CLI를 설치한 뒤 다시 실행하세요");

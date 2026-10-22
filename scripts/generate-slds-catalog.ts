@@ -238,10 +238,10 @@ const COUNT_AT = { reached: 0, bridge: 1, fixed: 2, gap: 3 } as const;
 // 메우는 방법. 브리지가 잇는 변수는 그리는 쪽(stories/salesforce-source.js)이 SPEC_ITEMS에서 붙인다
 function how(j: Judged): string {
   if (j.status === "bridge") return "브리지";
-  if (j.status === "gap") return "빈틈: 9.4 고정 목록에 없다(사용자 합의 필요)";
+  if (j.status === "gap") return "빈틈: Salesforce 고정 목록에 없다";
   const labels = fixedItemsOf(j.d, FIXED_ITEMS).filter((f) => j.mode === "native" || f.mode === "both").map((f) => f.label);
   const cHooks = C_HOOK_CANDIDATES.filter((c) => new RegExp(`${c}(?![\\w-])`).test(j.d.value));
-  return `Salesforce 고정${labels.length ? `: ${labels.join(", ")}` : ""}${cHooks.length ? ` · c hook 후보 ${cHooks.join(", ")}(설계 9.2, 지금은 쓰지 않음)` : ""}`;
+  return `Salesforce 고정${labels.length ? `: ${labels.join(", ")}` : ""}${cHooks.length ? ` · c hook 후보 ${cHooks.join(", ")}(native 전환 뒤 검토, 지금은 쓰지 않음)` : ""}`;
 }
 
 /** 출처 하나(기본 컴포넌트 폴더 하나 또는 SLDS 블루프린트 하나)의 명세 항목별 개수, hook 행, 빈틈 행 */

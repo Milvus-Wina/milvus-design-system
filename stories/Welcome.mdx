@@ -1,0 +1,34 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import logo from "../brands/Milvus_DesignSystem/logo.jpg";
+
+<Meta title="시작하기" />
+
+<img
+  src={logo}
+  alt="MILVUS"
+  width="240"
+/>
+
+# 밀버스 디자인 시스템
+
+Salesforce 화면에 쓰는 LWC 컴포넌트를 모아 두었습니다. 브랜드를 바꾸면 모든 컴포넌트가 함께 바뀝니다.
+
+## 브랜드 바꾸기
+
+1. **시작하기 / 브랜드 명세**에서 바꾸고 싶은 것을 적고 저장하세요.
+2. Claude Code에 "브랜드 요청 반영해줘"라고 하세요.
+3. 위 툴바의 🖌 메뉴에서 브랜드를 골라 화면을 확인하세요.
+4. 괜찮으면 `pnpm milvus deploy`로 org에 배포하세요.
+
+## 컴포넌트 쓰기
+
+- **컴포넌트 / 기본**에서 먼저 찾으세요. Salesforce 기본 컴포넌트(`lightning-*`)입니다.
+- 없으면 **컴포넌트 / 밀버스 추가**를 보세요.
+- 각 예제 아래 **Show code**를 눌러 코드를 복사하세요.
+
+## 알아 두세요
+
+- 이 화면은 미리보기입니다. org는 배포해야 바뀝니다.
+- 데이터(`@wire`, Apex)가 붙은 화면은 `sf lightning dev component`로 확인하세요.
+
+처음 설치하거나 팀원과 함께 해 보려면 [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북--docs)을 보세요.

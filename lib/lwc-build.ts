@@ -1,0 +1,124 @@
+import { readFileSync, readdirSync, rmSync } from "node:fs";
+import { createRequire } from "node:module";
+import { dirname, join, resolve } from "node:path";
+import lwc from "@lwc/rollup-plugin";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import replacePlugin from "@rollup/plugin-replace";
+import { rollup, type OutputOptions, type Plugin, type RollupOptions } from "rollup";
+
+type LwcModule = { name: string; path: string };
+
+// 타입 선언이 CommonJS 형식이라 NodeNext에서는 default가 한 번 더 감싸진 것으로 본다. 실행 시점(ESM)에는 함수다
+const replace = replacePlugin as unknown as typeof replacePlugin.default;
+
+// org에서의 동작을 대신하는 모듈. LWC 플러그인의 npm 해석보다 먼저 가로챈다
+// - 게이트: org는 기본 컴포넌트를 synthetic shadow로 그린다(2026-10-07 실측). Storybook도 전부 synthetic으로 그린다.
+//   npm 패키지는 기능 게이트(@salesforce/gate/*)를 모두 열어 둔다(external/gateStub.js). 그중 combobox의
+//   ElementInternals 게이트가 열려 있으면 attachInternals()를 불러 synthetic에서 오류가 난다. org에서는 같은 컴포넌트가
+//   synthetic으로 동작하므로 닫혀 있다고 보고, 이 게이트만 닫는다
+// - npm에 없는 플랫폼 모듈: CSS는 Storybook이 직접 넣으므로 loadStyle은 바로 끝나고, 정적 리소스 주소는 경로 문자열이다
+const CLOSED_GATES = new Set(["@salesforce/gate/bc.260.enableComboboxElementInternals"]);
+const RESOURCE_URL = "@salesforce/resourceUrl/";
+const PREFIX = "\0milvus-platform:";
+const platformModule = (id: string) =>
+  CLOSED_GATES.has(id)
+    ? "export default { isOpen: () => false };"
+    : id === "lightning/platformResourceLoader"
+      ? "export const loadStyle = () => Promise.resolve(); export const loadScript = loadStyle;"
+      : id.startsWith(RESOURCE_URL)
+        ? `export default ${JSON.stringify(`/milvus-resource/${id.slice(RESOURCE_URL.length)}`)};`
+        : null;
+const platformModules: Plugin = {
+  name: "milvus-platform-modules",
+  resolveId: (id) => (platformModule(id) === null ? null : PREFIX + id),
+  load: (id) => (id.startsWith(PREFIX) ? platformModule(id.slice(PREFIX.length)) : null)
+};
+
+// LWC 해석기(@lwc/module-resolver)는 npm 모듈 기록을 import한 파일에서 위로 찾은 package.json 폴더 기준으로 찾는다.
+// 고객 프로젝트의 LWC가 import하면 그 기준은 고객 프로젝트 루트이고, pnpm은 이 패키지의 의존성을 거기 두지 않아 이름으로는 찾지 못한다.
+// npmFromPackage이면 이름 대신 이 패키지에서 찾은 폴더의 절대 경로를 기록으로 준다(milvus storybook).
+// 저장소 빌드(pnpm build:lwc)는 이름 기록 그대로다. 절대 경로로 바꾸면 LWC 엔진 사본이 둘에서 하나로 합쳐져 번들이 달라지므로 따로 확인한 뒤에 바꾼다
+const npmDir = (name: string): string => dirname(createRequire(import.meta.url).resolve(`${name}/package.json`));
+// @lwc/rollup-plugin 9.4.3의 defaultModules 복사본이다. 플러그인을 올릴 때 기본값과 비교한다
+const ENGINE_MODULES = ["@lwc/engine-dom", "@lwc/synthetic-shadow", "@lwc/wire-service"];
+// Windows 경로 구분자도 /로 맞춰 비교한다
+const slash = (id: string) => id.replaceAll("\\", "/");
+// 고객이 고칠 수 없는 공식 컴포넌트(lightning-base-components)의 경고인지
+const inLbc = (id?: string) => id !== undefined && slash(id).includes("/lightning-base-components/");
+
+export function lwcRollupOptions(o: { out: string; entries: Record<string, string>; modules: LwcModule[]; npmFromPackage?: boolean }): RollupOptions {
+  const npm = (name: string) => ({ npm: o.npmFromPackage ? npmDir(name) : name });
+  return {
+    // 모든 컴포넌트를 한 번에 빌드해 LWC 엔진이 한 벌만 들어가게 한다
+    input: o.entries,
+    // lightning-base-components 안의 동적 import 때문에 chunk가 여러 개 생긴다. 엔진은 공통 chunk로 한 벌만 들어간다
+    output: {
+      dir: o.out,
+      entryFileNames: "[name].js",
+      format: "esm",
+      sourcemap: true,
+      // synthetic shadow는 LWC 엔진보다 먼저 실행돼야 한다(엔진이 로드될 때 한 번 확인한다). 진입이 둘이면 엔진이
+      // 공통 chunk로 빠져 진입 파일 본문보다 먼저 실행되므로, synthetic shadow도 chunk로 빼서 import 순서로 앞에 둔다
+      manualChunks: (id) => (slash(id).includes("@lwc/synthetic-shadow") ? "synthetic-shadow" : undefined)
+    },
+    // 해석하지 못한 import를 그대로 두면 Storybook에서 파일 전체가 깨진다. 빌드 단계에서 실패시킨다
+    onwarn(warning, warn) {
+      if (warning.code === "UNRESOLVED_IMPORT") throw new Error(warning.message);
+      // 고객 프로젝트에서는 공식 컴포넌트 안의 컴파일 경고와 순환 import 경고를 숨긴다(고객이 고칠 수 없다). 저장소 빌드는 그대로 보인다
+      if (o.npmFromPackage && (inLbc(warning.id) || (warning.code === "CIRCULAR_DEPENDENCY" && warning.ids?.every(inLbc)))) return;
+      warn(warning);
+    },
+    // 대체 모듈은 LWC 플러그인보다 앞에 둔다
+    plugins: [
+      platformModules,
+      replace({ preventAssignment: true, values: { "process.env.NODE_ENV": JSON.stringify("development") } }),
+      lwc({
+        // npm 모듈(lightning-base-components, @lwc/*)을 찾는 기준 폴더. 지정하지 않으면 첫 진입 파일의 폴더를 쓰고 경고한다
+        rootDir: dirname(resolve(Object.values(o.entries)[0])),
+        // 일부 공식 컴포넌트(multiColumnSortingModal 등)가 lwc:is 동적 컴포넌트를 쓴다
+        enableDynamicComponents: true,
+        // defaultModules는 플러그인 기본값(ENGINE_MODULES)과 같은 목록이다
+        defaultModules: ENGINE_MODULES.map(npm),
+        modules: [...o.modules, npm("lightning-base-components")]
+      }),
+      nodeResolve()
+    ]
+  };
+}
+
+export async function buildLwc(o: Parameters<typeof lwcRollupOptions>[0]): Promise<void> {
+  // Rollup은 출력 폴더를 비우지 않는다. 해시가 붙은 이전 chunk가 쌓이지 않게 먼저 지운다
+  rmSync(o.out, { recursive: true, force: true });
+  const { output, ...input } = lwcRollupOptions(o);
+  const bundle = await rollup(input);
+  try {
+    await bundle.write(output as OutputOptions);
+  } finally {
+    await bundle.close();
+  }
+}
+
+// @lwc/module-resolver의 dir 레코드에는 namespace 옵션이 없다.
+// SFDX 경로(lwc/<이름>/<이름>.js)를 c/<이름>으로 쓰려면 컴포넌트마다 alias를 등록해야 한다.
+// .ts는 찾지 않는다. org에 올라가는 것은 .js다(10/9 D1. 공식 문서도 LWC TypeScript를 배포 전에 .js로 변환하라고 한다)
+export function sfdxLwcModules(projectRoot: string): LwcModule[] {
+  const { packageDirectories } = JSON.parse(readFileSync(join(projectRoot, "sfdx-project.json"), "utf8")) as {
+    packageDirectories: { path: string }[];
+  };
+  const found = new Map<string, string>();
+  for (const { path } of packageDirectories) {
+    const base = resolve(projectRoot, path);
+    for (const file of readdirSync(base, { recursive: true, encoding: "utf8" })) {
+      const [, name] = /(?:^|[\\/])lwc[\\/]([^\\/]+)[\\/]\1\.js$/.exec(file) ?? [];
+      if (name && !found.has(`c/${name}`)) found.set(`c/${name}`, join(base, file));
+    }
+  }
+  return [...found].map(([name, path]) => ({ name, path }));
+}
+
+// 카탈로그 examples.json의 상대 경로(lightning-base-components/src/lightning 기준)를 실행 시점의 절대 경로로 바꾼다
+export const catalogModules = (examples: { name: string; rel: string }[], lbcDir: string): LwcModule[] =>
+  examples.map(({ name, rel }) => ({ name, path: resolve(lbcDir, rel) }));
+
+// lightning-base-components의 컴포넌트 폴더(src/lightning). 설치된 패키지에서 찾으므로 저장소와 고객 프로젝트 모두 같다
+export const lightningBaseComponentsDir = (): string => join(npmDir("lightning-base-components"), "src/lightning");

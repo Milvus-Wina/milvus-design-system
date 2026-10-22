@@ -1,0 +1,14 @@
+// synthetic shadow는 LWC 엔진보다 먼저 로드해야 한다 (Salesforce 플랫폼과 같은 shadow 모드)
+import "@lwc/synthetic-shadow";
+
+export { createElement } from "lwc";
+
+// 밀버스 추가. Salesforce 기본 컴포넌트는 공식 예제 카탈로그(catalog.js)에서 렌더한다
+export { default as MilvusBadge } from "c/milvusBadge";
+export { default as MilvusButton } from "c/milvusButton";
+export { default as MilvusMultiSelect } from "c/milvusMultiSelect";
+export { default as MilvusNotification } from "c/milvusNotification";
+export { default as MilvusCalendar } from "c/milvusCalendar";
+export { default as MilvusBrandLoader } from "c/milvusBrandLoader";
+// 스토리 전용 예시 컴포넌트(슬롯에 내용을 넣는 쪽). 패키지 stories 폴더에 함께 들어간다
+export { default as NotificationSlotDemo } from "./lwc/notificationSlotDemo/notificationSlotDemo.js";

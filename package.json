@@ -1,0 +1,120 @@
+{
+  "name": "@milvus-wina/milvus-design-system",
+  "version": "1.0.0",
+  "description": "밀버스 디자인 시스템 (SFDX + LWC + Storybook)",
+  "type": "module",
+  "bin": {
+    "milvus": "dist/cli/index.js"
+  },
+  "files": [
+    "dist/cli",
+    "dist/lib",
+    "dist/hooks-index.json",
+    "templates",
+    "force-app/main/default/lwc/milvus*/*",
+    "!force-app/**/__tests__",
+    "audit/report.json",
+    "stories",
+    "!stories/runbook",
+    ".storybook",
+    "lib/storybook-plugin.ts",
+    "lib/branding.ts",
+    "lib/contrast.ts",
+    "lib/hooks-index.ts",
+    "lib/palette.ts",
+    "lib/rules.ts",
+    "lib/request.ts",
+    "lib/spec-items.ts",
+    "lib/fixed-list.ts",
+    "lib/bridge-vars.ts",
+    "lib/sentinel.ts",
+    "lib/reflect.ts",
+    "cli/context.ts",
+    "brands/Milvus_DesignSystem/logo.jpg"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Milvus-Wina/milvus-design-system.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "lint": "eslint \"force-app/**/lwc/**/*.js\"",
+    "test": "pnpm typecheck && pnpm test:unit && pnpm test:node && pnpm test:brands && pnpm audit:brand",
+    "test:unit": "sfdx-lwc-jest",
+    "test:node": "node --test \"tests/**/*.test.ts\"",
+    "test:unit:watch": "sfdx-lwc-jest --watch",
+    "test:unit:debug": "sfdx-lwc-jest --debug",
+    "test:unit:coverage": "sfdx-lwc-jest --coverage",
+    "build:cli": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "prepack": "pnpm build:cli && node scripts/build-hooks-index.ts && node scripts/generate-slds-catalog.ts",
+    "build:lwc": "node scripts/generate-slds-catalog.ts && node scripts/build-lwc.ts",
+    "storybook": "pnpm build:lwc && storybook dev -p 6006",
+    "build-storybook": "pnpm build:lwc && storybook build -o storybook-static",
+    "sync:theme": "node scripts/sync-theme.mjs",
+    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "prepare": "husky || true",
+    "precommit": "lint-staged",
+    "test:brands": "node scripts/check-brands.ts",
+    "audit:brand": "node scripts/audit/run.ts --check",
+    "bridge:generate": "node scripts/bridge/generate.ts"
+  },
+  "dependencies": {
+    "@lwc/engine-dom": "9.4.3",
+    "@lwc/rollup-plugin": "9.4.3",
+    "@lwc/synthetic-shadow": "9.4.3",
+    "@lwc/wire-service": "9.4.3",
+    "@rollup/plugin-node-resolve": "16.0.3",
+    "@rollup/plugin-replace": "6.0.3",
+    "@salesforce-ux/design-system-2": "2.264.2",
+    "@storybook/addon-a11y": "10.6.0",
+    "@storybook/addon-docs": "10.6.0",
+    "@storybook/web-components-vite": "10.6.0",
+    "lightning-base-components": "1.28.19-alpha",
+    "lwc": "9.4.3",
+    "postcss": "^8.5.29",
+    "rollup": "4.63.5",
+    "storybook": "10.6.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.6"
+  },
+  "devDependencies": {
+    "@lwc/eslint-plugin-lwc": "^3.1.0",
+    "@prettier/plugin-xml": "^3.4.1",
+    "@salesforce/eslint-config-lwc": "^4.0.0",
+    "@salesforce/eslint-plugin-aura": "^3.0.0",
+    "@salesforce/eslint-plugin-lightning": "^2.0.0",
+    "@salesforce/sfdx-lwc-jest": "^7.0.2",
+    "@types/node": "^22.20.5",
+    "eslint": "^9.29.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.14.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.5.3",
+    "prettier-plugin-apex": "^2.2.6"
+  },
+  "lint-staged": {
+    "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+      "prettier --write"
+    ],
+    "**/{aura,lwc}/**/*.js": [
+      "eslint"
+    ],
+    "**/lwc/**": [
+      "sfdx-lwc-jest -- --bail --findRelatedTests --passWithNoTests"
+    ]
+  },
+  "packageManager": "pnpm@10.13.1",
+  "engines": {
+    "node": "^22.18.0 || >=23.6.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

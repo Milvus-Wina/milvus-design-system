@@ -59,8 +59,6 @@ sf --version
 2. 권한은 **`read:packages`** 하나만 고르세요. 만료일도 정하세요
 3. 토큰 값은 파일·채팅·문서에 붙여 넣지 마세요. 아래처럼 환경 변수에만 두세요
 
-<Shot name="01-github-token" alt="GitHub 토큰 만들기: read:packages만 체크" />
-
 ### 1-3. 토큰을 환경 변수 `NODE_AUTH_TOKEN`에 넣기
 
 **macOS** (키체인에 넣어 두고 터미널이 열릴 때 꺼내 씁니다)
@@ -84,8 +82,6 @@ echo 'export NODE_AUTH_TOKEN="$(security find-generic-password -a "$USER" -s mil
 1. 시작 메뉴에서 **"계정의 환경 변수 편집"** 을 여세요
 2. 사용자 변수 → **새로 만들기** → 이름 `NODE_AUTH_TOKEN`, 값에 토큰을 붙여 넣으세요
 3. Git Bash·VS Code·Claude 앱을 모두 닫고 다시 여세요
-
-<Shot name="02-windows-env" alt="Windows 사용자 변수에 NODE_AUTH_TOKEN 추가" />
 
 ### 1-4. `~/.npmrc`에 토큰 줄 넣기
 
@@ -143,8 +139,6 @@ pnpm add -D @milvus-wina/milvus-design-system
 pnpm milvus --version
 ```
 
-<Shot name="03-install" alt="pnpm milvus --version 결과" />
-
 ## 3. init (프로젝트마다 한 번)
 
 ```bash
@@ -165,8 +159,6 @@ pnpm milvus init --target-org my-org --brand Demo
 
 끝나면 만든 파일과 다음 할 일이 나옵니다. 만든 파일은 모두 커밋하세요(`.milvus/` 폴더만 빼고).
 
-<Shot name="04-init" alt="pnpm milvus init 결과: 만든 파일과 다음 단계" />
-
 ## 4. 브랜드 요청 적기
 
 ```bash
@@ -178,7 +170,6 @@ pnpm milvus storybook
 3. **저장**을 누르세요. `docs/milvus/brand-request.md`가 생깁니다
 
 <Shot name="05-spec-page" alt="브랜드 명세 페이지: 할 일 세 줄과 입력 네 칸" />
-<Shot name="06-spec-saved" alt="저장한 뒤 마지막 저장 시각 표시" />
 
 <table>
   <thead>
@@ -230,11 +221,7 @@ pnpm milvus check
 
 - `milvus check 통과`가 나와야 합니다
 
-<Shot name="08-check" alt="pnpm milvus check 통과" />
-
 - Storybook 위 툴바 🖌 메뉴에서 브랜드를 바꿔 가며 같은 화면을 비교하세요
-
-<Shot name="09-storybook-brand" alt="툴바에서 브랜드를 바꾼 Storybook 화면" />
 
 - **시작하기 / 반영 검사**에서 [반영 검사 시작]을 누르면 모든 컴포넌트에 닿는지 볼 수 있습니다(몇 분, 화면을 앞에 두세요)
 
@@ -250,13 +237,9 @@ pnpm milvus deploy
 
 대상 org, 바뀌는 테마, 올릴 파일 목록을 확인했으면 실행하세요.
 
-<Shot name="10-deploy-plan" alt="pnpm milvus deploy 계획 출력" />
-
 ```bash
 pnpm milvus deploy --yes
 ```
-
-<Shot name="11-deploy-done" alt="배포를 마쳤습니다 출력" />
 
 - 파일 하나라도 실패하면 전부 되돌리고 테마도 바꾸지 않습니다
 - 끝나면 브라우저를 새로고침하세요
@@ -272,13 +255,9 @@ pnpm milvus deploy --yes
 
 안 하면 밀버스 컴포넌트가 있는 페이지에만 브랜드가 걸리고, 다른 화면에는 테마 색만 들어갑니다.
 
-<Shot name="12-app-manager" alt="App Manager 유틸리티 항목: Milvus Brand Loader와 백그라운드 로드 체크" />
-
 **Visualforce를 쓰면**
 
 Setup → User Interface → **Visualforce Settings**에서 "Use SLDS 2 for pages that include `<apex:slds>` when an SLDS 2 theme is active"를 켜세요. VF 페이지에는 `<c:milvusHead/>`를 한 줄 넣으세요.
-
-<Shot name="13-vf-settings" alt="Visualforce Settings의 SLDS 2 설정" />
 
 배포가 끝나면 org 화면에 브랜드가 걸린 것을 확인하세요.
 
@@ -289,8 +268,6 @@ Setup → User Interface → **Visualforce Settings**에서 "Use SLDS 2 for page
 1. Storybook **컴포넌트 / 기본**에서 먼저 찾으세요. Salesforce 기본 컴포넌트(`lightning-*`)입니다
 2. 없으면 **컴포넌트 / 밀버스 추가**를 쓰세요
 3. 예제 아래 **Show code**를 눌러 코드를 복사하세요
-
-<Shot name="15-show-code" alt="예제 아래 Show code를 펼친 화면" />
 
 <table>
   <thead>
@@ -336,8 +313,6 @@ pnpm add -D @milvus-wina/milvus-design-system@latest
 ```bash
 pnpm milvus update
 ```
-
-<Shot name="16-update" alt="pnpm milvus update 결과" />
 
 규칙을 확인하세요.
 

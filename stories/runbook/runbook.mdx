@@ -274,7 +274,8 @@ Setup → User Interface → **Visualforce Settings**에서 "Use SLDS 2 for page
     <tr><th>필요한 것</th><th>쓸 것</th></tr>
   </thead>
   <tbody>
-    <tr><td>버튼, 입력, 표, 모달</td><td>`lightning-button`, `lightning-input`, `lightning-datatable`, `LightningModal`</td></tr>
+    <tr><td>버튼, 입력, 표</td><td>`lightning-button`, `lightning-input`, `lightning-datatable`</td></tr>
+    <tr><td>모달</td><td>`modal_<이름>` 컴포넌트 안에 `c-milvus-modal`</td></tr>
     <tr><td>토스트</td><td>`lightning/toast`</td></tr>
     <tr><td>날짜 하나 고르기</td><td>`lightning-input type="date"`</td></tr>
     <tr><td>상태 뱃지</td><td>`c-milvus-badge`</td></tr>
@@ -287,6 +288,7 @@ Setup → User Interface → **Visualforce Settings**에서 "Use SLDS 2 for page
 - 데이터는 부모 컴포넌트가 불러와 속성으로 넘기세요. 밀버스 컴포넌트 안에는 `@wire`·Apex를 넣지 않습니다
 - 새로 만드는 컴포넌트 이름에는 `milvus`를 쓰지 마세요
 - 모달 같은 화면은 `docs/milvus/patterns/`의 규칙을 따르세요. Claude도 이 파일을 읽고 만듭니다
+- 모달은 `modal_<이름>`(예: `modal_accountEdit`) 컴포넌트로 따로 만들고, `LightningModal`을 상속한 뒤 템플릿에 `<c-milvus-modal>` 하나만 두세요. 내용만 그 안에 넣습니다. 여는 쪽에서는 `c/modal_accountEdit`을 import해 `open()`으로 여세요. 일반 LWC 안에서 모달을 직접 만들면 `pnpm milvus check`가 실패합니다
 - 직접 만든 컴포넌트에 브랜드 CSS가 필요하면 `connectedCallback`에서 `loadBrand(this)`를 부르세요
 
 ```js

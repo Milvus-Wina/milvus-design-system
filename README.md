@@ -250,7 +250,7 @@ milvus-design-system/
 │   └── lwc/milvus*         # 밀버스 LWC 7개 (패키지에 들어감)
 ├── lib/                    # 규칙 검사, 브랜드·팔레트·대비 계산, 관리 파일, Storybook 플러그인
 ├── scripts/                # 카탈로그 생성, LWC 빌드, 브리지 생성, 정적 반영 검사, 테마 동기화
-├── stories/                # 시작하기, 런북, Foundations, 컴포넌트 (slds-catalog/는 빌드가 만듦)
+├── stories/                # 시작하기, 런북, Foundations, 컴포넌트 (slds-catalog/·milvus-generated/는 빌드가 만듦)
 ├── templates/              # init이 고객 프로젝트에 놓는 파일
 │   ├── brand/              # BrandingSet·테마 XML 틀(init은 복사하지 않고 lib/branding.ts로 만듦. 테스트의 비교 기준)
 │   ├── claude/             # rules, skills, hooks, settings.json
@@ -289,6 +289,8 @@ pnpm build-storybook   # storybook-static/에 정적 빌드
 | `pnpm audit:brand`                           | 정적 반영 검사. 기준 파일(`audit/baseline.json`)과 달라지거나 고정 목록(`lib/fixed-list.ts`)에 없는 빈틈이 있으면 실패합니다 |
 | `pnpm bridge:generate`                       | SLDS 2 CSS에서 `milvusBridge.css`를 다시 만듭니다                                                                            |
 | `SF_ORG=<별칭> pnpm sync:theme [테마 이름…]` | org 테마를 `brands/<테마>/`로 가져옵니다. 테마 이름을 주지 않으면 커스텀 테마 전부입니다                                     |
+
+새 밀버스 컴포넌트는 `force-app/main/default/lwc/milvusFoo/`를 만들고 `pnpm storybook`을 실행하면 "컴포넌트 / 밀버스 추가 / Foo"에 기본 스토리로 뜹니다(`@api` 속성은 Controls). 병합 전에 `stories/components/milvus/Foo.stories.js`를 손으로 쓰고 다시 실행합니다. `stories/milvus-generated/`는 `pnpm build:lwc`·`prepack`이 지우고 다시 만드는 폴더라 커밋하지 않고 손으로 고치지 않습니다.
 
 커밋할 때 husky가 lint-staged로 prettier, ESLint, 관련 Jest를 실행합니다.
 

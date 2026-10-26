@@ -29,7 +29,7 @@ Salesforce LWC 디자인 시스템 패키지 `@milvus-wina/milvus-design-system`
 
 - 입력 검증(`@api` 값), 에러 처리, 데이터 손실 방지
 - 접근성: SLDS 블루프린트의 `aria-*`, 키보드 조작, 대비 4.5:1
-- `var()` fallback, 컴포넌트마다 스토리
+- `var()` fallback, 컴포넌트마다 스토리(손으로 쓴 스토리. 새 `milvus*` 컴포넌트는 `pnpm storybook`만 실행해도 기본 스토리로 뜨지만, 병합 전에 `stories/components/milvus/<이름>.stories.js`를 손으로 쓴다. 기본 스토리는 `pnpm build:lwc`가 `stories/milvus-generated/`에 만든다. 커밋하지 않고 고치지 않는다)
 
 ## 스타일 규칙
 
@@ -44,7 +44,7 @@ Salesforce LWC 디자인 시스템 패키지 `@milvus-wina/milvus-design-system`
 | ---------------------- | ----------------------------------------------------------------- |
 | `pnpm lint`            | ESLint (`force-app/**/lwc/**/*.js`)                               |
 | `pnpm test`            | 타입 검사 → LWC Jest → node 테스트 → 브랜드 규칙 → 정적 반영 검사 |
-| `pnpm build-storybook` | LWC 빌드 뒤 Storybook 정적 빌드                                   |
+| `pnpm build-storybook` | 카탈로그·밀버스 스토리 생성과 LWC 빌드 뒤 Storybook 정적 빌드     |
 | `pnpm audit:brand`     | 정적 반영 검사. 기준 파일과 달라지면 실패                         |
 | `pnpm bridge:generate` | SLDS 2 CSS에서 `milvusBridge.css`를 다시 만든다(생성)             |
 

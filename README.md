@@ -182,6 +182,7 @@ Salesforce 기본 컴포넌트에 없는 기능만 만들었습니다. 모두 `a
 
 - **스타일 검사 hook:** Claude Code가 `milvusBrand.css`, `milvusOverride.css`, `brandingSets/`, LWC의 `.js`·`.html`을 고칠 때마다 `check --style`이 실행됩니다. 실패하면 이유를 Claude에 돌려줍니다.
 - **모달 규칙:** 모달은 일반 LWC와 분리한 `modal_<이름>` 컴포넌트로만 만듭니다. `LightningModal`을 상속하고 템플릿에는 `<c-milvus-modal>` 하나만 둡니다. 일반 LWC 안에 `LightningModal`·`lightning-modal-*`·`slds-modal`·`c-milvus-modal`이 있으면 `check`가 실패합니다.
+- **`milvus` 이름 검사:** `lwc/milvus*/` 폴더는 패키지가 준 것만 둡니다. 관리 목록에 없는 폴더가 있으면 `check`가 실패하고, 패키지에서 빠진 컴포넌트(`milvusButton`)는 경고만 합니다. 공용 컴포넌트가 필요하면 밀버스에 요청합니다.
 - **배포 전 검사:** `pnpm milvus deploy`가 먼저 전체 `check`를 실행합니다.
 - **권한 규칙:** init이 `.claude/settings.json`에 permissions(ask, deny)를 병합합니다. Claude는 관리 파일을 고칠 수 없고, `pnpm milvus deploy --yes`는 한 번 더 묻습니다.
 - **토큰 가리기:** `deploy`는 sf 오류에 실린 액세스 토큰을 가리고 출력합니다.

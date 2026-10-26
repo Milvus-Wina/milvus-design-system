@@ -135,7 +135,7 @@ pnpm milvus storybook
 | 런북                            | 준비부터 배포 뒤 마무리까지 따라 하기. 문서 사이트에만 있습니다                                                                                      |
 | Foundations                     | 브랜드 스타일 (util.css), 컬러, 타이포그래피                                                                                                         |
 | 컴포넌트 / 기본                 | Salesforce 기본 컴포넌트(`lightning-*`) 73개, 예제 249개. 컴포넌트마다 "원본과 hook" 스토리가 하나씩 더 있습니다                                     |
-| 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Button, Calendar, MultiSelect, Notification                                                                                      |
+| 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Calendar, Modal, MultiSelect, Notification                                                                                       |
 
 툴바의 **브랜드** 메뉴(붓 아이콘)에서 화면에 입힐 브랜드를 고릅니다. 문서 사이트에서는 `Milvus_DesignSystem`과 "샘플 브랜드 (org 아님)"(`brands/Sample_Forest`)를, 고객 프로젝트에서는 내 브랜드와 "SLDS 기본"을 고릅니다.
 
@@ -143,14 +143,14 @@ pnpm milvus storybook
 
 ### `pnpm milvus` CLI
 
-| 명령                                                                | 하는 일                                                                                                                                                                                       |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `init --target-org <별칭> (--brand <이름> \| --from-org) [--no-vf]` | 프로젝트에 규칙·컴포넌트·브랜드 파일을 놓습니다. `--from-org`는 org의 활성 테마와 로고를 가져옵니다. 점검이나 조회가 하나라도 실패하면 아무것도 쓰지 않고, 이미 있는 파일은 덮어쓰지 않습니다 |
-| `storybook [build]`                                                 | 프로젝트의 LWC와 SLDS 카탈로그를 빌드해 Storybook을 띄웁니다. dev 서버는 localhost에서만 엽니다. `build`는 `.milvus/storybook-static`에 정적 빌드합니다                                       |
-| `check [--style]`                                                   | `milvusBrand.css`의 규칙과 대비, `milvusOverride.css`, BrandingSet의 `BRAND_COLOR`를 검사합니다. `--style` 없이 실행하면 관리 파일이 바뀌지 않았는지도 sha256으로 확인합니다                  |
-| `deploy [--target-org <별칭>] [--yes]`                              | 전체 검사 뒤 배포 계획을 보여 줍니다. 1단계는 메타데이터를 한 번에 올리고(하나라도 실패하면 전부 롤백), 1단계가 성공했을 때만 2단계로 활성 테마를 바꿉니다                                    |
-| `update [--force]`                                                  | 새 버전의 관리 파일로 바꿉니다. 로컬에서 고친 관리 파일이 있으면 아무것도 바꾸지 않고 차이를 보여 줍니다. `--force`는 덮어씁니다                                                              |
-| `--version`                                                         | 패키지 버전을 출력합니다                                                                                                                                                                      |
+| 명령                                                                | 하는 일                                                                                                                                                                                                |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `init --target-org <별칭> (--brand <이름> \| --from-org) [--no-vf]` | 프로젝트에 규칙·컴포넌트·브랜드 파일을 놓습니다. `--from-org`는 org의 활성 테마와 로고를 가져옵니다. 점검이나 조회가 하나라도 실패하면 아무것도 쓰지 않고, 이미 있는 파일은 덮어쓰지 않습니다          |
+| `storybook [build]`                                                 | 프로젝트의 LWC와 SLDS 카탈로그를 빌드해 Storybook을 띄웁니다. dev 서버는 localhost에서만 엽니다. `build`는 `.milvus/storybook-static`에 정적 빌드합니다                                                |
+| `check [--style]`                                                   | `milvusBrand.css`의 규칙과 대비, `milvusOverride.css`, BrandingSet의 `BRAND_COLOR`, 프로젝트 LWC의 모달 규칙을 검사합니다. `--style` 없이 실행하면 관리 파일이 바뀌지 않았는지도 sha256으로 확인합니다 |
+| `deploy [--target-org <별칭>] [--yes]`                              | 전체 검사 뒤 배포 계획을 보여 줍니다. 1단계는 메타데이터를 한 번에 올리고(하나라도 실패하면 전부 롤백), 1단계가 성공했을 때만 2단계로 활성 테마를 바꿉니다                                             |
+| `update [--force]`                                                  | 새 버전의 관리 파일로 바꿉니다. 로컬에서 고친 관리 파일이 있으면 아무것도 바꾸지 않고 차이를 보여 줍니다. `--force`는 덮어씁니다                                                                       |
+| `--version`                                                         | 패키지 버전을 출력합니다                                                                                                                                                                               |
 
 `deploy`는 `--target-org`가 없으면 `milvus.config.json`의 `targetOrg`를 쓰고, sf 기본 org는 쓰지 않습니다. `--yes`가 없으면 계획만 보여 주고, 터미널에서는 y/N을 묻습니다(기본 N).
 
@@ -158,15 +158,15 @@ pnpm milvus storybook
 
 Salesforce 기본 컴포넌트에 없는 기능만 만들었습니다. 모두 `apiVersion` 67.0입니다.
 
-| 번들                 | 하는 일                                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `milvusBadge`        | 의미색 뱃지. variant는 default, inverse, lightest, success, warning, error, info                            |
-| `milvusMultiSelect`  | 검색하며 여러 개 고르기. `options`(`[{label, value}]`), `value`, `change` 이벤트                            |
-| `milvusNotification` | SLDS Scoped Notification. variant는 info, success, warning, error. 닫기 버튼(`dismissible`)은 밀버스가 더함 |
-| `milvusCalendar`     | 월·주 일정표(표현 컴포넌트). 이벤트는 `rangechange`, `dayselect`, `eventselect`                             |
-| `milvusBrandLoader`  | 화면 없는 앱 전체 브랜드 로더. 유틸리티 바(`lightning__UtilityBar`)에 넣습니다                              |
-| `milvusScript`       | 공용 함수 `loadBrand`, `detectNativeShadow`                                                                 |
-| `milvusButton`       | 비교용 예시. 실제 화면에서는 `lightning-button`을 씁니다                                                    |
+| 번들                 | 하는 일                                                                                                                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `milvusBadge`        | 의미색 뱃지. variant는 default, inverse, lightest, success, warning, error, info                                        |
+| `milvusMultiSelect`  | 검색하며 여러 개 고르기. `options`(`[{label, value}]`), `value`, `change` 이벤트                                        |
+| `milvusNotification` | SLDS Scoped Notification. variant는 info, success, warning, error. 닫기 버튼(`dismissible`)은 밀버스가 더함             |
+| `milvusCalendar`     | 월·주 일정표(표현 컴포넌트). 이벤트는 `rangechange`, `dayselect`, `eventselect`                                         |
+| `milvusModal`        | `LightningModal` 안에 넣는 틀. 제목(가운데) → 기본 슬롯 → 오른쪽 아래 버튼(비강조 → 강조). `primary`·`secondary` 이벤트 |
+| `milvusBrandLoader`  | 화면 없는 앱 전체 브랜드 로더. 유틸리티 바(`lightning__UtilityBar`)에 넣습니다                                          |
+| `milvusScript`       | 공용 함수 `loadBrand`, `detectNativeShadow`                                                                             |
 
 ### 브랜드 반영
 
@@ -180,7 +180,8 @@ Salesforce 기본 컴포넌트에 없는 기능만 만들었습니다. 모두 `a
 
 ### 검사와 안전장치
 
-- **스타일 검사 hook:** Claude Code가 `milvusBrand.css`, `milvusOverride.css`, `brandingSets/`를 고칠 때마다 `check --style`이 실행됩니다. 실패하면 이유를 Claude에 돌려줍니다.
+- **스타일 검사 hook:** Claude Code가 `milvusBrand.css`, `milvusOverride.css`, `brandingSets/`, LWC의 `.js`·`.html`을 고칠 때마다 `check --style`이 실행됩니다. 실패하면 이유를 Claude에 돌려줍니다.
+- **모달 규칙:** 모달은 일반 LWC와 분리한 `modal_<이름>` 컴포넌트로만 만듭니다. `LightningModal`을 상속하고 템플릿에는 `<c-milvus-modal>` 하나만 둡니다. 일반 LWC 안에 `LightningModal`·`lightning-modal-*`·`slds-modal`·`c-milvus-modal`이 있으면 `check`가 실패합니다.
 - **배포 전 검사:** `pnpm milvus deploy`가 먼저 전체 `check`를 실행합니다.
 - **권한 규칙:** init이 `.claude/settings.json`에 permissions(ask, deny)를 병합합니다. Claude는 관리 파일을 고칠 수 없고, `pnpm milvus deploy --yes`는 한 번 더 묻습니다.
 - **토큰 가리기:** `deploy`는 sf 오류에 실린 액세스 토큰을 가리고 출력합니다.

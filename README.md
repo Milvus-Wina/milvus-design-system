@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.1-0176D3" alt="version 1.0.1">
+  <img src="https://img.shields.io/badge/version-2.0.0-0176D3" alt="version 2.0.0">
   <a href="https://milvus-wina.github.io/milvus-design-system/"><img src="https://img.shields.io/badge/docs-Storybook-FF4785?logo=storybook&logoColor=white" alt="문서 사이트"></a>
   <img src="https://img.shields.io/badge/GitHub%20Packages-@milvus--wina-181717?logo=github&logoColor=white" alt="GitHub Packages">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-%EB%B0%80%EB%B2%84%EC%8A%A4%20%EB%82%B4%EB%B6%80%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%EC%9A%A9-555555" alt="밀버스 내부 프로젝트용"></a>

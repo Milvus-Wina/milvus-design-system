@@ -1,4 +1,10 @@
 {
+  "extraKnownMarketplaces": {
+    "salesforce": { "source": { "source": "github", "repo": "forcedotcom/sf-skills" } }
+  },
+  "enabledPlugins": {
+    "experience-lwc@salesforce": true
+  },
   "permissions": {
     "ask": [
       "Bash(pnpm milvus deploy *)",

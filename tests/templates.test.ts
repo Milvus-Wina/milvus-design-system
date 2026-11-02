@@ -70,6 +70,12 @@ const bashRule = (rule: string) => {
   return new RegExp(`^${body.endsWith(" *") && body.indexOf("*") === body.length - 1 ? `${re.slice(0, -3)}( .*)?` : re}$`);
 };
 
+test("milvus-brand skill이 Figma 변수를 토큰 판정으로 제안하고 :root에 토큰을 쓰는 흐름을 적는다 (#103)", () => {
+  for (const w of ["docs/milvus/figma.md", "mapFigmaVariables", "dist/lib/tokens.js", "--token-color-surface-1 → hook --slds-g-color-surface-1", "판정 6", "토큰은 수단이 아니라 값을 두는 곳이다"]) {
+    assert.ok(skill.includes(w), w);
+  }
+});
+
 test("settings.json은 sf-skills 마켓플레이스와 experience-lwc 플러그인을 켜고, design.md 3·5절이 설치 명령과 스킬 규칙을 적는다 (#98)", () => {
   const s = JSON.parse(read("claude/settings.json"));
   assert.equal(s.extraKnownMarketplaces.salesforce.source.repo, "forcedotcom/sf-skills");

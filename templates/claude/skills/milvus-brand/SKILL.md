@@ -16,13 +16,16 @@ description: 밀버스 디자인 시스템의 브랜드 요청(docs/milvus/brand
    - 명세 페이지의 입력은 `## 브랜드 색`, `## 로고`, `## 피드백 색 / 성공`(경고·오류·정보), `## 디자인 명세` 네 가지다. `지금:` 줄은 없을 수 있고(로고, 디자인 명세 등), `요청:`은 여러 줄일 수 있다(다음 `## ` 줄 앞까지). 어느 절이든 요청 안에서 `## `로 시작하는 줄은 `\## `로 적혀 있다(앞의 `\` 하나를 떼고 읽는다)
    - **디자인 명세**(옛 제목 `## 전체 스타일`도 같다)에는 다른 디자인 시스템 문서의 표, 토큰 JSON, Figma, URL, 자연어가 섞여 붙여 넣어져 있다. 내용을 형식별로 7장대로 읽어 4장 표의 항목(모서리, 밀도, 회색 온도, 그림자 깊이 …)으로 나누고, 2단계 표에는 나눈 결과를 항목별 행으로 적는다. 어느 항목에도 맞지 않거나 Salesforce 고정인 요구는 "반영하지 못하는 요구와 대안" 칸에 적는다. 붙여 넣은 토큰 JSON은 `.milvus/tokens.json`(init이 `.gitignore`에 넣는 폴더)에 그 부분만 떼어 저장한 뒤 7장 명령을 그 파일로 돌린다
    - 4장 표의 다른 항목 이름으로 된 절(`## 모서리` 등, 2026-10-20 전에 항목별 입력으로 저장한 옛 세부 절)도 그 항목에 반영한다. **디자인 명세가 옛 세부 절보다 우선한다**(명세 페이지에서 지금 고치는 입력은 디자인 명세다). 같은 항목에 두 값이 있으면 표에는 디자인 명세 값을 쓰고, "확정/추정" 칸에 "충돌: 옛 절 `## 모서리`는 각지게" 꼴로 옛 값을 적어 승인 때 어느 쪽인지 확인받는다. 옛 절이 더는 필요 없으면 사용자가 요청 파일에서 그 절을 지운다(skill은 지우지 않는다). 4장에 없는 제목의 절은 사용자 메모로 보고 그대로 둔다
+   - **Figma 변수·디자인 토큰 JSON**의 변수 이름이 `docs/milvus/figma.md` 2장 형식(`<종류>/<역할>/<단계>`, 예 `color/surface/1`)이면 7장의 토큰 판정 명령을 돌린다. 판정은 토큰 층 설계(2026-11-02) 4.3의 여섯 가지다. 4 토큰+hook, 3 토큰+BrandingSet(브랜드 색 계열), 2·5 토큰만(읽는 hook이 없거나 util.css가 받지 않는 hook), 6 이름 형식 밖(토큰을 만들지 않고 돌려준다)
 2. **브랜드 명세 표를 채팅으로 제안한다.** 파일은 아직 고치지 않는다. 칸: 항목 | 적용 값 | 쓰는 곳(hook·브리지 변수·파일) | 출처(요청 문장, 토큰 이름) | 확정/추정 | 반영하지 못하는 요구와 대안
    - 추정(이미지에서 읽은 색, 프리셋에서 고른 값)은 추정이라고 적는다
    - 2장 순서의 뒤 단계(브리지 변수, override)를 쓰는 행에는 그 한계를 함께 적는다
+   - 토큰 판정을 돌린 행은 "쓰는 곳"에 `토큰 --token-color-surface-1 → hook --slds-g-color-surface-1`처럼 둘을 적는다. 판정 3은 BrandingSet 행으로 올리고(5장 색 계산과 같다), 판정 2·5는 "프로젝트 컴포넌트가 읽음. SLDS 기본 컴포넌트에는 닿지 않음"을, 판정 6은 "반영하지 못하는 요구와 대안" 칸에 "Figma 변수 이름을 역할 이름으로 바꿔 주세요(`docs/milvus/figma.md` 2장)"를 적는다
 3. **사용자 승인을 받는다.** 승인 전에는 파일을 쓰지 않는다. 고칠 점을 들으면 표를 다시 낸다
 4. **작성한다.** 2장 순서로 고른 파일에만 쓴다
    - 브랜드 색·로고: `FA/brandingSets/LEXTHEMING<이름>.brandingSet-meta.xml` (5장, 6장)
    - 모양·중립 색·피드백 색·밀버스 변수 값: `FA/staticresources/milvusBrand.css`의 `:root` 블록 하나 (3장)
+   - 토큰: 같은 `:root` 블록 앞부분에 `--token-<종류>-<역할>-<단계>: <값>;`을 쓰고, 그 뒤에 hook이 `var(--token-…)`로 참조하게 쓴다. 값은 리터럴이나 다른 토큰 참조만(hook·밀버스 변수 참조는 check가 막는다). 이미 있는 토큰은 값만 바꾼다. 참조하지 않는 토큰은 check가 경고하는데, 프로젝트 컴포넌트가 읽는 것이면 그대로 둔다
    - hook·브리지로 안 되는 모양만 `FA/staticresources/milvusOverride.css`. 그 항목은 "공식 권고 밖"이라고 알린다
    - `milvusBrand.css`·`milvusOverride.css`·BrandingSet을 고칠 때마다 hook이 `milvus check --style`을 실행한다. 막히면 출력에 적힌 고칠 값대로 바로 고친다
 5. **검사한다.** `pnpm milvus check`. 통과하면 Storybook(`pnpm milvus storybook`)이 저절로 갱신된다. 브랜드 명세 페이지에서 화면을 확인해 달라고 안내한다
@@ -46,6 +49,7 @@ description: 밀버스 디자인 시스템의 브랜드 요청(docs/milvus/brand
 
 - **override를 쓸 때** 사용자에게 알린다: "Salesforce 공식 권고 밖이다. 기본 컴포넌트가 native shadow로 바뀌거나 Salesforce가 마크업·클래스를 바꾸면 깨질 수 있다."
   - `.slds-*` 클래스 선택자만 쓴다. hex 색, `!important`, 브랜드 색 hook은 check가 경고한다. `@font-face`, `@import`는 막는다
+- **토큰은 수단이 아니라 값을 두는 곳이다.** Figma 변수처럼 이름 있는 값은 `milvusBrand.css`의 `--token-*`에 한 번 적고 2·3단계 hook이 `var(--token-*)`로 읽는다(설계 https://github.com/a40418a/learndoshare/blob/main/learndoshare_1/docs/specs/2026-11-02-milvus-token-layer-design.md). 자연어 요청(7장 프리셋)은 토큰 없이 hook에 직접 쓴다
 - **모양만 바꾸려고 밀버스 컴포넌트(`lwc/milvus*`)를 새로 만들지 않는다.** 밀버스 컴포넌트는 SLDS에 기능이 없을 때만 만든다
 - 밀버스 관리 파일(`lwc/milvus*`, `milvusBridge.css`, `milvusVf.css`, `milvusHead`, `.claude/rules/milvus/design.md`, 이 skill)은 고치지 않는다
 - **Salesforce 고정**은 요청이 와도 바꿀 수 없다고 답하고 목록을 보여 준다. override로도 우회하지 않는다. 예: 토스트 표시 시간, z-index, 아이콘 모양, 스피너, LEX 전역 헤더(org 테마가 원본), LEX 컨트롤 높이, Path 양 끝 반경, 컨트롤·정렬 아이콘 크기, 폼 요소 자간, 선택지 라벨 굵기, 비활성 커서·링크 밑줄, 팝오버 꼬리 그림자, 개체 아이콘 배경색. 글꼴도 바꾸지 않는다. 목록 전체:
@@ -185,7 +189,11 @@ node --input-type=module -e 'import { SPEC_ITEMS } from "@milvus-wina/milvus-des
   ```bash
   node --input-type=module -e 'import { readFileSync } from "node:fs"; const h = (x) => Math.round(x * 255).toString(16).padStart(2, "0"); const val = (v) => typeof v !== "object" || v === null ? v : "unit" in v ? v.value + v.unit : v.hex || v.components || "r" in v ? (v.hex ?? "#" + (v.components ?? [v.r, v.g, v.b]).slice(0, 3).map(h).join("")) + ((v.alpha ?? v.a ?? 1) < 1 ? " 투명도 " + (v.alpha ?? v.a) : "") : undefined; const walk = (o, p) => { if (typeof o === "number") return console.log(p, o); if (o === null || typeof o !== "object") return; const v = val(o.$value ?? o.value ?? ("r" in o ? o : undefined)); if (v !== undefined) return console.log(p, v); for (const k in o) if (!k.startsWith("$")) walk(o[k], typeof o.name === "string" ? o.name : p ? p + "." + k : k); }; walk(JSON.parse(readFileSync(process.argv[1], "utf8")), "")' tokens.json
   ```
-- **Figma:** 1순위는 사용자가 Figma에서 받은 "Export modes" JSON(위 명령으로 바꾼다), 2순위는 Figma MCP(사용자가 고른 영역). REST API는 Enterprise 플랜 전용이라 쓰지 않는다
+- **토큰 판정:** 위 명령의 출력(`경로 값`)을 그대로 넣으면 변수마다 토큰 이름, hook, 판정 번호를 돌려준다. 경로의 `.`·`/` 둘 다 받는다. 판정 번호의 뜻은 1장 1단계
+  ```bash
+  node --input-type=module -e 'import { readFileSync } from "node:fs"; import { createRequire } from "node:module"; import { mapFigmaVariables } from "@milvus-wina/milvus-design-system/dist/lib/tokens.js"; const idx = createRequire(import.meta.url)("@milvus-wina/milvus-design-system/dist/hooks-index.json"); const names = readFileSync(0, "utf8").split("\n").map((l) => l.trim().split(/\s+/)[0]).filter(Boolean); for (const r of mapFigmaVariables(names, new Set(idx.readGHooks))) console.log(r.verdict, r.figma, r.token ?? "-", r.hook ?? "-", r.note)' < .milvus/paths.txt
+  ```
+- **Figma:** 1순위는 사용자가 Figma에서 받은 "Export modes" JSON(위 명령으로 바꾼다. 변수 이름은 `docs/milvus/figma.md` 2장 형식이어야 판정이 된다), 2순위는 Figma MCP(사용자가 고른 영역). REST API는 Enterprise 플랜 전용이라 쓰지 않는다
 - **PDF·이미지:** PDF에 적힌 hex는 텍스트로 정확히 뽑는다. 이미지에서 읽은 색은 "추정"으로 표시하고 확인을 받는다
 - **URL:** `curl`로 HTML과 CSS를 `.milvus/`에 받아 CSS 변수와 색 빈도를 찾는다(WebFetch는 CSS가 빠진다). 로고는 내려받지 않고 사용자에게 파일을 받는다
   ```bash

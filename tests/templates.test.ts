@@ -44,6 +44,14 @@ test("docs/milvus/patterns/modal.md에 LightningModal 규칙과 출처가 있고
   assert.ok(section(design, 5).includes("`docs/milvus/patterns/`에서 해당 패턴 파일을 읽고 따른다"));
 });
 
+test("docs/milvus/components.md가 있고, design.md 1·4·5절이 충실도 모드와 부품 목록을 적는다 (#95)", () => {
+  assert.ok(read("docs/milvus/components.md").includes("| Figma 세트 | 세트 id | LWC |"));
+  assert.ok(section(design, 1).includes("`fidelity`"));
+  assert.ok(section(design, 4).includes("`docs/milvus/components.md` | 소유"));
+  const s5 = section(design, 5);
+  for (const w of ["**충실도 모드.**", "`slds`(기본)", "`figma`", "pnpm milvus init --fidelity figma", "docs/milvus/components.md"]) assert.ok(s5.includes(w), w);
+});
+
 test("docs/milvus/figma.md에 체크리스트·역할 이름 변수 형식·출처가 있고, design.md 4·5절이 가리킨다 (#92)", () => {
   const figma = read("docs/milvus/figma.md");
   for (const w of ["- [ ]", "자동 레이아웃", "color/surface/1", "--slds-g-color-surface-1", "palette/", "font/scale/", "밀버스 규칙(팀 합의)", "developer.salesforce.com/docs/platform/lwc/guide/mcp-design.html"]) {

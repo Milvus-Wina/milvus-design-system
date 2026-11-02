@@ -1,6 +1,6 @@
 // milvus check (설계 4.3, 10장)
 // - --style: hook이 milvusBrand.css·milvusOverride.css·brandingSets/를 고칠 때마다 실행한다. util.css 규칙·대비(5.2, 5.3),
-//   milvusOverride.css(5.1), config 브랜드 BrandingSet의 BRAND_COLOR 형식, 프로젝트 LWC의 모달 규칙(lib/modal-rules.ts)만 보고,
+//   milvusOverride.css(5.1), config 브랜드 BrandingSet의 BRAND_COLOR 형식, 프로젝트 LWC의 모달 규칙(lib/modal-rules.ts)과 컴포넌트 CSS 규칙(lib/component-css.ts, #21)만 보고,
 //   hook 이름은 설치된 패키지의 dist/hooks-index.json에서 읽는다(lib/hooks-index.ts). 실패하면 2(Claude Code가 stderr를 Claude에게 보여 준다)
 // - 전체: deploy가 실행한다(팀 CI에 넣어도 된다). --style 항목 + 밀버스 관리 파일 sha256(milvus.config.json). 실패하면 1.
 //   밀버스 LWC는 JS라 타입 검사는 하지 않는다(설계 1장 D1). config.vf면 milvusVf.css도 지금 BRAND_COLOR 팔레트로 다시 만든다(설계 3장 [생성])
@@ -10,6 +10,7 @@ import { parseArgs } from "node:util";
 import { readBranding } from "../lib/branding.ts";
 import { loadRuleContext } from "../lib/hooks-index.ts";
 import { RETIRED_COMPONENTS, sha256 } from "../lib/managed.ts";
+import { checkComponentCss } from "../lib/component-css.ts";
 import { checkModalComponent } from "../lib/modal-rules.ts";
 import { checkOverrideCss, checkUtilCss, unreadTokens, type Issue } from "../lib/rules.ts";
 import { buildMilvusVfCss } from "../lib/vf.ts";
@@ -162,6 +163,21 @@ function modalIssues(root: string, managed: Set<string> | undefined): Issue[] {
     });
 }
 
+// 프로젝트 LWC 폴더 바로 아래 .css를 컴포넌트 CSS 규칙(lib/component-css.ts, #94)으로 본다. 밀버스 관리 컴포넌트는 건너뛴다
+function componentCssIssues(root: string, managed: Set<string> | undefined): Issue[] {
+  const lwc = join(root, LWC);
+  if (!existsSync(lwc)) return [];
+  const skip = (name: string) => (managed ? managed.has(name) : name.startsWith("milvus"));
+  return readdirSync(lwc, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !skip(d.name))
+    .flatMap((d) => {
+      const dir = `${LWC}/${d.name}`;
+      return readdirSync(join(root, dir), { withFileTypes: true })
+        .filter((f) => f.isFile() && f.name.endsWith(".css"))
+        .flatMap((f) => checkComponentCss(readFileSync(join(root, dir, f.name), "utf8"), `${dir}/${f.name}`));
+    });
+}
+
 // config.vf면 milvusVf.css를 BrandingSet의 지금 BRAND_COLOR 팔레트로 다시 쓰고, 내용이 바뀌었을 때만 경로를 돌려준다.
 // milvusVf는 [생성]이라 milvus.config.json의 managed(sha256)에 없어 관리 파일 검사와 겹치지 않는다.
 // config나 BRAND_COLOR를 읽지 못하면 건너뛴다(managedIssues·brandingIssues가 이미 실패로 알린다)
@@ -207,7 +223,7 @@ export async function runCheck(o: { root: string; style: boolean; pkgRoot?: stri
   const { warnings, errors } = override === undefined ? { warnings: [], errors: [] } : checkOverrideCss(override, OVERRIDE_CSS);
   const managed = managedLwcDirs(o.root);
   const names = milvusNameIssues(o.root, managed);
-  issues.push(...errors, ...brandingIssues(o.root), ...names.errors, ...modalIssues(o.root, managed));
+  issues.push(...errors, ...brandingIssues(o.root), ...names.errors, ...modalIssues(o.root, managed), ...componentCssIssues(o.root, managed));
   if (!o.style) issues.push(...managedIssues(o.root));
 
   if (warnings.length) {

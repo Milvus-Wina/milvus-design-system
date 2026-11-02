@@ -74,6 +74,20 @@ test("전체 check는 Salesforce 단독 스킬이 없으면 경고만 하고, �
   });
 });
 
+test("프로젝트 LWC의 CSS에 직접 값이 있으면 --style이 2로 실패하고, 밀버스 관리 컴포넌트는 보지 않는다 (#94)", async () => {
+  await withProject(async (root) => {
+    mkdirSync(join(root, `${FA}/lwc/acmeCard`), { recursive: true });
+    write(root, `${FA}/lwc/acmeCard/acmeCard.css`, ".card { color: #007a5a; padding: var(--slds-g-spacing-4, 1rem); }\n");
+    const r = await check(root, true);
+    assert.equal(r.result.code, 2);
+    assert.deepEqual(r.result.issues.map((i) => [i.file, i.rule]), [[`${FA}/lwc/acmeCard/acmeCard.css`, "direct-value"]]);
+    assert.match(r.stderr, /#007a5a/);
+    // 관리 컴포넌트(패키지 원본)의 CSS는 검사 대상이 아니다
+    write(root, `${FA}/lwc/acmeCard/acmeCard.css`, ".card { color: var(--token-color-on-surface-3, #1d1c1d); }\n");
+    assert.equal((await check(root, true)).result.code, 0);
+  });
+});
+
 test("--style은 규칙 위반에서 2와 stderr의 고칠 값", async () => {
   await withProject(async (root) => {
     // 흰색 위 대비가 4.5:1보다 낮은 성공 글자색. 고칠 값은 같은 색조에서 기준을 넘는 색이다(설계 5.3)
@@ -350,6 +364,7 @@ const TARGETS = [
   `${FA}/brandingSets/LEXTHEMINGAcme.brandingSet-meta.xml`,
   `${FA}/lwc/myCard/myCard.js`,
   `${FA}/lwc/myCard/myCard.html`,
+  `${FA}/lwc/myCard/myCard.css`,
 ];
 
 test("hook은 다른 파일 수정에는 check를 실행하지 않는다", posixOnly, async () => {
@@ -360,7 +375,6 @@ test("hook은 다른 파일 수정에는 check를 실행하지 않는다", posix
     // hook은 고친 파일의 폴더에서 check를 실행한다. LWC 폴더를 만들어 둔다
     mkdirSync(join(root, `${FA}/lwc/myCard/__tests__`), { recursive: true });
     const others = [
-      `${FA}/lwc/myCard/myCard.css`,
       `${FA}/lwc/myCard/__tests__/myCard.test.js`,
       `${RES}/milvusBrand.resource-meta.xml`,
       `${RES}/milvusBridge.css`,

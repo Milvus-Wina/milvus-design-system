@@ -122,6 +122,38 @@ const removedBridgeVar = (name: string) => REMOVED_BRIDGE_VARS.some((n) => name 
 // 포커스 링 그림자 값 안에 쓸 수 있는 색. 색의 원본은 org 테마다
 const FOCUS_COLORS = ["--slds-g-color-brand-base-15", "--slds-g-color-neutral-base-100"];
 
+/**
+ * 토큰(설계 2026-11-02 토큰 층 4.1·4.4). Figma 변수 값을 두는 곳이다. 이름은 --token-<종류>-<역할>-<단계>,
+ * 값은 리터럴(hex, rgb(), rem, light-dark(), color-mix() …)이나 다른 토큰 참조 var(--token-*)만. hook·밀버스 변수 참조는 역방향이라 막는다
+ */
+export const TOKEN_NAME = /^--token-[a-z0-9]+(-[a-z0-9]+)+$/;
+const TOKEN_REF = /^var\(\s*(--token-[\w-]+)\s*\)$/;
+
+function tokenProblem(name: string, value: string): [string, string] | undefined {
+  if (!TOKEN_NAME.test(name)) return ["token-name", `${name}: 토큰 이름은 --token-<종류>-<역할>-<단계>(소문자·숫자·-)다. 예: --token-color-surface-1`];
+  const bad = (value.match(/--[\w-]+/g) ?? []).filter((r) => !r.startsWith("--token-"));
+  if (bad.length) return ["token-value", `${name}: 토큰 값은 리터럴이나 다른 토큰(var(--token-*))만 쓴다. ${bad.join(", ")}는 hook·밀버스 변수라 토큰이 참조하지 않는다(hook이 토큰을 참조한다)`];
+  if (/url\(/i.test(value)) return ["token-value", `${name}: 토큰 값에 url()을 쓰지 않는다`];
+  return undefined;
+}
+
+/** var(--token-x) 하나로 된 값을 같은 파일의 토큰 정의로 따라간 값. 순환이면 원래 값 */
+export function resolveTokens(value: string, decls: Map<string, string>): string {
+  let v = value.trim();
+  const seen = new Set<string>();
+  for (let ref = TOKEN_REF.exec(v)?.[1]; ref && decls.has(ref) && !seen.has(ref); ref = TOKEN_REF.exec(v)?.[1]) {
+    seen.add(ref);
+    v = decls.get(ref)!.trim();
+  }
+  return v;
+}
+
+/** 정의만 있고 같은 파일 안에서 아무도 참조하지 않는 토큰. 프로젝트 컴포넌트가 읽을 수 있어 실패가 아니라 경고다(설계 4.4) */
+export function unreadTokens(decls: Map<string, string>): string[] {
+  const refs = new Set([...decls.values()].flatMap((v) => v.match(/--token-[\w-]+/g) ?? []));
+  return [...decls.keys()].filter((n) => n.startsWith("--token-") && !refs.has(n));
+}
+
 const ROOT_ONLY = "util.css에는 :root 블록 하나만 둔다. 클래스 규칙은 milvusBridge.css(패키지)나 milvusOverride.css(마지막 수단)에 둔다";
 
 function syntaxIssue(e: unknown, file: string): Issue {
@@ -149,6 +181,7 @@ export function declProblem(name: string, value: string, ctx: RuleContext): [str
       ? undefined
       : ["plain-prop", `${name}: :root의 일반 속성은 ${ALLOWED_PLAIN_PROPS.join(", ")}만 쓴다`];
   }
+  if (name.startsWith("--token-")) return tokenProblem(name, value);
   if (name.startsWith("--milvus-")) {
     if (!ctx.milvusVars.has(name)) {
       return removedBridgeVar(name)
@@ -170,7 +203,7 @@ export function declProblem(name: string, value: string, ctx: RuleContext): [str
 
   const isS = name.startsWith("--slds-s-");
   if (!isS && !name.startsWith("--slds-g-")) {
-    return ["unknown-name", `${name}: util.css에는 --slds-g-*, --slds-s-*, --milvus-*와 ${ALLOWED_PLAIN_PROPS.join(", ")}만 쓴다`];
+    return ["unknown-name", `${name}: util.css에는 --slds-g-*, --slds-s-*, --milvus-*, --token-*와 ${ALLOWED_PLAIN_PROPS.join(", ")}만 쓴다`];
   }
   if (!(isS ? ctx.readSHooks : ctx.readGHooks).has(name)) {
     return ["unread", `${name}: SLDS 2 CSS와 기본 컴포넌트 CSS 어디에서도 읽지 않는 이름이다(오타이거나 효과가 없다)`];
@@ -296,8 +329,9 @@ export function checkUtilCss(css: string, file: string, ctx: RuleContext): Issue
       if (d.type === "decl") decls.set(d.prop, d.value.replace(COMMENT, " ").trim());
     });
   }
+  // hook 값이 var(--token-x)면 토큰 정의를 따라가 판정한다(중립 색의 light-dark 등). 토큰 자신은 그대로 본다
   for (const [name, value] of decls) {
-    const problem = declProblem(name, value, ctx);
+    const problem = declProblem(name, name.startsWith("--token-") ? value : resolveTokens(value, decls), ctx);
     if (problem) add(...problem);
   }
 

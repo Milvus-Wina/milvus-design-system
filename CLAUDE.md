@@ -33,7 +33,8 @@ Salesforce LWC 디자인 시스템 패키지 `@milvus-wina/milvus-design-system`
 
 ## 스타일 규칙
 
-- 컴포넌트 CSS: `var(--slds-g-*, fallback)`, `var(--slds-s-*, fallback)`, `var(--milvus-*, fallback)` 읽기만. hex 색, `--slds-c-*`, hook 재정의, `.slds-*` 덮어쓰기 금지
+- 컴포넌트 CSS: `var(--slds-g-*, fallback)`, `var(--slds-s-*, fallback)`, `var(--milvus-*, fallback)`, `var(--token-*, fallback)` 읽기만. hex 색, `--slds-c-*`, hook·토큰 재정의, `.slds-*` 덮어쓰기 금지
+- util.css의 토큰 `--token-<종류>-<역할>-<단계>`: Figma 변수 값을 두는 곳. 값은 리터럴이나 다른 토큰만, hook이 `var(--token-*)`로 참조한다(설계 https://github.com/a40418a/learndoshare/blob/main/learndoshare_1/docs/specs/2026-11-02-milvus-token-layer-design.md)
 - `brands/<브랜드>/util.css` 규칙은 `lib/rules.ts`가 구현하고 `pnpm test:brands`가 검사한다
 - org 브랜드의 `brands/<브랜드>/theme.json`, `logo.*`는 직접 고치지 않는다(`SF_ORG=<별칭> pnpm sync:theme`이 만든다). 샘플 브랜드(`"source": "sample"`, `brands/Sample_Forest`)는 손으로 관리한다
 - 커스텀 변수 접두사는 `--milvus-`만 쓴다

@@ -87,7 +87,7 @@
 - **기본 우선.** 브랜드 요청이 없으면 Salesforce 기본 모양에 브랜드 색·로고(org 테마)만 바꾼다
 - **판단 순서.** org 테마(색·로고) → `milvusBrand.css`의 global hook(`--slds-g-*`) → 컴포넌트 hook(`--slds-s-*`) → 브리지 변수(`--milvus-*`) → `milvusOverride.css`(마지막 수단, 공식 권고 밖). 앞 단계로 되면 뒤 단계를 쓰지 않는다
 - **override를 쓰면** native shadow 전환·Salesforce 업데이트에 약하다는 것을 사용자에게 알린다. 모양만 바꾸려고 밀버스 컴포넌트를 새로 만들지 않는다. 밀버스 컴포넌트는 SLDS에 기능이 없을 때만 만든다
-- **util.css(`milvusBrand.css`):** `:root` 블록 하나. 이름에 color가 없는 g·s hook(읽는 곳이 있는 이름), 중립 색(`light-dark()`, 글자·면 4.5:1 이상), 피드백 색, 색 s hook 6개, 읽는 곳이 있는 `--milvus-*`, `letter-spacing`만 쓴다. 클래스 규칙, `@font-face`, 글꼴 hook, 브랜드 색 계열 hook, `--slds-c-*`는 쓰지 않는다. 고치면 hook이 `check --style`로 검사한다. 자세한 표는 `milvus-brand` skill에 있다
+- **util.css(`milvusBrand.css`):** `:root` 블록 하나. 이름에 color가 없는 g·s hook(읽는 곳이 있는 이름), 중립 색(`light-dark()`, 글자·면 4.5:1 이상), 피드백 색, 색 s hook 6개, 읽는 곳이 있는 `--milvus-*`, `letter-spacing`만 쓴다. 클래스 규칙, `@font-face`, 글꼴 hook, 브랜드 색 계열 hook, `--slds-c-*`는 쓰지 않는다. 고치면 hook이 `check --style`로 검사한다. 자세한 표는 `milvus-brand` skill에 있다. Figma 변수 값은 같은 블록의 토큰 `--token-<종류>-<역할>-<단계>`에 두고 hook이 `var(--token-*)`로 참조한다. 토큰 값은 리터럴이나 다른 토큰만이고, 프로젝트 컴포넌트는 `var(--token-*, fallback)`으로 읽는다
 - **색은 `BrandingSet`에서만.** 브랜드 색을 CSS에 적지 않는다. Salesforce는 입력한 색 대신 접근성 색(50단계)을 버튼에 쓴다
 - **Salesforce 고정 항목**(토스트 표시 시간, z-index, 아이콘 모양 등)은 바꿀 수 없다고 답하고 목록을 보여 준다. 글꼴은 바꾸지 않는다
 - **LWC는 Salesforce `experience-lwc` 스킬대로 만든다.** 새 LWC, 특히 Figma에서 만들 때는 `experience-lwc-design-generate`의 5단계를 따르고, 3단계의 검증 스킬 세 개(`experience-accessibility-validate`, `experience-lwc-security-validate`, `experience-lwc-rtl-validate`)와 `design-systems-slds-validate` 점수, SLDS Linter 결과를 PRD나 PR에 적는다. 단계를 건너뛰면 이유를 적는다. 상위 스킬은 지시만 하고 막지 않으므로 이 기록이 관문이다

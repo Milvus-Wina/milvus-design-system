@@ -11,7 +11,7 @@ import { readBranding } from "../lib/branding.ts";
 import { loadRuleContext } from "../lib/hooks-index.ts";
 import { RETIRED_COMPONENTS, sha256 } from "../lib/managed.ts";
 import { checkModalComponent } from "../lib/modal-rules.ts";
-import { checkOverrideCss, checkUtilCss, type Issue } from "../lib/rules.ts";
+import { checkOverrideCss, checkUtilCss, unreadTokens, type Issue } from "../lib/rules.ts";
 import { buildMilvusVfCss } from "../lib/vf.ts";
 import { findProject, packageInfo, readConfig } from "./context.ts";
 
@@ -22,6 +22,18 @@ const VF_CSS = `${RES}/milvusVf.css`;
 const BRANDING_SETS = "force-app/main/default/brandingSets";
 const LWC = "force-app/main/default/lwc";
 const USAGE = "사용법: pnpm milvus check [--style]";
+
+// util.css 최상위 :root의 선언만(unreadTokens 입력). 문법 오류면 빈 Map(checkUtilCss가 syntax로 알린다)
+function utilDecls(css: string): Map<string, string> {
+  const decls = new Map<string, string>();
+  for (const m of css.replace(/\/\*[\s\S]*?\*\//g, " ").matchAll(/:root\s*\{([^}]*)\}/g)) {
+    for (const d of m[1].split(";")) {
+      const i = d.indexOf(":");
+      if (i > 0) decls.set(d.slice(0, i).trim(), d.slice(i + 1).trim());
+    }
+  }
+  return decls;
+}
 
 const lines = (issues: Issue[]) => issues.map((i) => `  ${i.file}  ${i.message}${i.fix ? ` → 고칠 값: ${i.fix}` : ""}\n`).join("");
 
@@ -187,6 +199,9 @@ export async function runCheck(o: { root: string; style: boolean; pkgRoot?: stri
   if (util !== undefined) {
     const ctx = loadRuleContext({ pkgRoot: o.pkgRoot ?? packageInfo().root, projectRoot: o.root });
     issues.push(...checkUtilCss(util, BRAND_CSS, ctx));
+    // 토큰 정의만 있고 util.css 안에서 참조하지 않는 이름. 프로젝트 컴포넌트가 읽을 수 있어 경고만 한다(설계 2026-11-02 4.4)
+    const unread = unreadTokens(utilDecls(util));
+    if (unread.length) process.stderr.write(`토큰 경고: util.css 안에서 참조하지 않는 토큰 ${unread.length}개(프로젝트 컴포넌트가 읽지 않으면 지운다): ${unread.join(", ")}\n`);
   }
   const override = read(OVERRIDE_CSS);
   const { warnings, errors } = override === undefined ? { warnings: [], errors: [] } : checkOverrideCss(override, OVERRIDE_CSS);

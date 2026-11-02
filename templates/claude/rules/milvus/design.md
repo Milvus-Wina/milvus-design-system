@@ -4,7 +4,7 @@
 
 ## 1. 이 프로젝트의 밀버스 설정
 
-브랜드 이름, 대상 org 별칭, 패키지 버전, VF 사용 여부, 밀버스 관리 파일 목록은 `milvus.config.json`을 본다. 원본을 하나로 두려고 이 파일에는 값을 옮겨 적지 않는다.
+브랜드 이름, 대상 org 별칭, 패키지 버전, VF 사용 여부, 충실도 모드(`fidelity`, 없으면 `slds`), 밀버스 관리 파일 목록은 `milvus.config.json`을 본다. 원본을 하나로 두려고 이 파일에는 값을 옮겨 적지 않는다.
 
 ## 2. 준비물
 
@@ -62,6 +62,7 @@
 | `docs/milvus/brand-request.md` | 소유 | 브랜드 명세 페이지가 저장한 요청 |
 | `docs/milvus/patterns/` | 소유 | UI 패턴 명세. 패턴마다 파일 하나(`modal.md` 등). 팀이 규칙을 고치고 파일을 더한다 |
 | `docs/milvus/figma.md` | 소유 | 디자이너용 Figma 작성 규칙. 넘기기 전 체크리스트, 역할 이름 변수 형식, 이름 규칙. 팀이 고친다 |
+| `docs/milvus/components.md` | 소유 | Figma 충실 모드의 부품 목록(Figma 세트 → LWC). 만들기 전에 찾고 만든 뒤 더한다 |
 | `.claude/settings.json` | 소유 | 밀버스 permissions·hook 병합. Salesforce 마켓플레이스·플러그인 항목(`extraKnownMarketplaces`, `enabledPlugins`) |
 | `.claude/skills/design-systems-slds-*/` | 소유 | Salesforce 단독 스킬(sf-skills). `skills add`로 설치한다. 밀버스가 고치지 않는다 |
 | `.claude/skills/milvus-brand/SKILL.md` | 관리 | 브랜드 요청 반영 skill |
@@ -85,6 +86,10 @@
 ## 5. 디자인 규칙
 
 - **기본 우선.** 브랜드 요청이 없으면 Salesforce 기본 모양에 브랜드 색·로고(org 테마)만 바꾼다
+- **충실도 모드.** `milvus.config.json`의 `fidelity`를 먼저 본다(없으면 `slds`). 두 모드 모두 값은 `milvusBrand.css` 한 곳에, 컴포넌트 CSS는 읽기만, `check` 통과는 같다
+  - `slds`(기본): 맞는 SLDS 기본 컴포넌트(`lightning-*`)가 있으면 그것을 쓰고, 없으면 SLDS 블루프린트, 그래도 없으면 hook·토큰으로 직접 CSS. 모양만 다르다고 부품을 새로 만들지 않는다. 접근성·보안·업데이트를 Salesforce가 맡는다
+  - `figma`: 고객이 화면 일치를 요구하는 프로젝트. Figma에 있는 부품은 SLDS 기본 컴포넌트가 있어도 Figma 모양대로 만든다. 값은 토큰(`--token-*`)으로 받는다. 동작이 복잡한 부분(rich text, 날짜 선택, 조회)만 기본 컴포넌트를 안에서 쓴다. 만들기 전에 `docs/milvus/components.md`에서 찾고, 만든 뒤 바로 더한다. 접근성·보안·업데이트 대응은 프로젝트가 맡으므로 Jest의 `toBeAccessible()`과 org 확인을 빠뜨리지 않는다
+  - 모드는 프로젝트 시작 때 `pnpm milvus init --fidelity figma`로 정한다. 중간에 바꾸려면 `milvus.config.json`의 값을 고치고 팀에 알린다
 - **판단 순서.** org 테마(색·로고) → `milvusBrand.css`의 global hook(`--slds-g-*`) → 컴포넌트 hook(`--slds-s-*`) → 브리지 변수(`--milvus-*`) → `milvusOverride.css`(마지막 수단, 공식 권고 밖). 앞 단계로 되면 뒤 단계를 쓰지 않는다
 - **override를 쓰면** native shadow 전환·Salesforce 업데이트에 약하다는 것을 사용자에게 알린다. 모양만 바꾸려고 밀버스 컴포넌트를 새로 만들지 않는다. 밀버스 컴포넌트는 SLDS에 기능이 없을 때만 만든다
 - **util.css(`milvusBrand.css`):** `:root` 블록 하나. 이름에 color가 없는 g·s hook(읽는 곳이 있는 이름), 중립 색(`light-dark()`, 글자·면 4.5:1 이상), 피드백 색, 색 s hook 6개, 읽는 곳이 있는 `--milvus-*`, `letter-spacing`만 쓴다. 클래스 규칙, `@font-face`, 글꼴 hook, 브랜드 색 계열 hook, `--slds-c-*`는 쓰지 않는다. 고치면 hook이 `check --style`로 검사한다. 자세한 표는 `milvus-brand` skill에 있다. Figma 변수 값은 같은 블록의 토큰 `--token-<종류>-<역할>-<단계>`에 두고 hook이 `var(--token-*)`로 참조한다. 토큰 값은 리터럴이나 다른 토큰만이고, 프로젝트 컴포넌트는 `var(--token-*, fallback)`으로 읽는다

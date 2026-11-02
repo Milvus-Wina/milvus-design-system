@@ -147,7 +147,7 @@ test("두 번 실행해도 파일 내용과 milvus.config.json이 같다", async
     assert.match(second.stdout, /건너뛴 파일/);
 
     const config = readConfig(root)!;
-    assert.deepEqual({ ...config, managed: {} }, { version, targetOrg: "dev", brand: "Acme", vf: true, managed: {} });
+    assert.deepEqual({ ...config, managed: {} }, { version, targetOrg: "dev", brand: "Acme", vf: true, fidelity: "slds", managed: {} });
     const managed = Object.keys(config.managed);
     for (const dest of [".claude/rules/milvus/design.md", ".claude/hooks/milvus-check.mjs", `${FA}/lwc/milvusScript/milvusScript.js`, `${FA}/components/milvusHead.component`]) {
       assert.ok(managed.includes(dest), dest);
@@ -251,6 +251,20 @@ test("sfdx-project.json은 바꾸지 않고(defaultLwcLanguage를 넣지 않는�
   await withProject({ "package.json": own }, async (root) => {
     assert.equal((await init(root, BRAND)).code, 0);
     assert.equal(read(root, "package.json"), own);
+  });
+});
+
+test("--fidelity figma면 config.fidelity가 figma이고, 모르는 값은 오류다. 기본은 slds (#95)", async () => {
+  await withProject({}, async (root) => {
+    const r = await init(root, [...BRAND, "--fidelity", "figma"]);
+    assert.equal(r.code, 0, r.stderr);
+    assert.equal(readConfig(root)!.fidelity, "figma");
+    assert.equal(read(root, "docs/milvus/components.md").startsWith("# 프로젝트 부품 목록"), true);
+  });
+  await withProject({}, async (root) => {
+    const r = await init(root, [...BRAND, "--fidelity", "pixel"]);
+    assert.equal(r.code, 1);
+    assert.match(r.stderr, /--fidelity는 slds\|figma/);
   });
 });
 

@@ -9,7 +9,7 @@ import { isValidBrandName, logoAsset, readBranding, writeBrandingSet, writeConte
 import { managedFiles, sha256 } from "../lib/managed.ts";
 import { addKeyIfMissing, appendLines, mergeSettings } from "../lib/merge.ts";
 import { buildMilvusVfCss } from "../lib/vf.ts";
-import { findProject, packageInfo, readConfig, runSf, writeConfig, type SfRunner, removeTemp } from "./context.ts";
+import { FIDELITIES, findProject, packageInfo, readConfig, runSf, writeConfig, type Fidelity, type SfRunner, removeTemp } from "./context.ts";
 
 export type Op = {
   kind: "copy" | "create" | "merge-json" | "append-lines" | "add-key";
@@ -27,7 +27,7 @@ const VF_CSS = `${FA}/staticresources/milvusVf.css`;
 // 프로젝트 .npmrc에는 레지스트리 줄만 넣는다. 토큰 줄(//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN})은 사용자 ~/.npmrc에 둔다.
 // pnpm 11.5.3·10.34.2부터 프로젝트 .npmrc의 ${…} 토큰은 경고와 함께 무시된다. init은 설치 뒤에 돌므로 인증은 이미 동작한다
 const NPMRC = ["@milvus-wina:registry=https://npm.pkg.github.com"];
-const USAGE = "사용법: pnpm milvus init --target-org <별칭> (--brand <이름> | --from-org) [--no-vf]";
+const USAGE = "사용법: pnpm milvus init --target-org <별칭> (--brand <이름> | --from-org) [--no-vf] [--fidelity slds|figma]";
 
 /** .claude/settings.json에 패키지 틀(설계 7.2)을 병합하는 op. init과 update가 같은 병합을 한다(설계 4.5) */
 export function settingsOp(pkgRoot: string): Op {
@@ -205,7 +205,7 @@ function parseOptions(argv: string[]) {
   try {
     return parseArgs({
       args: argv,
-      options: { "target-org": { type: "string" }, brand: { type: "string" }, "from-org": { type: "boolean" }, "no-vf": { type: "boolean" } },
+      options: { "target-org": { type: "string" }, brand: { type: "string" }, "from-org": { type: "boolean" }, "no-vf": { type: "boolean" }, fidelity: { type: "string" } },
       strict: true,
       allowPositionals: false,
     }).values;
@@ -226,6 +226,8 @@ export async function runInit(argv: string[], deps: { sf?: SfRunner; nodeVersion
     if (values.brand !== undefined && !isValidBrandName(values.brand)) {
       throw new Error(`브랜드 이름은 영문자로 시작하고 영문자·숫자·_만 쓸 수 있습니다(__ 금지, _로 끝나지 않음, 한글 불가): ${values.brand}`);
     }
+    const fidelity = (values.fidelity ?? "slds") as Fidelity;
+    if (!FIDELITIES.includes(fidelity)) throw new Error(`--fidelity는 ${FIDELITIES.join("|")} 중 하나다: ${values.fidelity}`);
     const nodeVersion = deps.nodeVersion ?? process.versions.node;
     if (!nodeSupported(nodeVersion)) throw new Error(`Node 22.18 이상(23.x는 23.6 이상)이 필요합니다. 지금 버전: ${nodeVersion}`);
     const { root, defaultPackageDir } = findProject(process.cwd());
@@ -265,7 +267,7 @@ export async function runInit(argv: string[], deps: { sf?: SfRunner; nodeVersion
     const managed = Object.fromEntries(
       managedFiles(pkg.root, { vf }).flatMap((f) => (f.kind === "managed" && f.src ? [[f.dest, sha256(readFileSync(f.src))]] : [])),
     );
-    writeConfig(root, { version: pkg.version, targetOrg, brand, vf, managed });
+    writeConfig(root, { version: pkg.version, targetOrg, brand, vf, fidelity, managed });
 
     const list = (files: string[]) => files.map((f) => `  - ${f}\n`).join("");
     process.stdout.write(

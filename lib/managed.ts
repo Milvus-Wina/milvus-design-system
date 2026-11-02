@@ -48,6 +48,8 @@ export function managedFiles(pkgRoot: string, o: { vf: boolean }): ManagedFile[]
     copy("docs/milvus/patterns/modal.md", "owned"),
     // 디자이너용 Figma 작성 규칙·체크리스트. 팀이 고친다(#18)
     copy("docs/milvus/figma.md", "owned"),
+    // Figma 충실 모드의 부품 목록(#22). 기본 모드에서는 쓰지 않지만 소유 파일로 둔다
+    copy("docs/milvus/components.md", "owned"),
     copy(".claude/skills/milvus-brand/SKILL.md", "managed", tpl("claude/skills/milvus-brand/SKILL.md")),
     copy(".claude/hooks/milvus-check.mjs", "managed", tpl("claude/hooks/milvus-check.mjs")),
     { dest: "milvus.config.json", kind: "generated" },

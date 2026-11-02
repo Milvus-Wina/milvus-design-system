@@ -4,7 +4,12 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export type MilvusConfig = { version: string; targetOrg: string; brand: string; vf: boolean; managed: Record<string, string> };
+/** 충실도 모드(#95). slds: SLDS 기본 컴포넌트 먼저(기본값). figma: Figma에 있는 부품은 직접 구현하고 값은 토큰으로 */
+export const FIDELITIES = ["slds", "figma"] as const;
+export type Fidelity = (typeof FIDELITIES)[number];
+export type MilvusConfig = { version: string; targetOrg: string; brand: string; vf: boolean; fidelity?: Fidelity; managed: Record<string, string> };
+/** 0.3.x 이전 config에는 fidelity가 없다. 없으면 slds다 */
+export const fidelityOf = (c: MilvusConfig): Fidelity => c.fidelity ?? "slds";
 export type SfRunner = (args: string[], cwd: string) => Promise<{ code: number; stdout: string; stderr: string }>;
 
 const CONFIG = "milvus.config.json";
@@ -54,7 +59,8 @@ export function readConfig(root: string): MilvusConfig | undefined {
   }
   const ok =
     typeof c?.version === "string" && typeof c.targetOrg === "string" && typeof c.brand === "string" &&
-    typeof c.vf === "boolean" && typeof c.managed === "object" && c.managed !== null && !Array.isArray(c.managed);
+    typeof c.vf === "boolean" && (c.fidelity === undefined || FIDELITIES.includes(c.fidelity)) &&
+    typeof c.managed === "object" && c.managed !== null && !Array.isArray(c.managed);
   if (!ok) throw new Error(`${CONFIG} 형식이 올바르지 않습니다. pnpm milvus init을 다시 실행하세요`);
   return c;
 }

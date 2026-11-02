@@ -59,6 +59,7 @@
 | `milvus.config.json` | 생성 | 패키지 버전, 브랜드, 대상 org, 관리 파일 목록과 sha256 |
 | `docs/milvus/brand-request.md` | 소유 | 브랜드 명세 페이지가 저장한 요청 |
 | `docs/milvus/patterns/` | 소유 | UI 패턴 명세. 패턴마다 파일 하나(`modal.md` 등). 팀이 규칙을 고치고 파일을 더한다 |
+| `docs/milvus/figma.md` | 소유 | 디자이너용 Figma 작성 규칙. 넘기기 전 체크리스트, 역할 이름 변수 형식, 이름 규칙. 팀이 고친다 |
 | `.claude/settings.json` | 소유 | 밀버스 permissions·hook 병합 |
 | `.claude/skills/milvus-brand/SKILL.md` | 관리 | 브랜드 요청 반영 skill |
 | `.claude/hooks/milvus-check.mjs` | 관리 | `milvusBrand.css`·`milvusOverride.css`·`brandingSets/`, LWC의 `.js`·`.html`을 고치면 `check --style` |
@@ -87,6 +88,7 @@
 - **색은 `BrandingSet`에서만.** 브랜드 색을 CSS에 적지 않는다. Salesforce는 입력한 색 대신 접근성 색(50단계)을 버튼에 쓴다
 - **Salesforce 고정 항목**(토스트 표시 시간, z-index, 아이콘 모양 등)은 바꿀 수 없다고 답하고 목록을 보여 준다. 글꼴은 바꾸지 않는다
 - **화면 패턴.** LWC 화면(모달 등)을 만들거나 고치기 전에 `docs/milvus/patterns/`에서 해당 패턴 파일을 읽고 따른다. 명세와 다르게 해야 하면 이유를 말하고 확인받는다. 패턴은 브랜드가 아니라 화면 구성이라 `milvus-brand` skill 범위 밖이다
+- **Figma에서 LWC를 만들 때.** Figma 링크를 받으면 코드를 쓰기 전에 `docs/milvus/figma.md`의 체크리스트로 입력을 점검하고, 빠진 것(상태, 역할 이름 변수, 자동 레이아웃)은 추측하지 말고 사용자에게 묻는다. 값은 변수 이름으로 받고 Figma의 직접 값(hex, px)을 CSS에 적지 않는다. 변수를 밀버스 토큰·hook으로 잇는 규칙은 토큰 층 설계가 끝나면 그 파일에 더해진다
 - **모달은 `modal_<이름>` 컴포넌트로만 만든다.** `LightningModal`을 상속하고 템플릿에는 `<c-milvus-modal>` 하나만 둔다. 일반 LWC 안에서는 `LightningModal`·`lightning-modal-*`·`slds-modal`·`c-milvus-modal`을 쓰지 않고, `c/modal_<이름>`을 import해 `open()`으로 연다. 어기면 hook과 `check`가 실패한다(`docs/milvus/patterns/modal.md` 1·2번)
 - **LWC는 JavaScript(`.js`)로 쓴다.** `.ts` LWC를 그대로 배포하면 org가 타입 검사로 거부한다
 - **`milvus` 접두사는 밀버스 전용이다.** 프로젝트 컴포넌트·변수에 `milvus`, `--milvus-`를 쓰지 않는다. 패키지에 없는 `lwc/milvus*/` 폴더를 만들면 `check`가 실패한다

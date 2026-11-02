@@ -46,6 +46,8 @@ export function managedFiles(pkgRoot: string, o: { vf: boolean }): ManagedFile[]
     copy(".claude/rules/milvus/design.md", "managed", tpl("claude/rules/milvus/design.md")),
     // 팀이 읽고 고치는 화면 패턴. 패턴마다 파일 하나
     copy("docs/milvus/patterns/modal.md", "owned"),
+    // 디자이너용 Figma 작성 규칙·체크리스트. 팀이 고친다(#18)
+    copy("docs/milvus/figma.md", "owned"),
     copy(".claude/skills/milvus-brand/SKILL.md", "managed", tpl("claude/skills/milvus-brand/SKILL.md")),
     copy(".claude/hooks/milvus-check.mjs", "managed", tpl("claude/hooks/milvus-check.mjs")),
     { dest: "milvus.config.json", kind: "generated" },

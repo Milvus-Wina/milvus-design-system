@@ -44,6 +44,15 @@ test("docs/milvus/patterns/modal.md에 LightningModal 규칙과 출처가 있고
   assert.ok(section(design, 5).includes("`docs/milvus/patterns/`에서 해당 패턴 파일을 읽고 따른다"));
 });
 
+test("docs/milvus/figma.md에 체크리스트·역할 이름 변수 형식·출처가 있고, design.md 4·5절이 가리킨다 (#92)", () => {
+  const figma = read("docs/milvus/figma.md");
+  for (const w of ["- [ ]", "자동 레이아웃", "color/surface/1", "--slds-g-color-surface-1", "palette/", "font/scale/", "밀버스 규칙(팀 합의)", "developer.salesforce.com/docs/platform/lwc/guide/mcp-design.html"]) {
+    assert.ok(figma.includes(w), w);
+  }
+  assert.ok(section(design, 4).includes("`docs/milvus/figma.md` | 소유"));
+  assert.ok(section(design, 5).includes("`docs/milvus/figma.md`의 체크리스트"));
+});
+
 // Claude Code 권한 규칙의 Bash 와일드카드를 옮긴 근사(code.claude.com/docs/en/permissions "Wildcard patterns", 확인 2026-10-14):
 // `*`는 공백을 포함한 아무 글자나 맞고, 와일드카드가 끝의 ` *` 하나뿐이면 인자 없는 명령도 맞는다
 const bashRule = (rule: string) => {

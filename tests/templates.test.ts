@@ -62,6 +62,16 @@ const bashRule = (rule: string) => {
   return new RegExp(`^${body.endsWith(" *") && body.indexOf("*") === body.length - 1 ? `${re.slice(0, -3)}( .*)?` : re}$`);
 };
 
+test("settings.json은 sf-skills 마켓플레이스와 experience-lwc 플러그인을 켜고, design.md 3·5절이 설치 명령과 스킬 규칙을 적는다 (#98)", () => {
+  const s = JSON.parse(read("claude/settings.json"));
+  assert.equal(s.extraKnownMarketplaces.salesforce.source.repo, "forcedotcom/sf-skills");
+  assert.equal(s.enabledPlugins["experience-lwc@salesforce"], true);
+  const s3 = section(design, 3);
+  assert.ok(s3.includes("claude plugin install experience-lwc --marketplace forcedotcom/sf-skills --scope project"));
+  assert.ok(s3.includes("skills add forcedotcom/sf-skills --skill design-systems-slds-apply"));
+  assert.ok(section(design, 5).includes("experience-lwc-design-generate"));
+});
+
 test("settings.json deny는 토큰을 출력하는 sf org display·sf org open --url-only(-r)·--json·sf org list --json·sf auth list --json을 옵션 위치와 상관없이 막고, --json 없는 목록은 막지 않는다", () => {
   const deny: string[] = JSON.parse(read("claude/settings.json")).permissions.deny;
   const rules = deny.map(bashRule).filter((r) => r !== undefined);

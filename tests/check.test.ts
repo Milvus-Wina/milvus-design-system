@@ -50,7 +50,29 @@ async function withProject(fn: (root: string) => Promise<void>) {
 }
 
 const write = (root: string, rel: string, text: string) => writeFileSync(join(root, rel), text);
-const check = (root: string, style: boolean, pkg?: string) => capture(() => runCheck({ root, style, pkgRoot: pkg }));
+const check = (root: string, style: boolean, pkg?: string) => capture(() => runCheck({ root, style, pkgRoot: pkg, skills: !style }));
+
+test("전체 check는 Salesforce 단독 스킬이 없으면 경고만 하고, 플러그인 항목이 빠지면 설치 명령을 안내한다 (#98)", async () => {
+  await withProject(async (root) => {
+    let r = await check(root, false);
+    assert.equal(r.result.code, 0, r.stderr);
+    assert.match(r.stderr, /Salesforce 스킬 경고 1개/);
+    assert.match(r.stderr, /design-systems-slds-apply, design-systems-slds-validate.*skills add forcedotcom\/sf-skills/);
+    // --style(hook)에서는 경고하지 않는다
+    assert.doesNotMatch((await check(root, true)).stderr, /Salesforce 스킬 경고/);
+    for (const s of ["design-systems-slds-apply", "design-systems-slds-validate"]) {
+      mkdirSync(join(root, `.claude/skills/${s}`), { recursive: true });
+      write(root, `.claude/skills/${s}/SKILL.md`, "---\nname: " + s + "\n---\n");
+    }
+    const settings = JSON.parse(readFileSync(join(root, ".claude/settings.json"), "utf8"));
+    delete settings.enabledPlugins;
+    write(root, ".claude/settings.json", JSON.stringify(settings));
+    r = await check(root, false);
+    assert.equal(r.result.code, 0, r.stderr);
+    assert.match(r.stderr, /experience-lwc@salesforce이 켜져 있지 않습니다.*claude plugin install experience-lwc --marketplace forcedotcom\/sf-skills --scope project/);
+    assert.doesNotMatch(r.stderr, /단독 스킬이 없습니다/);
+  });
+});
 
 test("--style은 규칙 위반에서 2와 stderr의 고칠 값", async () => {
   await withProject(async (root) => {
@@ -173,10 +195,10 @@ test("--style은 hooks-index.json만으로 1초 안에 끝난다", async () => {
 
 test("밀버스 관리 파일을 고치면 전체 check가 1이고 'pnpm milvus update --force'를 안내한다", async () => {
   await withProject(async (root) => {
-    // init 직후는 전체 check를 통과하고 아무 경고도 없다. init이 milvusVf.css를 팔레트로 이미 만들어 다시 만들 것이 없다
+    // init 직후는 전체 check를 통과한다. 경고는 아직 설치하지 않은 Salesforce 단독 스킬 하나뿐이다(#98). init이 milvusVf.css를 팔레트로 이미 만들어 다시 만들 것이 없다
     const clean = await check(root, false);
     assert.equal(clean.result.code, 0, clean.stderr);
-    assert.equal(clean.stderr, "");
+    assert.match(clean.stderr, /^Salesforce 스킬 경고 1개\(막지 않습니다\):\n {2}\.claude\/skills\/design-systems-slds-apply, design-systems-slds-validate {2}Salesforce 단독 스킬이 없습니다[^\n]*\n$/);
     assert.deepEqual(clean.result.regenerated, []);
 
     const file = `${FA}/lwc/milvusScript/milvusScript.js`;

@@ -100,6 +100,39 @@ function milvusNameIssues(root: string, managed: Set<string> | undefined): { err
   };
 }
 
+// Salesforce 권장 LWC·SLDS 스킬(#98). init이 .claude/settings.json에 마켓플레이스·플러그인 항목을 넣지만 Claude Code는 프로젝트 범위 항목을
+// 내려받지 않으므로 각자 한 번 설치해야 한다. 단독 스킬 두 개는 플러그인에 없어 따로 설치한다. 둘 다 없으면 경고만 한다(전체 check에서만)
+const SF_PLUGIN = "experience-lwc@salesforce";
+const SF_SKILLS = ["design-systems-slds-apply", "design-systems-slds-validate"];
+function skillWarnings(root: string): Issue[] {
+  const warnings: Issue[] = [];
+  let enabled: Record<string, unknown> = {};
+  const settings = join(root, ".claude/settings.json");
+  if (existsSync(settings)) {
+    try {
+      enabled = JSON.parse(readFileSync(settings, "utf8")).enabledPlugins ?? {};
+    } catch {
+      // 깨진 settings.json은 init·update가 알린다
+    }
+  }
+  if (enabled[SF_PLUGIN] !== true) {
+    warnings.push({
+      file: ".claude/settings.json",
+      rule: "sf-plugin",
+      message: `Salesforce 플러그인 ${SF_PLUGIN}이 켜져 있지 않습니다. pnpm milvus update로 설정을 받은 뒤, claude plugin install experience-lwc --marketplace forcedotcom/sf-skills --scope project 로 설치하세요`,
+    });
+  }
+  const missing = SF_SKILLS.filter((s) => !existsSync(join(root, `.claude/skills/${s}/SKILL.md`)));
+  if (missing.length) {
+    warnings.push({
+      file: `.claude/skills/${missing.join(", ")}`,
+      rule: "sf-skill",
+      message: `Salesforce 단독 스킬이 없습니다. pnpm dlx skills add forcedotcom/sf-skills ${SF_SKILLS.map((s) => `--skill ${s}`).join(" ")} -a claude-code -y 로 설치하세요`,
+    });
+  }
+  return warnings;
+}
+
 // 프로젝트 LWC 폴더마다 바로 아래 .js·.html만 모달 규칙으로 본다(__tests__는 보지 않는다).
 // 패키지가 놓은 밀버스 컴포넌트만 건너뛴다(c-milvus-modal 자신이 lightning-modal-*를 쓴다). config를 읽지 못하면 milvus*를 건너뛴다
 function modalIssues(root: string, managed: Set<string> | undefined): Issue[] {
@@ -140,9 +173,10 @@ function regenerateVfCss(root: string): string[] {
 /**
  * 검사 결과를 stderr에 쓰고 종료 코드를 돌려준다. issues는 실패시키는 문제만 담는다(override 경고는 stderr에만).
  * pkgRoot는 dist/hooks-index.json을 찾을 패키지 폴더다. 기본은 이 패키지다.
- * regenerated는 전체 check가 다시 쓴 [생성] 파일(루트 기준 경로)이다. --style은 파일을 쓰지 않는다
+ * regenerated는 전체 check가 다시 쓴 [생성] 파일(루트 기준 경로)이다. --style은 파일을 쓰지 않는다.
+ * skills가 참이면 Salesforce 스킬 설치 경고(#98)를 낸다. check 명령(전체)만 켜고, deploy가 부를 때는 끈다(배포 출력을 깨끗하게)
  */
-export async function runCheck(o: { root: string; style: boolean; pkgRoot?: string }): Promise<{ code: 0 | 1 | 2; issues: Issue[]; regenerated: string[] }> {
+export async function runCheck(o: { root: string; style: boolean; pkgRoot?: string; skills?: boolean }): Promise<{ code: 0 | 1 | 2; issues: Issue[]; regenerated: string[] }> {
   const issues: Issue[] = [];
   const read = (file: string) => {
     if (existsSync(join(o.root, file))) return readFileSync(join(o.root, file), "utf8");
@@ -167,6 +201,8 @@ export async function runCheck(o: { root: string; style: boolean; pkgRoot?: stri
     );
   }
   if (names.warnings.length) process.stderr.write(`밀버스 컴포넌트 경고 ${names.warnings.length}개:\n${lines(names.warnings)}`);
+  const sf = o.skills ? skillWarnings(o.root) : [];
+  if (sf.length) process.stderr.write(`Salesforce 스킬 경고 ${sf.length}개(막지 않습니다):\n${lines(sf)}`);
   if (issues.length) process.stderr.write(`milvus check${o.style ? " --style" : ""}: 고칠 것 ${issues.length}개\n${lines(issues)}`);
   return { code: issues.length ? (o.style ? 2 : 1) : 0, issues, regenerated: o.style ? [] : regenerateVfCss(o.root) };
 }
@@ -181,7 +217,7 @@ export async function checkCommand(argv: string[]): Promise<number> {
     return 1;
   }
   try {
-    const { code, regenerated } = await runCheck({ root: findProject(process.cwd()).root, style });
+    const { code, regenerated } = await runCheck({ root: findProject(process.cwd()).root, style, skills: !style });
     if (regenerated.length) process.stdout.write(`지금 브랜드 색으로 다시 만든 파일: ${regenerated.join(", ")}\n`);
     if (code === 0) process.stdout.write(`milvus check${style ? " --style" : ""} 통과\n`);
     return code;

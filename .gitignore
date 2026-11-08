@@ -67,3 +67,12 @@ stories/milvus-generated/
 
 # 고객 프로젝트 모드 Storybook이 만드는 폴더 (패키지 설계 3장)
 .milvus/
+
+# milvus figma·scripts/build-figma-data.ts 생성물
+figma-plugin/figma-data*.json
+# Storybook에서 읽은 컴포넌트. 기본 브랜드(Milvus) 것만 패키지에 넣는다(pnpm milvus figma가 쓴다)
+figma-plugin/captures/*
+!figma-plugin/captures/Milvus_DesignSystem.json
+
+# Figma 공식 스킬(figma/mcp-server-guide, 라이선스 없음): 본문은 올리지 않고 skills-lock.json으로 설치한다
+.claude/skills/figma-*

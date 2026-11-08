@@ -1,0 +1,120 @@
+/*
+ * Slack 브랜드 util.css — 예시 브랜드. 값의 원본은 Figma 커뮤니티 파일 「Slack Design System and UI Kit」
+ * (kDh031bj7y4HFXwzg4s4Ky)의 Colour Palette·Components를 SVG로 내보내 읽은 값이다(2026-11-08).
+ * 브랜드 색 #3F0E40(Slack Aubergine)은 org 테마(theme.json의 brandColor)가 원본이라 여기에 쓰지 않는다.
+ * Slack Primary 버튼의 초록(#007A5A)은 브랜드 색이 아니라 성공 색(success)으로 둔다
+ *
+ * 규칙(lib/rules.ts, pnpm test:brands): :root 블록 하나, 클래스 규칙·글꼴 변경 없음, 중립 색은 light-dark()로 대비 4.5:1 이상,
+ * 색 s hook은 hover·선택 바탕 6개만 중립 g hook 참조, Figma 값은 --token-*에 두고 hook이 참조한다(설계 2026-11-02 토큰 층).
+ *
+ * Figma 값을 그대로 옮기지 못한 것
+ *  - 반투명 선·글자(1D1C1D 13%·30%·70%)는 흰 바탕 위에 섞인 불투명 색으로 옮겼다(hook 값은 대비 검사를 받는다)
+ *  - 오류 글자 #E01E5A는 오류 바탕(#FFE8EF) 위 대비 4.01:1이라 #C01343(같은 색상의 진한 값, 5.28:1)으로 대신한다
+ *  - 흐린 글자 #7C7A7F는 흰 바탕 대비 4.24:1이라 #616061(1D1C1D 70%)로 대신한다
+ *  - 포커스 링(1px #1264A3 + 5px #1D9BD1 30%)은 색을 바꿀 수 없다. 포커스 그림자 색은 brand-base-15·neutral-base-100만 허용(설계 5.2)
+ *  - 다크 모드 바탕·선 값은 Figma에 없다. light-dark()의 두 번째 값 중 바탕·선은 추정이고,
+ *    피드백 글자(#98D1F9·#4CC894·#FFD738·#FFA3C2)와 다크 본문(#EAEAEA)은 Colour Palette의 다크 묶음 값이다
+ */
+:root {
+  /* ---- 토큰: Slack Figma 값 ---- */
+  /* 글자 (Colour Palette: Foreground) */
+  --token-color-on-surface-3: light-dark(#1d1c1d, #eaeaea); /* 본문·제목 */
+  --token-color-on-surface-2: light-dark(#454447, #d1d2d3); /* 보조 글자 */
+  --token-color-on-surface-1: light-dark(
+    #616061,
+    #ababad
+  ); /* 흐린 글자(1D1C1D 70%, 탭 기본) */
+  /* 바탕 (Colour Palette: Background) */
+  --token-color-surface-1: light-dark(#ffffff, #1a1d21);
+  --token-color-surface-2: light-dark(#f8f8f8, #121016); /* 앱 바탕 */
+  --token-color-surface-container-1: light-dark(#ffffff, #1a1d21);
+  --token-color-surface-container-2: light-dark(
+    #f8f8f8,
+    #222529
+  ); /* Secondary 버튼 Hover·Pressed 바탕 */
+  --token-color-surface-container-3: light-dark(#eaeaea, #2c2d30);
+  /* 선 (Components: Button·Inputs·Message Box의 1D1C1D 반투명 테두리) */
+  --token-color-border-1: light-dark(
+    #e2e1e2,
+    #393a3d
+  ); /* 13% 구분선·메시지 상자 */
+  --token-color-border-2: light-dark(
+    #bbbbbb,
+    #565856
+  ); /* 30% 버튼·입력 테두리 */
+  /* 사이드바 (Colour Palette: Aubergine) */
+  --token-color-surface-inverse-1: light-dark(#3f0e40, #19171d);
+  --token-color-surface-inverse-2: light-dark(#350d36, #121016);
+  --token-color-surface-container-inverse-1: light-dark(
+    #4d2a51,
+    #27242c
+  ); /* 사이드바 버튼 Hover */
+  /* 피드백 (Colour Palette: Background·Foreground 묶음) */
+  --token-color-success-1: light-dark(#007a5a, #4cc894);
+  --token-color-success-container-1: light-dark(#e3fff3, #0b3c2e);
+  --token-color-border-success-1: light-dark(#c7e2db, #1d5a48); /* 007A5A 22% */
+  --token-color-warning-1: light-dark(#6b5000, #ffd738);
+  --token-color-warning-container-1: light-dark(#fffae0, #3a3000);
+  --token-color-error-1: light-dark(
+    #c01343,
+    #ffa3c2
+  ); /* Figma 오류 글자 #E01E5A는 오류 바탕 위 4.01:1이라 테두리 색 계열 #C01343 */
+  --token-color-on-error-1: light-dark(#c01343, #ffa3c2);
+  --token-color-error-container-1: light-dark(#ffe8ef, #4a1022);
+  --token-color-border-error-1: light-dark(#f1cbd6, #6e1d36); /* C01343 22% */
+  --token-color-on-info-1: light-dark(#1264a3, #98d1f9);
+  --token-color-info-container-1: light-dark(#e3f8ff, #0e2a3d);
+  /* 모양 (Components) */
+  --token-radius-1: 0.25rem; /* 버튼·입력·드롭다운 4px */
+  --token-radius-2: 0.5rem; /* 메시지 상자 8px */
+  --token-shadow-button-hover: 0 1px 3px 0 rgba(0, 0, 0, 0.08); /* Secondary·Tertiary Hover */
+  --token-shadow-button-brand-hover: 0 1px 4px 0 rgba(0, 0, 0, 0.3); /* Primary Hover */
+
+  /* ---- hook ---- */
+  --slds-g-color-on-surface-3: var(--token-color-on-surface-3);
+  --slds-g-color-on-surface-2: var(--token-color-on-surface-2);
+  --slds-g-color-on-surface-1: var(--token-color-on-surface-1);
+  --slds-g-color-surface-1: var(--token-color-surface-1);
+  --slds-g-color-surface-2: var(--token-color-surface-2);
+  --slds-g-color-surface-container-1: var(--token-color-surface-container-1);
+  --slds-g-color-surface-container-2: var(--token-color-surface-container-2);
+  --slds-g-color-surface-container-3: var(--token-color-surface-container-3);
+  --slds-g-color-border-1: var(--token-color-border-1);
+  --slds-g-color-border-2: var(--token-color-border-2);
+  --slds-g-color-surface-inverse-1: var(--token-color-surface-inverse-1);
+  --slds-g-color-surface-inverse-2: var(--token-color-surface-inverse-2);
+  --slds-g-color-surface-container-inverse-1: var(
+    --token-color-surface-container-inverse-1
+  );
+
+  --slds-g-color-success-1: var(--token-color-success-1);
+  --slds-g-color-on-success-1: var(--token-color-success-1);
+  --slds-g-color-success-container-1: var(--token-color-success-container-1);
+  --slds-g-color-border-success-1: var(--token-color-border-success-1);
+  --slds-g-color-warning-1: var(--token-color-warning-1);
+  --slds-g-color-on-warning-1: var(--token-color-warning-1);
+  --slds-g-color-warning-container-1: var(--token-color-warning-container-1);
+  --slds-g-color-error-1: var(--token-color-error-1);
+  --slds-g-color-on-error-1: var(--token-color-on-error-1);
+  --slds-g-color-error-container-1: var(--token-color-error-container-1);
+  --slds-g-color-border-error-1: var(--token-color-border-error-1);
+  --slds-g-color-on-info-1: var(--token-color-on-info-1);
+  --slds-g-color-info-container-1: var(--token-color-info-container-1);
+
+  /* 모서리: 알약형(버튼·필·토글)은 Slack 버튼처럼 4px, 입력 4px, 카드·모달은 메시지 상자처럼 8px */
+  --slds-g-radius-border-pill: var(--token-radius-1);
+  --slds-g-radius-border-2: var(--token-radius-1);
+  --slds-g-radius-border-4: var(--token-radius-2);
+
+  /* 버튼: 굵은 글자, Hover 그림자, Secondary Hover 바탕.
+   * Slack 버튼 높이 36px는 옮기지 않는다. --slds-s-button-font-lineheight를 2.125rem으로 줘도 Storybook에서 32px로 남았다(2026-11-08 확인) */
+  --slds-s-button-font-weight: var(--slds-g-font-weight-bold);
+  --slds-s-button-bordered-shadow-hover: var(--token-shadow-button-hover);
+  --slds-s-button-brand-shadow-hover: var(--token-shadow-button-brand-hover);
+  --slds-s-button-color-background-hover: var(
+    --slds-g-color-surface-container-2
+  );
+
+  /* 입력: Slack 입력 높이 36px */
+  --slds-s-input-sizing-height: 2.25rem;
+}

@@ -1,6 +1,6 @@
 {
   "name": "@milvus-wina/milvus-design-system",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "SEE LICENSE IN LICENSE",
   "description": "밀버스 디자인 시스템 (SFDX + LWC + Storybook)",
   "keywords": [
@@ -16,6 +16,11 @@
     "milvus": "dist/cli/index.js"
   },
   "files": [
+    "figma-plugin/manifest.json",
+    "figma-plugin/code.js",
+    "figma-plugin/ui.html",
+    "figma-plugin/milvus-logo-white.png",
+    "figma-plugin/captures/Milvus_DesignSystem.json",
     "dist/cli",
     "dist/lib",
     "dist/hooks-index.json",
@@ -68,6 +73,7 @@
     "storybook": "pnpm build:lwc && storybook dev -p 6006",
     "build-storybook": "pnpm build:lwc && storybook build -o storybook-static",
     "sync:theme": "node scripts/sync-theme.mjs",
+    "figma": "node scripts/build-figma-data.ts",
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prettier:verify": "prettier --check \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
     "prepare": "husky || true",

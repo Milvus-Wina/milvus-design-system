@@ -1,0 +1,15 @@
+{
+  "name": "Milvus Design System",
+  "id": "1561200000000000002",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] },
+  "menu": [
+    { "name": "디자인 시스템 생성 (figma-data.json)", "command": "build" },
+    { "name": "선택한 것만 반영 (figma-update.json)", "command": "update" },
+    { "name": "이 파일의 변수·스타일 내보내기", "command": "export" }
+  ]
+}

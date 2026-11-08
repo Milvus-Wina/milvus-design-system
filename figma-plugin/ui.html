@@ -1,0 +1,72 @@
+<div style="font: 12px sans-serif; padding: 12px">
+  <div id="build">
+    <p id="t-build">
+      <b>pnpm milvus figma</b> 가 만든 <b>figma-data.json</b> 을 고르면
+      변수·문서·컴포넌트를 만듭니다(초기 세팅). 다시 실행하면 갱신합니다.
+    </p>
+    <p id="t-update" style="display: none">
+      <b>pnpm milvus figma --component·--page</b> 가 만든
+      <b>figma-update.json</b> 을 고르면 그 컴포넌트·페이지만 새로 그립니다.
+      초기 세팅이 된 파일이어야 합니다.
+    </p>
+    <input id="f" type="file" accept=".json" />
+  </div>
+  <div id="export" style="display: none">
+    <p>
+      이 파일의 변수·색·글자·효과 스타일과 <b>선택한 노드</b>를 JSON 으로
+      내보냅니다. 컴포넌트 모양(모서리·여백)도 필요하면 실행 전에 컴포넌트
+      세트를 선택하세요.
+    </p>
+    <a id="dl" style="display: none">내보낸 JSON 받기</a>
+  </div>
+  <pre
+    id="log"
+    style="white-space: pre-wrap; max-height: 150px; overflow: auto"
+  ></pre>
+</div>
+<script>
+  const log = (m) => {
+    document.getElementById("log").textContent += m + "\n";
+  };
+  document.getElementById("f").onchange = (e) => {
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        parent.postMessage(
+          { pluginMessage: { type: "build", data: JSON.parse(r.result) } },
+          "*"
+        );
+        log("읽음: " + e.target.files[0].name);
+      } catch (err) {
+        log("JSON 오류: " + err.message);
+      }
+    };
+    r.readAsText(e.target.files[0]);
+  };
+  onmessage = (e) => {
+    const m = e.data.pluginMessage;
+    if (!m) return;
+    if (m.type === "mode") {
+      document.getElementById("build").style.display =
+        m.mode === "export" ? "none" : "";
+      document.getElementById("export").style.display =
+        m.mode === "export" ? "" : "none";
+      document.getElementById("t-build").style.display =
+        m.mode === "update" ? "none" : "";
+      document.getElementById("t-update").style.display =
+        m.mode === "update" ? "" : "none";
+      return;
+    }
+    if (m.type === "export") {
+      const a = document.getElementById("dl");
+      a.href = URL.createObjectURL(
+        new Blob([m.json], { type: "application/json" })
+      );
+      a.download = m.name;
+      a.style.display = "inline-block";
+      a.textContent = "⬇ " + m.name + " 받기";
+      return;
+    }
+    log(m);
+  };
+</script>

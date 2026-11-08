@@ -4,160 +4,120 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Figma 만들기
 
-디자인 시스템(코드)에서 Figma 디자인 파일을 만든다. 사람이 Figma를 그리지 않는다. Storybook에 그려진 컴포넌트를 상태별로 읽어 Figma 컴포넌트로 옮기고, 색·간격·모서리는 SLDS hook과 같은 이름의 Figma 변수에 묶는다. 만든 Figma의 문서 프레임은 그대로 PDF로 내보내 외부 제출용 디자인 문서가 된다.
+프로젝트의 디자인 시스템과 코드로 Figma 파일을 만드는 순서입니다. Figma를 손으로 그리지 않습니다. 디자인은 코드에서 끝내고 Figma에는 결과를 옮기세요. 기준 버전은 **2.1.0**입니다.
+
+<table>
+  <thead>
+    <tr><th>단계</th><th>할 일</th><th>명령</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>준비 (사람마다 한 번)</td><td>Figma 데스크톱 앱, 플러그인 가져오기</td></tr>
+    <tr><td>2</td><td>초기 세팅 (Figma 파일마다 한 번)</td><td>`pnpm milvus figma` → 「디자인 시스템 생성」</td></tr>
+    <tr><td>3</td><td>컴포넌트·페이지 옮기기 (필요할 때마다)</td><td>`pnpm milvus figma --component …` / `--page …` → 「선택한 것만 반영」</td></tr>
+    <tr><td>4</td><td>외부 제출용 PDF</td><td>Figma에서 프레임을 PDF로 내보내기</td></tr>
+  </tbody>
+</table>
 
 <table>
   <thead>
     <tr><th>Figma 페이지</th><th>들어가는 것</th></tr>
   </thead>
   <tbody>
-    <tr><td>📔 Foundations</td><td>표지, 안내(사용 규칙·컴포넌트 목록), 색·글자·간격·모서리 문서. 변수 컬렉션 <code>milvus</code>(역할 변수, 이름 = SLDS hook)와 <code>palette</code>(원시 값)</td></tr>
-    <tr><td>🧩 Components</td><td>밀버스 컴포넌트와 SLDS 기본 컴포넌트. 컴포넌트마다 <code>Variant × State</code> 세트와 문서 프레임(변형·상태·직접 값 건수·출처)</td></tr>
-    <tr><td>🧩 Components · Project</td><td>코드에서 옮긴 프로젝트 LWC. 안은 위 컴포넌트의 인스턴스(아래 "코드에서 옮기기")</td></tr>
-    <tr><td>📄 Pages</td><td>FlexiPage(org에 배치된 실제 페이지 구조)를 데스크톱 1440px 프레임으로</td></tr>
+    <tr><td>📔 Foundations</td><td>표지, 사용 규칙, 색·글자·간격·모서리. 변수 컬렉션 <code>milvus</code>(이름 = SLDS hook)와 <code>palette</code>(원시 값)</td></tr>
+    <tr><td>🧩 Components</td><td>밀버스 컴포넌트와 SLDS 기본 컴포넌트. 상태별(Default·Hover·Pressed·Focus·Disabled) 컴포넌트 세트와 한국어 문서(사용법·변형·상태·속성)</td></tr>
+    <tr><td>🧩 Components · Project</td><td>3단계에서 옮긴 프로젝트 LWC</td></tr>
+    <tr><td>📄 Pages</td><td>3단계에서 옮긴 FlexiPage. 데스크톱 1440px 프레임</td></tr>
   </tbody>
 </table>
 
-## 만들어지는 Figma가 지키는 세 가지
+색·여백·모서리·글자 크기는 모두 SLDS hook과 같은 이름의 변수(`color/accent/1`, `spacing/4` 등)에 묶여 있습니다. 개발자가 Figma에서 값을 보면 코드에 쓸 hook 이름(`var(--slds-g-…)`)이 함께 나옵니다.
 
-[밀버스 Figma 작성 규칙](https://github.com/Milvus-Wina/milvus-design-system/blob/main/templates/docs/milvus/figma.md)의 1장 체크리스트와 같다.
+## 1. 준비 (사람마다 한 번)
 
-- **상태 전부.** 누르거나 입력하는 요소가 있는 컴포넌트는 `Default · Hover · Pressed · Focus · Disabled`를 모두 만든다. Storybook 화면에서 Chrome이 상태를 강제로 켜고 읽은 모양이다. 누르는 요소가 없는 컴포넌트(Badge, Spinner 등)는 문서에 **"상태 없음(의도)"**으로 적는다
-- **값은 전부 역할 변수.** 색·여백·모서리·글자 크기·테두리 두께는 `color/accent-container/1`, `spacing/4`, `radius/pill`처럼 hook 이름과 1:1인 변수에 묶는다. 같은 값의 변수가 없는 값은 직접 값으로 남기고, 문서 프레임에 **"변수가 없는 직접 값 N건"**으로 센다
-- **모든 프레임에 자동 레이아웃.** 화면의 flex 방향·간격·정렬을 그대로 옮긴다. 이미지나 SVG 통째가 아니라 편집할 수 있는 레이어다(아이콘만 SVG 벡터)
+- **Figma 데스크톱 앱**을 설치하세요. 웹에서는 개발 플러그인이 실행되지 않습니다. 무료(Starter) 플랜으로 됩니다
+- 글꼴 **Pretendard**를 설치하면 문서·표지가 Pretendard로 나옵니다. 없으면 Noto Sans KR, 그것도 없으면 Inter로 나옵니다
+- Figma에서 **Drafts에 빈 새 파일**을 만드세요. 운영 중인 파일에서 돌리지 마세요(무료 플랜은 파일당 3페이지이고 플러그인이 3페이지를 다 씁니다)
 
-## 준비
-
-- **Figma 데스크톱 앱.** 웹에서는 개발 플러그인이 실행되지 않는다. 무료(Starter) 플랜으로 된다
-- **Google Chrome.** 디자인 시스템 저장소에서 Storybook을 읽을 때만 필요하다(백그라운드로 열린다)
-- Figma 파일은 **Drafts에 새로 만든 빈 파일**에서 시작한다. 운영 파일에서 돌리지 않는다
-
-## 고객 프로젝트에서
+## 2. 초기 세팅 (Figma 파일마다 한 번)
 
 ```bash
 pnpm milvus figma --name 고객사이름
 ```
 
-프로젝트의 브랜드(BrandingSet의 `BRAND_COLOR`, `milvusBrand.css`)로 변수 값을 만들고, 플러그인과 작성 데이터를 `.milvus/figma/`에 둔다. 컴포넌트 모양은 패키지에 든 밀버스 기본 브랜드의 Storybook 읽기 결과를 쓰는데, 값이 변수 이름으로 저장돼 있어서 **색은 프로젝트 브랜드로 바뀐다**. 모서리·높이처럼 `milvusBrand.css`로 바꾼 모양까지 반영하려면 아래 저장소 방식으로 그 브랜드를 다시 읽는다.
+`.milvus/figma/`에 플러그인과 `figma-data.json`이 생깁니다. 변수 값은 프로젝트 브랜드(BrandingSet의 `BRAND_COLOR`, `milvusBrand.css`)에서 옵니다.
 
-1. Figma 데스크톱 → **플러그인 → 개발 → 매니페스트에서 플러그인 가져오기…** → `.milvus/figma/manifest.json` (처음 한 번)
-2. **플러그인 → 개발 → Milvus Design System → 디자인 시스템 생성 (figma-data.json)** → `.milvus/figma/figma-data.json` 선택
-3. 창 로그가 `완료: 컴포넌트 ○개, 직접 값 ○건, noCapture 0, unbound 0`이면 끝이다. 컴포넌트가 많아 몇 분 걸린다
-4. 다시 실행하면 새로 만들지 않고 갱신한다. 페이지·섹션·변수가 늘지 않는다
+1. Figma 메뉴 **플러그인 → 개발 → 매니페스트에서 플러그인 가져오기…** → `.milvus/figma/manifest.json` (처음 한 번)
+2. **플러그인 → 개발 → Milvus Design System → 디자인 시스템 생성 (figma-data.json)** → `.milvus/figma/figma-data.json`
+3. 창에 `완료: 컴포넌트 ○개 …`가 나오면 끝입니다. 몇 분 걸립니다
 
-## 코드에서 옮기기 (component · page)
+- `.milvus` 폴더가 파일 선택 창에 안 보이면 macOS는 `Cmd + Shift + .`을 누르세요
+- 브랜드를 바꾼 뒤에는 같은 순서로 다시 실행하세요. 새로 만들지 않고 갱신합니다
+- 패키지를 새 버전으로 올렸으면 이 단계부터 다시 실행하세요. 3단계의 변형 이름이 새 버전 기준이라 맞지 않을 수 있습니다
 
-초기 세팅(위)이 끝난 Figma 파일에 **프로젝트에서 만든 LWC와 FlexiPage만** 옮긴다. 디자인은 코드에서 끝내고 Figma는 결과를 담는다. 화면을 렌더링하지 않고 코드를 읽으므로 Chrome·Storybook이 필요 없고, Figma MCP를 쓰지 않아 무료 플랜 한도와 무관하다.
+## 3. 컴포넌트·페이지 옮기기
+
+2단계를 마친 Figma 파일에 **프로젝트에서 만든 LWC와 FlexiPage만** 옮깁니다. 코드를 읽어 옮기므로 Storybook·Chrome이 필요 없습니다.
 
 ```bash
 pnpm milvus figma
 ```
 
-`1) 초기 세팅 2) component 3) page`를 묻고, 이름을 쉼표로 받는다. 한 줄로도 된다.
+`1) 초기 세팅 2) component 3) page`를 묻습니다. 고른 뒤 이름을 쉼표로 넣으세요. 한 줄로도 됩니다.
 
 ```bash
-pnpm milvus figma --component acmeSummary,acmeHeader
+pnpm milvus figma --component accountSummary,modal_accountEdit
 ```
 
 ```bash
 pnpm milvus figma --page Account_Record_Page
 ```
 
-`.milvus/figma/figma-update.json`이 생기면 **플러그인 → 개발 → Milvus Design System → 선택한 것만 반영 (figma-update.json)** 에서 고른다. 고른 것만 지우고 다시 그리고, 나머지는 그대로 둔다.
+`.milvus/figma/figma-update.json`이 생기면 **플러그인 → 개발 → Milvus Design System → 선택한 것만 반영 (figma-update.json)** 에서 고르세요. 고른 것만 지우고 다시 그리고 나머지는 그대로 둡니다. 페이지에 프로젝트 LWC가 들어가면 그 LWC를 **먼저** component로 옮기세요. 안 옮긴 LWC는 이름 붙은 자리 표시로 그려집니다.
+
+코드는 이렇게 옮겨집니다.
 
 <table>
   <thead>
     <tr><th>코드</th><th>Figma</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>&lt;lightning-button variant="brand" label="저장"&gt;</code></td><td><code>Button</code> 세트의 Brand 변형 인스턴스, 글자 "저장". 변형은 속성 값이 같은 것, 속성이 없으면 기본값(neutral·default·standard·base)</td></tr>
-    <tr><td><code>&lt;c-milvus-badge&gt;</code></td><td>밀버스 <code>Badge</code> 세트 인스턴스(SLDS Badge와 섹션으로 구분)</td></tr>
-    <tr><td><code>&lt;lightning-card&gt;</code>처럼 안에 요소를 담는 컴포넌트</td><td>틀 프레임(제목 + 안의 내용). Figma 인스턴스에는 slot이 없다</td></tr>
-    <tr><td><code>lightning-layout-item size="6"</code>, <code>slds-size_1-of-2</code></td><td>부모 폭의 6/12, 1/2 고정 폭</td></tr>
-    <tr><td><code>slds-grid</code>, <code>slds-p-around_medium</code> 등 SLDS 클래스</td><td>가로 자동 레이아웃, <code>spacing/4</code> 변수(설치된 SLDS CSS에서 읽는다)</td></tr>
-    <tr><td>컴포넌트 <code>.css</code>의 <code>:host</code>·<code>.클래스</code> 규칙의 <code>var(--slds-g-*)</code></td><td>같은 이름 변수. 직접 값(px·hex)은 그대로 넣고 "직접 값"으로 센다</td></tr>
-    <tr><td><code>{account.Name}</code>, <code>lwc:if</code>, <code>for:each</code></td><td>글자 그대로 / 둘 다 그리고 레이어 이름에 조건 / 항목 하나</td></tr>
-    <tr><td>다른 프로젝트 LWC <code>&lt;c-acme-header&gt;</code></td><td>그 LWC를 먼저 component로 옮겼으면 인스턴스, 아니면 이름 붙인 자리 표시</td></tr>
+    <tr><td><code>&lt;lightning-button variant="brand" label="저장"&gt;</code></td><td><code>Button</code>의 Brand 변형 인스턴스, 글자 "저장". 속성이 없으면 기본 변형</td></tr>
+    <tr><td><code>&lt;c-milvus-multi-select label="…" placeholder="…"&gt;</code></td><td>밀버스 <code>MultiSelect</code> 인스턴스, 라벨·placeholder 글자도 코드 값으로</td></tr>
+    <tr><td><code>lightning-modal-header</code>·<code>body</code>·<code>footer</code></td><td>SLDS 모달 모양(제목 가운데, 버튼 오른쪽)</td></tr>
+    <tr><td><code>lightning-card</code>처럼 안에 내용을 담는 컴포넌트</td><td>제목과 안의 내용이 든 틀</td></tr>
+    <tr><td><code>lightning-layout-item size="6"</code>, <code>slds-size_1-of-2</code>, <code>slds-grid</code>, <code>slds-p-around_medium</code></td><td>폭 6/12·1/2, 가로 자동 레이아웃, <code>spacing/4</code> 변수</td></tr>
+    <tr><td>컴포넌트 <code>.css</code>의 <code>var(--slds-g-…)</code></td><td>같은 이름 변수</td></tr>
+    <tr><td><code>{account.Name}</code></td><td>글자 그대로</td></tr>
+    <tr><td><code>lwc:if</code></td><td>숨김 레이어(레이어 패널에서 켜면 보임). 이름에 조건</td></tr>
+    <tr><td><code>for:each</code></td><td>항목 하나</td></tr>
   </tbody>
 </table>
 
-page는 FlexiPage XML(`force-app/…/flexipages/<이름>.flexipage-meta.xml`. org에만 있으면 `sf project retrieve start -m FlexiPage:<이름>`)을 읽는다.
-
-- 프레임은 데스크톱 1440px. 영역(header·main·sidebar 등)은 템플릿 태그별 폭(아래 표)으로 나눈다. 표에 없는 템플릿은 영역을 한 열로 쌓고 알린다
-- 영역 안은 XML 순서대로 위에서 아래로. 탭 묶음은 탭 이름 줄과 활성 탭 내용만, 필드 묶음은 열로
-- 프로젝트 LWC(`c:이름`)는 인스턴스, 표준 컴포넌트(하이라이트 패널, 관련 목록 등)는 코드가 없어 이름 붙인 자리 표시 상자
-- 영역 폭은 메타데이터와 공식 문서(Lightning Page Templates)에 숫자가 없어 **org 화면(폭 1440)에서 잰 값**이다(2026-11-08, 개발 org). 페이지 여백 16(`spacing/4`), 영역 사이 12(`spacing/3`)
+FlexiPage는 템플릿에 따라 영역을 나눕니다(화면 폭 1440 기준, org에서 잰 값).
 
 <table>
   <thead>
     <tr><th>템플릿</th><th>영역 폭(px)</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>flexipage:recordHomeTemplateDesktop</code></td><td>header 1408 / main 943 + sidebar 453 (열 클래스 <code>slds-large-size_8-of-12</code>·<code>4-of-12</code>)</td></tr>
+    <tr><td><code>flexipage:recordHomeTemplateDesktop</code></td><td>header 1408 / main 943 + sidebar 453</td></tr>
     <tr><td><code>flexipage:defaultAppHomeTemplate</code></td><td>main 1408</td></tr>
     <tr><td><code>industries_common:homeTemplateOneRegion</code></td><td>main 1408</td></tr>
+    <tr><td>그 밖의 템플릿</td><td>영역을 한 열로 쌓고 명령이 알려 줍니다. 필요하면 밀버스에 요청하세요</td></tr>
   </tbody>
 </table>
 
-그 밖의 템플릿(`home:desktopTemplate` 등)은 org에서 켜진 페이지가 없어 재지 못했다. 쓰게 되면 그 페이지를 열어 재고 `lib/figma-migrate.ts`의 `TEMPLATES`에 더한다
+- 레코드 상세·관련 목록·하이라이트 패널 같은 표준 컴포넌트는 이름 붙은 자리 표시 상자로 그립니다
+- 탭은 활성 탭의 내용만 그립니다
+- FlexiPage가 프로젝트에 없고 org에만 있으면 먼저 받으세요: `sf project retrieve start -m FlexiPage:<이름>`
 
-## 디자인 시스템 저장소에서(브랜드를 바꿔 다시 읽을 때)
+## 4. 외부 제출용 PDF
 
-`brands/<브랜드>/`의 `theme.json`·`util.css`를 고친 뒤 순서대로 실행한다. **한 번에 하나만** 돌린다. 둘이 겹치면 같은 `storybook-static` 폴더와 Chrome 포트를 써서 둘 다 깨진다.
-
-```bash
-pnpm build-storybook
-node scripts/capture-storybook.ts --brand Slack
-pnpm figma --brand Slack --name Slack --out figma-plugin/figma-data-slack.json
-```
-
-<table>
-  <thead>
-    <tr><th>명령</th><th>하는 일</th><th>결과</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>pnpm build-storybook</code></td><td>Storybook 정적 빌드. hook을 바꾼 뒤에는 반드시 먼저</td><td><code>storybook-static/</code></td></tr>
-    <tr><td><code>node scripts/capture-storybook.ts --brand 이름</code></td><td>그 브랜드를 적용한 Storybook 화면에서 컴포넌트를 변형·상태별로 읽고 값을 변수 이름으로 바꾼다. <code>--only Button,Input</code>으로 일부만 읽을 수 있다</td><td><code>figma-plugin/captures/이름.json</code></td></tr>
-    <tr><td><code>pnpm figma --brand 이름</code></td><td>변수 값(브랜드)과 읽은 컴포넌트를 묶어 작성 데이터를 만든다</td><td><code>figma-plugin/figma-data.json</code>(또는 <code>--out</code>)</td></tr>
-  </tbody>
-</table>
-
-`--brand`를 빼면 `Milvus_DesignSystem`이다. 패키지에는 Milvus 읽기 결과만 들어간다. 릴리스 전에 Milvus로 다시 읽어 둔다.
-
-## hook을 바꾸면 Figma에 반영되는지 확인하기
-
-같은 Figma 파일에 두 브랜드를 차례로 올려 비교한다. 예시 브랜드 `Slack`은 Figma 커뮤니티 파일 「Slack Design System and UI Kit」의 값을 옮긴 것이다(`brands/Slack/util.css` 주석에 출처와 옮기지 못한 값).
-
-<table>
-  <thead>
-    <tr><th>볼 곳</th><th>Milvus_DesignSystem</th><th>Slack</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>브랜드 색(org 테마)</td><td>#244169(밀버스 남색, milvus.co.kr)</td><td>#3F0E40(Slack Aubergine)</td></tr>
-    <tr><td>SLDS · Button 의 Brand 버튼 바탕(<code>color/accent-container/1</code>)</td><td>#5775A8(팔레트 50단계)</td><td>#A756A7(팔레트 50단계)</td></tr>
-    <tr><td>Brand 버튼 Hover(<code>color/accent-container/2</code>)</td><td>#455C86</td><td>#844384</td></tr>
-    <tr><td>Neutral 버튼 테두리(<code>color/border/2</code>)</td><td>#8195B1</td><td>#BBBBBB</td></tr>
-    <tr><td>카드 모서리(<code>radius/4</code>)</td><td>10px</td><td>8px</td></tr>
-    <tr><td>본문 글자(<code>color/on-surface/3</code>)</td><td>#222222</td><td>#1D1C1D</td></tr>
-  </tbody>
-</table>
-
-1. 빈 파일에 Milvus 작성 데이터(`figma-plugin/figma-data.json`)로 플러그인을 실행하고 위 표의 왼쪽 값을 확인한다. 버튼을 선택해 오른쪽 패널의 채우기·모서리가 **변수 이름**으로 보이는지도 본다
-2. 같은 파일에 Slack 작성 데이터(`figma-plugin/figma-data-slack.json`)로 다시 실행한다
-3. 변수 **이름은 그대로**이고 **값과 모양만** 오른쪽으로 바뀌면 통과다. Slack 데이터에 없는 컴포넌트도 색은 바뀐다(변수 값이 바뀌었으므로)
-4. Storybook 툴바의 브랜드를 Slack으로 두고 같은 컴포넌트를 나란히 보면 Figma와 같은 모양이어야 한다
+각 페이지에서 Figma 메뉴 **파일 → 프레임을 PDF로 내보내기**를 쓰세요. 표지와 컴포넌트 문서 프레임이 PDF가 됩니다.
 
 ## 다른 Figma 파일의 값 가져오기
 
-고객사 Figma나 커뮤니티 디자인 키트의 값으로 브랜드를 만들 때 쓴다.
-
-- **플러그인 → 개발 → Milvus Design System → 이 파일의 변수·스타일 내보내기.** 그 파일의 변수·색·글자·효과 스타일과 선택한 노드(모서리·여백·그림자·연결된 변수 이름)를 JSON으로 받는다. 컴포넌트 모양도 필요하면 실행 전에 컴포넌트 세트를 선택한다. 커뮤니티 파일은 먼저 Drafts에 복제해야 플러그인이 돈다
-- 플러그인을 쓸 수 없으면 Figma에서 섹션을 **SVG로 내보내도** 된다. 색(`fill`)·모서리(`rx`)·테두리·그림자(SVG 필터)가 정확한 값으로 들어 있다. 글자는 윤곽선으로 바뀌어 이름은 읽을 수 없다
-- 받은 값으로 `brands/<브랜드>/util.css`를 쓰고 `pnpm test:brands`로 규칙(허용된 hook, 대비 4.5:1)을 확인한다
-
-## 외부 제출용 PDF
-
-각 페이지에서 Figma 메뉴 **파일 → 프레임을 PDF로 내보내기**. 섹션 안의 `Doc/…` 문서 프레임이 페이지마다 PDF 한 권이 된다.
+고객사 Figma의 색·글자·간격을 브랜드에 쓰고 싶으면, 그 파일에서 **플러그인 → 개발 → Milvus Design System → 이 파일의 변수·스타일 내보내기**로 JSON을 받으세요. 컴포넌트 모양도 필요하면 실행 전에 컴포넌트 세트를 선택하세요. 받은 JSON을 Claude Code에 주고 "브랜드 요청 반영해줘"라고 하면 런북 5단계처럼 반영합니다.
 
 ## 할 수 없는 것
 
@@ -166,25 +126,26 @@ pnpm figma --brand Slack --name Slack --out figma-plugin/figma-data-slack.json
     <tr><th>무엇</th><th>이유</th><th>대신</th></tr>
   </thead>
   <tbody>
-    <tr><td>Brand 버튼을 브랜드 색 그대로 칠하기</td><td>org 테마가 브랜드 색으로 팔레트를 계산하고 버튼은 50단계를 쓴다. 브랜드 색 계열 hook은 util.css로 바꾸지 않는다</td><td>Figma에도 같은 50단계가 나온다. 4장 브랜드 명세 페이지에서 단계별 색을 미리 본다</td></tr>
-    <tr><td>포커스 링 색 바꾸기</td><td>포커스 그림자 색은 접근성 때문에 정해진 값만 쓴다</td><td>Salesforce 기본 포커스 링이 나온다</td></tr>
-    <tr><td>메뉴 안 항목, 모달처럼 열어야 보이는 것</td><td>Storybook 첫 화면에 그려지지 않는다</td><td>About 목록에만 있다</td></tr>
-    <tr><td>화면이 없는 유틸리티(Aria Observer, Context 등)</td><td>그릴 모양이 없다</td><td>About 목록에만 있다</td></tr>
+    <tr><td>Brand 버튼을 브랜드 색 그대로 칠하기</td><td>org 테마가 브랜드 색으로 팔레트를 계산하고 버튼은 50단계를 씁니다</td><td>Figma에도 같은 50단계가 나옵니다</td></tr>
+    <tr><td>포커스 링 색 바꾸기</td><td>접근성 때문에 정해진 값만 씁니다</td><td>Salesforce 기본 포커스 링이 나옵니다</td></tr>
+    <tr><td>메뉴 안 항목, 모달처럼 열어야 보이는 기본 컴포넌트</td><td>문서 사이트 첫 화면에 그려지지 않습니다</td><td>Foundations 안내 목록에만 나옵니다</td></tr>
+    <tr><td>코드의 SVG 아이콘 모양</td><td>코드만 읽어서 옮깁니다</td><td>이름 붙은 작은 자리 표시로 나옵니다</td></tr>
   </tbody>
 </table>
 
-## 문제 해결
+## 문제가 생기면
 
 <table>
   <thead>
     <tr><th>증상</th><th>원인</th><th>할 일</th></tr>
   </thead>
   <tbody>
-    <tr><td>"Dev Mode에서 작업할 수 있도록 업그레이드하세요"</td><td>아래 도구 막대의 <code>&lt;/&gt;</code>(Dev Mode)를 눌렀다. 개발 플러그인과는 다른 유료 기능이다</td><td>"디자인 모드로 돌아가기" 후 화면 위 메뉴 막대의 <b>플러그인 → 개발</b>에서 실행한다</td></tr>
-    <tr><td>"The Starter plan only comes with 3 pages"</td><td>무료 플랜은 파일당 3페이지다</td><td>빈 새 파일에서 시작한다. 플러그인은 정확히 3페이지만 쓴다</td></tr>
-    <tr><td>Storybook 빌드가 "Storybook exited with an error"</td><td>빌드나 읽기가 두 개 겹쳐 돌았다</td><td>모두 끝난 뒤 <code>pnpm build-storybook</code>부터 한 번만 다시 실행한다</td></tr>
-    <tr><td>"…를 찾지 못해 건너뜀"</td><td>그 스토리의 첫 화면에 컴포넌트가 없다(위 "할 수 없는 것")</td><td>정상이다</td></tr>
-    <tr><td>컴포넌트가 마젠타색으로 칠해짐</td><td>작성 데이터에 없는 변수 이름을 찾았다(<code>unbound</code>)</td><td><code>pnpm figma</code>를 다시 실행해 변수와 읽기 결과를 같은 버전으로 맞춘다</td></tr>
-    <tr><td>Figma MCP "tool call limit on the Starter plan"</td><td>공식 MCP(AI가 Figma를 직접 읽고 쓰는 길)는 좌석 등급의 호출 한도를 받는다</td><td>이 런북의 플러그인 방식은 한도와 무관하다. 유료 좌석이면 같은 작성 코드를 공식 MCP로 옮길 수 있다</td></tr>
+    <tr><td>"Dev Mode에서 작업할 수 있도록 업그레이드하세요"</td><td>아래 도구 막대의 <code>&lt;/&gt;</code>(Dev Mode)를 눌렀습니다. 유료 기능입니다</td><td>"디자인 모드로 돌아가기" 후 화면 위 메뉴 막대의 <b>플러그인 → 개발</b>에서 실행하세요</td></tr>
+    <tr><td>"The Starter plan only comes with 3 pages"</td><td>무료 플랜은 파일당 3페이지입니다</td><td>빈 새 파일에서 시작하세요</td></tr>
+    <tr><td>「선택한 것만 반영」 메뉴가 없음</td><td>예전 버전의 플러그인을 가져왔습니다</td><td>2단계의 매니페스트 가져오기를 다시 하세요</td></tr>
+    <tr><td>"milvus 변수가 없습니다"</td><td>초기 세팅을 하지 않은 파일입니다</td><td>2단계부터 하세요</td></tr>
+    <tr><td>인스턴스 대신 "(Figma 에 없음)" 상자</td><td>Figma 파일의 컴포넌트가 지금 패키지 버전과 다릅니다</td><td>2단계를 다시 실행한 뒤 3단계를 하세요</td></tr>
+    <tr><td>컴포넌트가 마젠타색</td><td>Figma 파일에 없는 변수 이름입니다</td><td>2단계를 다시 실행하세요</td></tr>
+    <tr><td>"이미지를 넣지 못했습니다"</td><td>Figma는 가로·세로 4096px이 넘는 이미지를 받지 않습니다</td><td>이미지를 줄이세요. 나머지는 그대로 그려집니다</td></tr>
   </tbody>
 </table>

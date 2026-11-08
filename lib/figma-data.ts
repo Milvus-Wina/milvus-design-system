@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { COMMENT } from "./hooks-index.ts";
 import { findMilvusComponents, loadComponent, type MilvusComponent } from "./milvus-stories.ts";
+import { hooksIndexFromSource, type HooksIndex } from "./hooks-index.ts";
 import { brandPalette } from "./palette.ts";
 import { SLDS_DOCS_KO } from "./slds-docs-ko.ts";
 
@@ -237,8 +238,9 @@ export function buildFigmaData(o: { pkgRoot: string; name: string; brandColor: s
   const read = (p: string) => readFileSync(p, "utf8");
   const req = createRequire(join(o.pkgRoot, "package.json"));
   const sldsCss = read(join(dirname(req.resolve("@salesforce-ux/design-system-2/package.json")), "dist/css/bundled/slds2.cosmos.css"));
+  // 발행본은 dist/hooks-index.json(빌드 때 만듦), 저장소에서 빌드 전(CI 테스트 등)은 원본 CSS에서 바로 만든다
   const indexFile = join(o.pkgRoot, "dist/hooks-index.json");
-  if (!existsSync(indexFile)) throw new Error(`hook 색인이 없습니다(${indexFile}). 저장소에서는 node scripts/build-hooks-index.ts를 먼저 실행하세요`);
+  const index: HooksIndex = existsSync(indexFile) ? JSON.parse(read(indexFile)) : hooksIndexFromSource(o.pkgRoot);
   const lwcDir = join(o.pkgRoot, "force-app/main/default/lwc");
   const components = findMilvusComponents(lwcDir).map((n) => loadComponent(lwcDir, n));
   const componentHooks = components.flatMap((c) => {
@@ -247,7 +249,7 @@ export function buildFigmaData(o: { pkgRoot: string; name: string; brandColor: s
   });
   const tokens = buildTokens({
     sldsCss,
-    hooks: [...JSON.parse(read(indexFile)).readGHooks, ...componentHooks],
+    hooks: [...index.readGHooks, ...componentHooks],
     brandColor: o.brandColor,
     brandPalette: o.brandPalette ?? brandPalette(o.brandColor),
     utilCss: o.utilCss,

@@ -49,6 +49,7 @@ export default {
         order: [
           "시작하기",
           "런북",
+          "Figma 만들기",
           "Foundations",
           ["브랜드 스타일 (util.css)", "컬러", "타이포그래피"],
           "컴포넌트",

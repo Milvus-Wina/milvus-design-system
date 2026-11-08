@@ -1,0 +1,89 @@
+/*
+ * 밀버스 브랜드 util.css. 값의 원본은 밀버스 공식 홈페이지(https://www.milvus.co.kr, 2026-11-08 확인)의 화면과 CSS다.
+ * 브랜드 색 #244169(제목·로고·링크·테두리의 남색)는 org 테마(theme.json의 brandColor)가 원본이라 여기에 쓰지 않는다.
+ *
+ * 규칙(lib/rules.ts, pnpm test:brands): :root 블록 하나, 클래스 규칙·글꼴 변경 없음, 중립 색은 light-dark()로 대비 4.5:1 이상,
+ * 색 s hook은 hover·선택 바탕 6개만 중립 g hook 참조, 사이트 값은 --token-*에 두고 hook이 참조한다(설계 2026-11-02 토큰 층).
+ *
+ * 사이트 값을 그대로 옮기지 못한 것
+ *  - 글꼴(Noto Sans KR, ITC Avant Garde)은 바꾸지 않는다. Salesforce 기본 글꼴을 쓴다(설계 5.2)
+ *  - 사이트 메인 변수 --main #009DDC(시안)는 흰 바탕 글자 대비 3.1:1이라 글자에는 같은 계열의 #006E97(사이트 값)을 쓰고,
+ *    시안은 정보 바탕(info container)의 색으로만 남긴다
+ *  - 포인트 색(노랑 #FFD301, 빨강 #FB533C, 초록 #48B65D)은 글자 대비가 모자라 성공·경고·오류는 Salesforce 기본 값을 둔다
+ *  - 다크 모드 값은 사이트에 없어 두 번째 값은 추정이다(사이트 어두운 남색 #0A1624 계열)
+ */
+:root {
+  /* ---- 토큰: milvus.co.kr 값 ---- */
+  /* 글자 */
+  --token-color-on-surface-3: light-dark(
+    #222222,
+    #f1f3f9
+  ); /* 본문·제목(사이트 #222222) */
+  --token-color-on-surface-2: light-dark(
+    #485d7c,
+    #cfd7ec
+  ); /* 라벨·입력값: 사이트 남색 단계 #4B6890을 선택 바탕 위 대비 4.5:1로 조금 진하게 */
+  --token-color-on-surface-1: light-dark(
+    #5c5c5c,
+    #aebbcd
+  ); /* 보조 글자: 사이트 #666666을 선택 바탕 위 대비 4.5:1로 조금 진하게 */
+  /* 바탕: 사이트 남색·파랑 단계 */
+  --token-color-surface-2: light-dark(
+    #f0f0f0,
+    #0a1624
+  ); /* 앱 바탕(사이트 #F0F0F0) */
+  --token-color-surface-container-2: light-dark(
+    #e6eaf5,
+    #16243a
+  ); /* Hover 바탕(파랑 단계 가장 연한 값) */
+  --token-color-surface-container-3: light-dark(
+    #d2daec,
+    #1f3150
+  ); /* 선택 바탕(파랑 단계) */
+  /* 선: 사이트 남색 단계 */
+  --token-color-border-1: light-dark(#e1e5eb, #23324a); /* 구분선·카드 */
+  --token-color-border-2: light-dark(
+    #8195b1,
+    #4b6890
+  ); /* 입력·버튼 테두리(흰 바탕 3.06:1) */
+  /* 남색 면: 푸터·어두운 영역 */
+  --token-color-surface-inverse-1: light-dark(#244169, #0a1624);
+  --token-color-surface-inverse-2: light-dark(#0a1624, #050b12);
+  --token-color-surface-container-inverse-1: light-dark(#23497c, #16243a);
+  /* 정보: 사이트 메인 시안 계열 */
+  --token-color-on-info-1: light-dark(#006e97, #81e6ff);
+  --token-color-info-container-1: light-dark(#e5f5fc, #06313f);
+  /* 모양 */
+  --token-radius-1: 0.25rem; /* 버튼·링크 4px */
+  --token-radius-3: 0.375rem; /* 6px */
+  --token-radius-4: 0.625rem; /* 카드 10px */
+
+  /* ---- hook ---- */
+  --slds-g-color-on-surface-3: var(--token-color-on-surface-3);
+  --slds-g-color-on-surface-2: var(--token-color-on-surface-2);
+  --slds-g-color-on-surface-1: var(--token-color-on-surface-1);
+  --slds-g-color-surface-2: var(--token-color-surface-2);
+  --slds-g-color-surface-container-2: var(--token-color-surface-container-2);
+  --slds-g-color-surface-container-3: var(--token-color-surface-container-3);
+  --slds-g-color-border-1: var(--token-color-border-1);
+  --slds-g-color-border-2: var(--token-color-border-2);
+  --slds-g-color-surface-inverse-1: var(--token-color-surface-inverse-1);
+  --slds-g-color-surface-inverse-2: var(--token-color-surface-inverse-2);
+  --slds-g-color-surface-container-inverse-1: var(
+    --token-color-surface-container-inverse-1
+  );
+  --slds-g-color-on-info-1: var(--token-color-on-info-1);
+  --slds-g-color-info-container-1: var(--token-color-info-container-1);
+
+  /* 모서리: 사이트 버튼 4px, 카드 10px. 알약형(버튼·필)도 4px */
+  --slds-g-radius-border-pill: var(--token-radius-1);
+  --slds-g-radius-border-2: var(--token-radius-1);
+  --slds-g-radius-border-3: var(--token-radius-3);
+  --slds-g-radius-border-4: var(--token-radius-4);
+
+  /* 버튼: 사이트 링크 버튼처럼 굵은 글자, Neutral 버튼 Hover 바탕은 연한 파랑 */
+  --slds-s-button-font-weight: var(--slds-g-font-weight-bold);
+  --slds-s-button-color-background-hover: var(
+    --slds-g-color-surface-container-2
+  );
+}

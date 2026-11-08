@@ -1,0 +1,28 @@
+{
+  "name": "Slack",
+  "label": "Slack Design System (예시, org 아님)",
+  "source": "sample",
+  "designSystemVersion": "SLDS_v2",
+  "brandColor": "#3F0E40",
+  "headerBackgroundColor": null,
+  "logo": null,
+  "palette": {
+    "5": "#080208",
+    "10": "#260f26",
+    "15": "#371837",
+    "20": "#452045",
+    "30": "#643164",
+    "35": "#743a74",
+    "40": "#844384",
+    "45": "#964c96",
+    "50": "#a756a7",
+    "55": "#ba64b9",
+    "60": "#cb73ca",
+    "65": "#d282d0",
+    "70": "#db9bd9",
+    "80": "#e5bde3",
+    "85": "#ecceea",
+    "90": "#f2e0f1",
+    "95": "#f8f2f8"
+  }
+}

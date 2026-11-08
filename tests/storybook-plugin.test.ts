@@ -123,16 +123,16 @@ test("BrandingSet이 없거나 util.css가 규칙을 어기면 slds 브랜드에
   assert.match(broken[0].error!, /\.slds-button/);
 });
 
-test("저장소 모드는 brands/의 Milvus_DesignSystem, Sample_Forest", async () => {
+test("저장소 모드는 brands/의 Milvus_DesignSystem, Slack", async () => {
   const brands = brandsFromRepo(repo);
-  assert.deepEqual(brands.map((b) => [b.name, b.source]), [["Milvus_DesignSystem", "org"], ["Sample_Forest", "sample"]]);
+  assert.deepEqual(brands.map((b) => [b.name, b.source]), [["Milvus_DesignSystem", "org"], ["Slack", "sample"]]);
   const bridge = readFileSync(join(repo, "templates", RES, "milvusBridge.css"), "utf8");
   assert.ok(bridge.length > 0);
   for (const b of brands) assert.equal(b.bridgeCss, bridge);
-  assert.equal(brands[1].utilCss, readFileSync(join(repo, "brands/Sample_Forest/util.css"), "utf8"));
+  assert.equal(brands[1].utilCss, readFileSync(join(repo, "brands/Slack/util.css"), "utf8"));
   assert.match(brands[0].logoUrl!, /^data:image\/png;base64,/);
   assert.equal(brands[1].logoUrl, undefined);
-  assert.deepEqual(brands.map((b) => b.brandColor), ["#0176D3", "#2E7D5B"]);
+  assert.deepEqual(brands.map((b) => b.brandColor), ["#244169", "#3F0E40"]);
 
   // brands/의 파일(.DS_Store)과 theme.json 없는 폴더는 건너뛴다
   const fake = mkdtempSync(join(tmpdir(), "milvus-sb-repo-"));
@@ -147,7 +147,7 @@ test("저장소 모드는 brands/의 Milvus_DesignSystem, Sample_Forest", async 
   try {
     const m = await vite.ssrLoadModule("virtual:milvus-brands");
     assert.equal(m.mode, "repo");
-    assert.deepEqual(m.brands.map((b: { name: string }) => b.name), ["Milvus_DesignSystem", "Sample_Forest"]);
+    assert.deepEqual(m.brands.map((b: { name: string }) => b.name), ["Milvus_DesignSystem", "Slack"]);
   } finally {
     await close();
   }

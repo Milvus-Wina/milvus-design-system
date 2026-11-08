@@ -137,20 +137,21 @@ pnpm milvus storybook
 | 컴포넌트 / 기본                 | Salesforce 기본 컴포넌트(`lightning-*`) 73개, 예제 249개. 컴포넌트마다 "원본과 hook" 스토리가 하나씩 더 있습니다                                     |
 | 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Calendar, Modal, MultiSelect, Notification                                                                                       |
 
-툴바의 **브랜드** 메뉴(붓 아이콘)에서 화면에 입힐 브랜드를 고릅니다. 문서 사이트에서는 `Milvus_DesignSystem`과 "샘플 브랜드 (org 아님)"(`brands/Sample_Forest`)를, 고객 프로젝트에서는 내 브랜드와 "SLDS 기본"을 고릅니다.
+툴바의 **브랜드** 메뉴(붓 아이콘)에서 화면에 입힐 브랜드를 고릅니다. 문서 사이트에서는 `Milvus_DesignSystem`과 예시 브랜드 `Slack`(`brands/Slack`, Slack 디자인 시스템 값)을, 고객 프로젝트에서는 내 브랜드와 "SLDS 기본"을 고릅니다.
 
 ## 주요 기능
 
 ### `pnpm milvus` CLI
 
-| 명령                                                                | 하는 일                                                                                                                                                                                                |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `init --target-org <별칭> (--brand <이름> \| --from-org) [--no-vf]` | 프로젝트에 규칙·컴포넌트·브랜드 파일을 놓습니다. `--from-org`는 org의 활성 테마와 로고를 가져옵니다. 점검이나 조회가 하나라도 실패하면 아무것도 쓰지 않고, 이미 있는 파일은 덮어쓰지 않습니다          |
-| `storybook [build]`                                                 | 프로젝트의 LWC와 SLDS 카탈로그를 빌드해 Storybook을 띄웁니다. dev 서버는 localhost에서만 엽니다. `build`는 `.milvus/storybook-static`에 정적 빌드합니다                                                |
-| `check [--style]`                                                   | `milvusBrand.css`의 규칙과 대비, `milvusOverride.css`, BrandingSet의 `BRAND_COLOR`, 프로젝트 LWC의 모달 규칙을 검사합니다. `--style` 없이 실행하면 관리 파일이 바뀌지 않았는지도 sha256으로 확인합니다 |
-| `deploy [--target-org <별칭>] [--yes]`                              | 전체 검사 뒤 배포 계획을 보여 줍니다. 1단계는 메타데이터를 한 번에 올리고(하나라도 실패하면 전부 롤백), 1단계가 성공했을 때만 2단계로 활성 테마를 바꿉니다                                             |
-| `update [--force]`                                                  | 새 버전의 관리 파일로 바꿉니다. 로컬에서 고친 관리 파일이 있으면 아무것도 바꾸지 않고 차이를 보여 줍니다. `--force`는 덮어씁니다                                                                       |
-| `--version`                                                         | 패키지 버전을 출력합니다                                                                                                                                                                               |
+| 명령                                                                | 하는 일                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init --target-org <별칭> (--brand <이름> \| --from-org) [--no-vf]` | 프로젝트에 규칙·컴포넌트·브랜드 파일을 놓습니다. `--from-org`는 org의 활성 테마와 로고를 가져옵니다. 점검이나 조회가 하나라도 실패하면 아무것도 쓰지 않고, 이미 있는 파일은 덮어쓰지 않습니다                                                                 |
+| `storybook [build]`                                                 | 프로젝트의 LWC와 SLDS 카탈로그를 빌드해 Storybook을 띄웁니다. dev 서버는 localhost에서만 엽니다. `build`는 `.milvus/storybook-static`에 정적 빌드합니다                                                                                                       |
+| `check [--style]`                                                   | `milvusBrand.css`의 규칙과 대비, `milvusOverride.css`, BrandingSet의 `BRAND_COLOR`, 프로젝트 LWC의 모달 규칙을 검사합니다. `--style` 없이 실행하면 관리 파일이 바뀌지 않았는지도 sha256으로 확인합니다                                                        |
+| `deploy [--target-org <별칭>] [--yes]`                              | 전체 검사 뒤 배포 계획을 보여 줍니다. 1단계는 메타데이터를 한 번에 올리고(하나라도 실패하면 전부 롤백), 1단계가 성공했을 때만 2단계로 활성 테마를 바꿉니다                                                                                                    |
+| `update [--force]`                                                  | 새 버전의 관리 파일로 바꿉니다. 로컬에서 고친 관리 파일이 있으면 아무것도 바꾸지 않고 차이를 보여 줍니다. `--force`는 덮어씁니다                                                                                                                              |
+| `figma [--component <LWC,…> \| --page <FlexiPage,…>]`               | Figma 파일용 데이터를 `.milvus/figma/`에 만듭니다. 옵션이 없으면 초기 세팅(변수·Foundations·밀버스와 SLDS 컴포넌트 전체), `--component`·`--page`는 고른 프로젝트 LWC·FlexiPage만 코드에서 읽어 옮깁니다. 터미널에서 옵션 없이 실행하면 무엇을 옮길지 묻습니다 |
+| `--version`                                                         | 패키지 버전을 출력합니다                                                                                                                                                                                                                                      |
 
 `deploy`는 `--target-org`가 없으면 `milvus.config.json`의 `targetOrg`를 쓰고, sf 기본 org는 쓰지 않습니다. `--yes`가 없으면 계획만 보여 주고, 터미널에서는 y/N을 묻습니다(기본 N).
 
@@ -177,6 +178,17 @@ Salesforce 기본 컴포넌트에 없는 기능만 만들었습니다. 모두 `a
 | hook으로 안 되는 모양                       | `milvusOverride.css` (마지막 수단)                                      |
 
 반영 순서는 org 테마 → global hook → 컴포넌트 hook → 브리지 변수 → override입니다. Claude Code의 `milvus-brand` skill이 이 순서로 명세 표를 채팅에 제안하고, 승인을 받은 뒤 파일을 씁니다. 입력은 자연어, 토큰 JSON, Figma, PDF·이미지, URL을 받습니다.
+
+### Figma 만들기
+
+디자인은 코드에서 끝내고 Figma에는 결과를 옮깁니다. 같이 든 Figma 개발 플러그인(`.milvus/figma/manifest.json`)이 `pnpm milvus figma`가 만든 파일을 읽어 그립니다. 무료(Starter) 플랜에서 되고 Figma MCP 호출 한도와 무관합니다.
+
+| 메뉴                                   | 그리는 것                                                                                                                           |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 디자인 시스템 생성 (`figma-data.json`) | 📔 Foundations(표지·색·간격·글자), 🧩 Components(상태별 컴포넌트 세트와 한국어 문서 프레임). 값은 SLDS hook과 같은 이름의 변수      |
+| 선택한 것만 반영 (`figma-update.json`) | 고른 프로젝트 LWC는 🧩 Components에 컴포넌트로, FlexiPage는 📄 Pages에 1440 데스크톱 프레임으로. 안의 부품은 위 컴포넌트의 인스턴스 |
+
+자세한 순서는 문서 사이트의 **Figma 만들기**에 있습니다.
 
 ### 검사와 안전장치
 
@@ -244,7 +256,7 @@ milvus-design-system/
 ├── .storybook/             # Storybook 설정, 브랜드 툴바
 ├── .vscode/                # 권장 확장(extensions.json), 디버거 설정(launch.json)
 ├── audit/                  # 정적 반영 검사의 기준(baseline.json)과 결과(report.json)
-├── brands/                 # 저장소 Storybook의 브랜드: Milvus_DesignSystem, Sample_Forest
+├── brands/                 # 저장소 Storybook의 브랜드: Milvus_DesignSystem, Slack(예시)
 ├── cli/                    # pnpm milvus 명령: init, check, storybook, deploy, update
 ├── config/                 # 스크래치 org 정의
 ├── force-app/main/default/

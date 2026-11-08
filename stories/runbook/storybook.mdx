@@ -1,0 +1,138 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="런북/Storybook" />
+
+{/* 캡처는 stories/runbook/images/<이름>.png로 넣는다. 파일이 없는 자리는 아무것도 그리지 않는다(목록: images/README.md) */}
+export const SHOTS = import.meta.glob("./images/*.png", { eager: true, query: "?url", import: "default" });
+export const Shot = ({ name, alt }) => {
+  const src = SHOTS[`./images/${name}.png`];
+  return src ? (
+    <img src={src} alt={alt} style={{ display: "block", maxWidth: "100%", margin: "12px 0", border: "1px solid #dddbda", borderRadius: "4px" }} />
+  ) : null;
+};
+
+# 런북: Storybook
+
+`pnpm milvus storybook`으로 띄운 내 브랜드의 Storybook에서 브랜드를 맞추고 컴포넌트를 고르는 순서입니다. **런북 / Start**의 1~3단계(준비·설치·init)를 마친 뒤 따라 하세요. 기준 버전은 **2.1.0**입니다.
+
+<table>
+  <thead>
+    <tr><th>단계</th><th>할 일</th><th>명령</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>브랜드 요청 적기</td><td>`pnpm milvus storybook` → 브랜드 명세</td></tr>
+    <tr><td>2</td><td>Claude Code로 반영</td><td>"브랜드 요청 반영해줘"</td></tr>
+    <tr><td>3</td><td>확인</td><td>`pnpm milvus check`</td></tr>
+    <tr><td>4</td><td>컴포넌트 쓰기</td><td>컴포넌트 / 기본 → 밀버스 추가</td></tr>
+  </tbody>
+</table>
+
+확인을 마치면 **런북 / Start**의 4단계(배포)로 가세요.
+
+## 1. 브랜드 요청 적기
+
+```bash
+pnpm milvus storybook
+```
+
+1. 브라우저에서 **시작하기 / 브랜드 명세**를 여세요
+2. 바꾸고 싶은 칸만 적으세요. 빈 칸은 그대로 둡니다
+3. **저장**을 누르세요. `docs/milvus/brand-request.md`가 생깁니다
+
+<Shot name="05-spec-page" alt="브랜드 명세 페이지: 할 일 세 줄과 입력 네 칸" />
+
+<table>
+  <thead>
+    <tr><th>칸</th><th>적는 것</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>브랜드 색</td><td>hex 하나. 예: `#2E7D32`. 버튼에는 Salesforce가 글자가 잘 보이는 색으로 바꿔 칠합니다. 칸 아래에 실제 버튼 색이 나옵니다</td></tr>
+    <tr><td>로고</td><td>프로젝트 폴더 기준 파일 경로. 예: `assets/logo.png`</td></tr>
+    <tr><td>피드백 색</td><td>성공·경고·오류·정보의 글자색·배경색</td></tr>
+    <tr><td>디자인 명세</td><td>무엇이든 붙여 넣으세요. 다른 디자인 시스템의 표, 피그마 토큰 JSON, 사이트 주소, 원하는 느낌</td></tr>
+  </tbody>
+</table>
+
+디자인 명세 예:
+
+```text
+각지고 단단한 업무용 느낌, 촘촘하게.
+회색은 쿨그레이, 카드 그림자는 없애 줘.
+페이지 바탕 #F8F8F8, 본문 글자 #1D1C1D, 구분선 #DDDDDD
+```
+
+- 무엇을 바꿀 수 있는지는 페이지 아래 **바꿀 수 있는 것**을 펼쳐 보세요
+- 글꼴, 상단 헤더 색, 토스트 시간 같은 것은 **바꿀 수 없는 것**에 있습니다
+- Storybook은 켜 두세요. 파일이 바뀌면 화면이 저절로 다시 그려집니다
+
+## 2. Claude Code로 반영
+
+**프로젝트 폴더로 연** Claude Code 세션에서 말하세요. 다른 폴더로 열면 밀버스 규칙이 적용되지 않습니다. 처음 열 때 폴더 신뢰를 받아들이세요.
+
+```text
+브랜드 요청 반영해줘
+```
+
+1. Claude가 **브랜드 명세 표**를 먼저 보여 줍니다. 아직 파일은 고치지 않습니다
+
+<Shot name="07-claude-table" alt="Claude가 보여 주는 브랜드 명세 표" />
+
+2. 표를 확인하세요. **추정**이라고 적힌 값은 Claude가 정한 값입니다. 원하는 값이 있으면 말하세요
+3. 맞으면 "승인"이라고 하세요. Claude가 파일을 고치고 규칙을 스스로 검사합니다
+4. Storybook 화면이 바뀝니다. 더 고치려면 "카드 그림자는 기본으로 되돌려줘"처럼 이어서 말하세요
+
+명세 페이지 없이 바로 말해도 됩니다. 예: "브랜드 색을 딥그린으로, 각지고 촘촘하게 해줘"
+
+## 3. 확인
+
+```bash
+pnpm milvus check
+```
+
+- `milvus check 통과`가 나와야 합니다
+
+- Storybook 위 툴바 🖌 메뉴에서 브랜드를 바꿔 가며 같은 화면을 비교하세요
+
+- **시작하기 / 반영 검사**에서 [반영 검사 시작]을 누르면 모든 컴포넌트에 닿는지 볼 수 있습니다(몇 분, 화면을 앞에 두세요)
+
+## 4. 컴포넌트 쓰기
+
+1. Storybook **컴포넌트 / 기본**에서 먼저 찾으세요. Salesforce 기본 컴포넌트(`lightning-*`)입니다
+2. 없으면 **컴포넌트 / 밀버스 추가**를 쓰세요
+3. 예제 아래 **Show code**를 눌러 코드를 복사하세요
+
+<table>
+  <thead>
+    <tr><th>필요한 것</th><th>쓸 것</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>버튼, 입력, 표</td><td>`lightning-button`, `lightning-input`, `lightning-datatable`</td></tr>
+    <tr><td>모달</td><td>`modal_<이름>` 컴포넌트 안에 `c-milvus-modal`</td></tr>
+    <tr><td>토스트</td><td>`lightning/toast`</td></tr>
+    <tr><td>날짜 하나 고르기</td><td>`lightning-input type="date"`</td></tr>
+    <tr><td>상태 뱃지</td><td>`c-milvus-badge`</td></tr>
+    <tr><td>검색하며 여러 개 고르기</td><td>`c-milvus-multi-select`</td></tr>
+    <tr><td>화면 안 안내 문구(닫기 가능)</td><td>`c-milvus-notification`</td></tr>
+    <tr><td>월·주 일정표</td><td>`c-milvus-calendar`</td></tr>
+  </tbody>
+</table>
+
+- 데이터는 부모 컴포넌트가 불러와 속성으로 넘기세요. 밀버스 컴포넌트 안에는 `@wire`·Apex를 넣지 않습니다
+- 새로 만드는 컴포넌트 이름에는 `milvus`를 쓰지 마세요. 패키지에 없는 `lwc/milvus*/` 폴더가 있으면 `pnpm milvus check`가 실패합니다. 여러 화면에서 쓸 공용 컴포넌트가 필요하면 밀버스에 요청하고, 패키지에 더해지면 `pnpm milvus update`로 받으세요
+- 모달 같은 화면은 `docs/milvus/patterns/`의 규칙을 따르세요. Claude도 이 파일을 읽고 만듭니다
+- 모달은 `modal_<이름>`(예: `modal_accountEdit`) 컴포넌트로 따로 만들고, `LightningModal`을 상속한 뒤 템플릿에 `<c-milvus-modal>` 하나만 두세요. 내용만 그 안에 넣습니다. 여는 쪽에서는 `c/modal_accountEdit`을 import해 `open()`으로 여세요. 일반 LWC 안에서 모달을 직접 만들면 `pnpm milvus check`가 실패합니다
+- 직접 만든 컴포넌트에 브랜드 CSS가 필요하면 `connectedCallback`에서 `loadBrand(this)`를 부르세요
+- 만든 컴포넌트와 페이지를 Figma로 옮기려면 **런북 / Figma**를 따르세요(`pnpm milvus figma --component …`, `--page …`)
+
+```js
+import { LightningElement } from "lwc";
+import { loadBrand } from "c/milvusScript";
+
+export default class OrderSummary extends LightningElement {
+  connectedCallback() {
+    loadBrand(this);
+  }
+}
+```
+
+막히거나 바꾸고 싶은 점은 [저장소 이슈](https://github.com/Milvus-Wina/milvus-design-system/issues)에 남겨 주세요.

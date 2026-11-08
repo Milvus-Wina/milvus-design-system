@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="https://milvus-wina.github.io/milvus-design-system/">문서 사이트</a> ·
-  <a href="https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북--docs">런북</a> ·
+  <a href="https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북-start--docs">런북</a> ·
   <a href="https://github.com/Milvus-Wina/milvus-design-system">GitHub</a>
 </p>
 
@@ -49,7 +49,7 @@
 
 ## 시작하기
 
-여기서는 흐름만 적습니다. 토큰 만들기부터 배포 뒤 마무리까지는 문서 사이트의 [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북--docs)을 따라 하세요.
+여기서는 흐름만 적습니다. 토큰 만들기부터 배포 뒤 마무리까지는 문서 사이트의 [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북-start--docs)을 따라 하세요.
 
 ### 요구 사항
 
@@ -132,7 +132,7 @@ pnpm milvus storybook
 | 시작하기 / 브랜드 명세          | 브랜드 색, 로고, 피드백 색(성공·경고·오류·정보), 디자인 명세를 적고 저장합니다. 저장은 고객 프로젝트에서만 되고 문서 사이트에서는 막혀 있습니다      |
 | 시작하기 / Salesforce 이용 약관 | "원본과 hook" 스토리가 보여 주는 Salesforce 원본 파일의 이용 약관 전문                                                                               |
 | 시작하기 / 반영 검사            | 버튼을 누르면 스토리마다 기본 브랜드와 센티널 브랜드의 계산된 스타일을 비교해, 명세 항목별로 반영·빈틈·고정을 판정합니다. 고객 프로젝트에만 있습니다 |
-| 런북                            | 준비부터 배포 뒤 마무리까지 따라 하기. 문서 사이트에만 있습니다                                                                                      |
+| 런북                            | Start(설치·배포), Storybook(브랜드·컴포넌트), Figma 세 페이지. 문서 사이트에만 있습니다                                                              |
 | Foundations                     | 브랜드 스타일 (util.css), 컬러, 타이포그래피                                                                                                         |
 | 컴포넌트 / 기본                 | Salesforce 기본 컴포넌트(`lightning-*`) 73개, 예제 249개. 컴포넌트마다 "원본과 hook" 스토리가 하나씩 더 있습니다                                     |
 | 컴포넌트 / 밀버스 추가          | Badge, BrandLoader, Calendar, Modal, MultiSelect, Notification                                                                                       |
@@ -188,7 +188,7 @@ Salesforce 기본 컴포넌트에 없는 기능만 만들었습니다. 모두 `a
 | 디자인 시스템 생성 (`figma-data.json`) | 📔 Foundations(표지·색·간격·글자), 🧩 Components(상태별 컴포넌트 세트와 한국어 문서 프레임). 값은 SLDS hook과 같은 이름의 변수      |
 | 선택한 것만 반영 (`figma-update.json`) | 고른 프로젝트 LWC는 🧩 Components에 컴포넌트로, FlexiPage는 📄 Pages에 1440 데스크톱 프레임으로. 안의 부품은 위 컴포넌트의 인스턴스 |
 
-자세한 순서는 문서 사이트의 **Figma 만들기**에 있습니다.
+자세한 순서는 문서 사이트의 **런북 / Figma**에 있습니다.
 
 ### 검사와 안전장치
 
@@ -278,7 +278,7 @@ milvus-design-system/
 ## 더 보기
 
 - [문서 사이트](https://milvus-wina.github.io/milvus-design-system/): 컴포넌트 카탈로그, 브랜드 명세
-- [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북--docs): 준비, 설치, init, 브랜드 반영, 배포, 새 버전으로 올리기, 문제 해결
+- [런북](https://milvus-wina.github.io/milvus-design-system/?path=/docs/런북-start--docs): Start(준비, 설치, init, 배포, 새 버전으로 올리기, 문제 해결), Storybook(브랜드 반영, 컴포넌트 쓰기), Figma(Figma 파일 만들기)
 - [`templates/claude/rules/milvus/design.md`](templates/claude/rules/milvus/design.md): 고객 프로젝트에 들어가는 디자인 규칙
 - [`templates/claude/skills/milvus-brand/SKILL.md`](templates/claude/skills/milvus-brand/SKILL.md): 브랜드 반영 skill
 
